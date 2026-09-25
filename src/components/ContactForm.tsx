@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { contacts } from "@/data/contacts";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -12,17 +13,37 @@ const projectTypes = [
   "Другое",
 ];
 
+// В статической сборке для GitHub Pages нет сервера, поэтому форма
+// не может обратиться к /api/contact и вместо этого открывает mailto-ссылку.
+const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("loading");
-    setErrorMessage("");
 
     const formData = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(formData.entries());
+    const payload = Object.fromEntries(formData.entries()) as Record<string, string>;
+
+    if (isStaticExport) {
+      const emailAddress = contacts.email.href.replace("mailto:", "");
+      const subject = `Заявка с сайта: ${payload.projectType ?? ""}`;
+      const body = [
+        `Имя: ${payload.name}`,
+        `Контакт: ${payload.contact}`,
+        `Сообщение: ${payload.message}`,
+      ].join("\n");
+      window.location.href = `mailto:${emailAddress}?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+      setStatus("success");
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMessage("");
 
     try {
       const response = await fetch("/api/contact", {
@@ -48,9 +69,13 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <div className="flex flex-col items-start gap-2 rounded-2xl border border-accent/30 bg-accent-soft p-6">
-        <p className="text-base font-semibold text-foreground">Заявка отправлена</p>
+        <p className="text-base font-semibold text-foreground">
+          {isStaticExport ? "Открываем почтовый клиент" : "Заявка отправлена"}
+        </p>
         <p className="text-sm text-muted">
-          Спасибо! Я свяжусь с вами в ближайшее время.
+          {isStaticExport
+            ? "Отправьте письмо в открывшемся приложении почты — и я вам отвечу."
+            : "Спасибо! Я свяжусь с вами в ближайшее время."}
         </p>
       </div>
     );
