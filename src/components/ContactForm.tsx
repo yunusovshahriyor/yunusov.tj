@@ -8,7 +8,6 @@ type Status = "idle" | "loading" | "success" | "error";
 const projectTypes = [
   "Мобильное приложение",
   "Сайт",
-  "Сайт на Tilda",
   "Цифровой продукт",
   "Другое",
 ];

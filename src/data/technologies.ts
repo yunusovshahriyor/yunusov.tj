@@ -15,10 +15,6 @@ export const techCategories: TechCategory[] = [
     items: [],
   },
   {
-    title: "No-code / Tilda",
-    items: ["Tilda"],
-  },
-  {
     title: "Backend / Database",
     items: [],
   },

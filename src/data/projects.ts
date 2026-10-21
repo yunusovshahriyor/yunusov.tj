@@ -86,40 +86,6 @@ export const projects: Project[] = [
     banner: "/projects/quiz-patent-banner.webp",
   },
   {
-    slug: "business-network",
-    name: "Бизнес дар шабакаҳои иҷтимоӣ",
-    category: "Книги и справочники",
-    rating: "4,0",
-    summary:
-      "Образовательное приложение о заработке и продвижении бизнеса в социальных сетях.",
-    problem:
-      "Многие пользователи проводят время в социальных сетях, не используя их как инструмент для заработка.",
-    solution:
-      "Приложение учит зарабатывать и продвигать бизнес через социальные сети.",
-    role: "Разработчик",
-    technologies: "Android",
-    link: "https://play.google.com/store/apps/details?id=com.programs.businessNetwork",
-    icon: "/projects/business-network-icon.webp",
-    banner: "/projects/business-network-banner.webp",
-  },
-  {
-    slug: "manizha-deutsch",
-    name: "Manizha Deutsch",
-    category: "Образование",
-    rating: "3,9",
-    summary:
-      "Приложение для изучения немецкого языка с нуля на таджикском языке.",
-    problem:
-      "Таджикоязычным пользователям сложно найти понятный курс немецкого языка на родном языке.",
-    solution:
-      "Manizha Deutsch предлагает интерактивные уроки немецкого языка для всех уровней — от начинающего до продвинутого.",
-    role: "Разработчик",
-    technologies: "Android",
-    link: "https://play.google.com/store/apps/details?id=tj.manizha.deutsch",
-    icon: "/projects/manizha-deutsch-icon.webp",
-    banner: "/projects/manizha-deutsch-banner.webp",
-  },
-  {
     slug: "smartcode-translator",
     name: "Переводчик Школа-LE",
     category: "Образование",
@@ -135,40 +101,6 @@ export const projects: Project[] = [
     link: "https://play.google.com/store/apps/details?id=tj.smartcode.translator",
     icon: "/projects/smartcode-translator-icon.webp",
     banner: "/projects/smartcode-translator-banner.webp",
-  },
-  {
-    slug: "muvaffaq-bosh",
-    name: "Muvaffaq Bosh Academy",
-    category: "Книги и справочники",
-    rating: "4,7",
-    summary:
-      "Аудиокниги, статьи и курсы по финансам и личностному развитию на таджикском языке.",
-    problem:
-      "Таджикоязычной аудитории не хватает качественного контента по финансовой грамотности и личностному росту в одном месте.",
-    solution:
-      "Muvaffaq Bosh Academy собирает статьи, подкасты, аудиокниги и курсы по бизнесу, финансам и личностному развитию на таджикском языке.",
-    role: "Разработчик",
-    technologies: "Android",
-    link: "https://play.google.com/store/apps/details?id=tjk.programs.audiobookmuvaffaqbosh",
-    icon: "/projects/muvaffaq-bosh-icon.webp",
-    banner: "/projects/muvaffaq-bosh-banner.webp",
-  },
-  {
-    slug: "deutschbook",
-    name: "Deutsch — бо забони тоҷикӣ",
-    category: "Книги и справочники",
-    rating: "4,0",
-    summary:
-      "Интерактивный самоучитель немецкого языка с нуля на таджикском языке.",
-    problem:
-      "Изучающим немецкий с нуля нужен понятный самоучитель с объяснениями на родном языке.",
-    solution:
-      "Приложение проводит от базовой фонетики до более сложных грамматических конструкций, с упражнениями в каждой главе.",
-    role: "Разработчик",
-    technologies: "Android",
-    link: "https://play.google.com/store/apps/details?id=tjk.programs.deutschbook",
-    icon: "/projects/deutschbook-icon.webp",
-    banner: "/projects/deutschbook-banner.webp",
   },
   {
     slug: "rustjk-dict",

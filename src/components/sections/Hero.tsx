@@ -18,8 +18,7 @@ export function Hero() {
 
           <p className="max-w-xl text-lg leading-relaxed text-muted">
             Я программист и IT-фрилансер. Разрабатываю Android-приложения,
-            сайты, в том числе на Tilda, и цифровые продукты для
-            предпринимателей и бизнеса.
+            сайты и цифровые продукты для предпринимателей и бизнеса.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">

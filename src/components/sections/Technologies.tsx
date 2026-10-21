@@ -12,7 +12,7 @@ export function Technologies() {
           title="Инструменты, которыми я пользуюсь"
         />
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {techCategories.map((category, i) => (
             <Reveal key={category.title} delay={i * 60}>
               <div className="flex h-full flex-col gap-4 rounded-2xl bg-surface p-6">
