@@ -1,29 +1,3 @@
-export function ProjectImagePlaceholder({
-  name,
-  className = "",
-}: {
-  name: string;
-  className?: string;
-}) {
-  const initials = name
-    .split(/\s+/)
-    .map((word) => word[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  return (
-    <div
-      className={`flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-accent-soft via-surface to-surface-strong ${className}`}
-      role="img"
-      aria-label={`Скриншот проекта ${name} — будет добавлен`}
-    >
-      <span className="text-4xl font-semibold text-accent-strong/70">{initials}</span>
-      <span className="text-xs text-muted">[Добавить скриншот]</span>
-    </div>
-  );
-}
-
 export function PhotoPlaceholder({ className = "" }: { className?: string }) {
   return (
     <div

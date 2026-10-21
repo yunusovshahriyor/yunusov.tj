@@ -7,6 +7,10 @@ const repoName = "yunusov.tj";
 const isStaticExport = process.env.GITHUB_PAGES_EXPORT === "true";
 
 const nextConfig: NextConfig = {
+  // Изображения проектов уже оптимизированы (WebP) и отдаются статикой,
+  // серверная оптимизация next/image не нужна — а в статическом экспорте
+  // для GitHub Pages она и вовсе недоступна.
+  images: { unoptimized: true },
   ...(isStaticExport
     ? {
         output: "export",

@@ -23,13 +23,15 @@ npm run lint    # проверка ESLint
 
 - `site.ts` — название, домен, title/description для SEO.
 - `contacts.ts` — ссылки на Telegram, Instagram, YouTube и email. **Замените placeholder-ссылки на реальные перед публикацией.**
-- `projects.ts` — карточки проектов (ZabonDon, Markazi Khirad, Kitobkhonai Millioner). Поля вроде `role`, `technologies` и `link` содержат `[Добавить ...]` — заполните реальными данными по мере готовности.
+- `projects.ts` — карточки проектов. Данные (название, описание, категория, рейтинг, иконка, баннер) взяты со страницы разработчика в Google Play: `https://play.google.com/store/apps/dev?id=8979338274923782952`. Иконки и баннеры скачаны в `public/projects/`. Поле `role` указано как «Разработчик» для всех — при необходимости уточните формулировку.
 - `services.ts` — блок «Услуги».
 - `process.ts` — этапы работы.
 - `technologies.ts` — категории технологий. Добавляйте инструменты в массив `items` только те, которыми реально владеете.
 - `blogTopics.ts` — темы будущего блога.
 
-Фото и скриншоты проектов — временные плейсхолдеры (`src/components/ui/ImagePlaceholder.tsx`). Замените их на реальные изображения через `next/image`, когда материалы будут готовы.
+Фото для раздела «Обо мне» — временный плейсхолдер (`src/components/ui/ImagePlaceholder.tsx`, компонент `PhotoPlaceholder`). Замените его на реальную фотографию через `next/image`, когда она будет готова.
+
+Если появятся новые приложения в Google Play, добавьте их в `projects.ts` по той же схеме (скачайте иконку `=s256-rw` и баннер `=w1052-h592-rw` с `play-lh.googleusercontent.com` в `public/projects/`).
 
 ## Форма заявок
 

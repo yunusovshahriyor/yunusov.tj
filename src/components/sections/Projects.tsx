@@ -1,8 +1,9 @@
+import Image from "next/image";
 import { Container } from "../ui/Container";
 import { SectionHeading } from "../ui/SectionHeading";
 import { Reveal } from "../ui/Reveal";
-import { ProjectImagePlaceholder } from "../ui/ImagePlaceholder";
 import { projects } from "@/data/projects";
+import { assetPath } from "@/lib/basePath";
 
 export function Projects() {
   return (
@@ -11,22 +12,45 @@ export function Projects() {
         <SectionHeading
           eyebrow="Проекты"
           title="Реальные продукты, которые я разработал"
-          description="Мобильные приложения и цифровые платформы, над которыми я работал."
+          description="Мобильные приложения, опубликованные в Google Play."
         />
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, i) => (
-            <Reveal key={project.slug} delay={i * 100} className="h-full">
+            <Reveal key={project.slug} delay={(i % 3) * 100} className="h-full">
               <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-background transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5">
-                <ProjectImagePlaceholder name={project.name} className="h-48 w-full" />
+                <div className="relative h-40 w-full border-b border-border bg-surface">
+                  <Image
+                    src={assetPath(project.banner)}
+                    alt={`Скриншот приложения ${project.name}`}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
 
                 <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {project.name}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted">{project.summary}</p>
+                  <div className="flex items-start gap-3">
+                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-border">
+                      <Image
+                        src={assetPath(project.icon)}
+                        alt={`Иконка приложения ${project.name}`}
+                        fill
+                        sizes="44px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-base font-semibold leading-tight text-foreground">
+                        {project.name}
+                      </h3>
+                      <p className="mt-0.5 text-xs text-muted">
+                        {project.category} · ★ {project.rating}
+                      </p>
+                    </div>
                   </div>
+
+                  <p className="text-sm text-muted">{project.summary}</p>
 
                   <dl className="flex flex-col gap-3 text-sm">
                     <div>
@@ -48,18 +72,14 @@ export function Projects() {
                   </dl>
 
                   <div className="mt-auto pt-2">
-                    {project.link ? (
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium text-accent hover:text-accent-strong"
-                      >
-                        Смотреть проект →
-                      </a>
-                    ) : (
-                      <span className="text-sm text-muted">[Добавить ссылку]</span>
-                    )}
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-accent hover:text-accent-strong"
+                    >
+                      Открыть в Google Play →
+                    </a>
                   </div>
                 </div>
               </article>
