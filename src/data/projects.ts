@@ -2,7 +2,7 @@ export type Project = {
   slug: string;
   name: string;
   category: string;
-  rating: string;
+  rating?: string;
   summary: string;
   problem: string;
   solution: string;
@@ -118,5 +118,21 @@ export const projects: Project[] = [
     link: "https://play.google.com/store/apps/details?id=tjk.programs.rustjk",
     icon: "/projects/rustjk-dict-icon.webp",
     banner: "/projects/rustjk-dict-banner.webp",
+  },
+  {
+    slug: "shkolale",
+    name: "Школа LE",
+    category: "Образование · Сайт",
+    summary:
+      "Сайт языковой школы: онлайн-уроки русского языка, тесты на патент, РВП и ВНЖ, фразы и русско-таджикский словарь.",
+    problem:
+      "Таджикоязычным мигрантам нужно выучить русский язык и подготовиться к экзаменам на патент, РВП и ВНЖ, и для этого им нужен понятный онлайн-ресурс.",
+    solution:
+      "Сайт собирает в одном месте групповые онлайн-занятия, тесты по каждому экзамену, викторины, полезные фразы, блог и приложения школы из Google Play.",
+    role: "Разработчик",
+    technologies: "Веб-сайт",
+    link: "https://shkolale.ru/",
+    icon: "/projects/shkolale-icon.svg",
+    banner: "/projects/shkolale-banner.svg",
   },
 ];

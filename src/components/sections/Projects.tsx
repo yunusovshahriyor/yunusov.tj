@@ -12,7 +12,7 @@ export function Projects() {
         <SectionHeading
           eyebrow="Проекты"
           title="Реальные продукты, которые я разработал"
-          description="Мобильные приложения, опубликованные в Google Play."
+          description="Мобильные приложения в Google Play и сайты, которые я разработал."
         />
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -45,7 +45,9 @@ export function Projects() {
                         {project.name}
                       </h3>
                       <p className="mt-0.5 text-xs text-muted">
-                        {project.category} · ★ {project.rating}
+                        {project.rating
+                          ? `${project.category} · ★ ${project.rating}`
+                          : project.category}
                       </p>
                     </div>
                   </div>
@@ -78,7 +80,9 @@ export function Projects() {
                       rel="noopener noreferrer"
                       className="text-sm font-medium text-accent hover:text-accent-strong"
                     >
-                      Открыть в Google Play →
+                      {project.link.includes("play.google.com")
+                        ? "Открыть в Google Play →"
+                        : "Открыть сайт →"}
                     </a>
                   </div>
                 </div>
