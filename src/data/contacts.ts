@@ -1,20 +1,19 @@
-// Замените placeholder-значения на реальные ссылки и email перед публикацией сайта.
 export const contacts = {
   telegram: {
     label: "Telegram",
-    href: "https://t.me/your_username",
+    href: "https://t.me/shahriyor_yunusov",
   },
   instagram: {
     label: "Instagram",
-    href: "https://instagram.com/your_username",
+    href: "https://instagram.com/shahriyor_yunusov",
   },
   youtube: {
     label: "YouTube",
-    href: "https://youtube.com/@your_channel",
+    href: "https://youtube.com/@yunusov_shahriyor",
   },
   email: {
-    label: "hello@yunusov.tj",
-    href: "mailto:hello@yunusov.tj",
+    label: "yunusov.shahriyor98@gmail.com",
+    href: "mailto:yunusov.shahriyor98@gmail.com",
   },
 };
 

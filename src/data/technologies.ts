@@ -12,14 +12,14 @@ export const techCategories: TechCategory[] = [
   },
   {
     title: "Web Development",
-    items: [],
+    items: ["HTML", "CSS", "JavaScript", "React", "Next.js", "Tailwind CSS"],
   },
   {
     title: "Backend / Database",
-    items: [],
+    items: ["Next.js API Routes"],
   },
   {
     title: "AI tools",
-    items: ["Автоматизация и AI в разработке"],
+    items: ["Разработка с помощью AI-инструментов"],
   },
 ];
