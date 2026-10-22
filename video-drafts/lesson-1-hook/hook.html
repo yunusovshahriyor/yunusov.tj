@@ -9,50 +9,50 @@ body{width:1280px;height:720px;overflow:hidden;font-family:Inter,"DejaVu Sans",s
 @keyframes sceneio{0%{opacity:0}8%{opacity:1}92%{opacity:1}100%{opacity:0}}
 .blob{position:absolute;border-radius:50%;background:var(--acc);opacity:.06}
 /* A */
-#A{animation:sceneio 6.6s linear 0s both}
+#A{animation:sceneio 6.11s linear 0.00s both}
 .tile{position:absolute;width:150px;height:150px;border-radius:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px rgba(16,17,20,.15);
- animation:pop .7s cubic-bezier(.3,1.6,.5,1) var(--d) both, float 3s ease-in-out calc(var(--d) + .7s) infinite, away .6s ease-in 5.8s both}
+ animation:pop .7s cubic-bezier(.3,1.6,.5,1) var(--d) both, float 3s ease-in-out calc(var(--d) + .7s) infinite, away .6s ease-in 5.35s both}
 @keyframes pop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -12px}}
 @keyframes away{to{transform:scale(.2);opacity:0;left:565px;top:285px}}
 .lbl{position:absolute;bottom:-34px;width:100%;text-align:center;font-size:20px;color:var(--muted);font-weight:600}
 /* B */
-#B{animation:sceneio 2.1s linear 6.07s both}
-.q{font-size:300px;font-weight:800;color:var(--acc);left:0;right:0;top:50px;text-align:center;animation:qin .5s cubic-bezier(.3,1.6,.5,1) 6.27s both, pulse 1.2s ease-in-out 6.8s infinite}
+#B{animation:sceneio 1.76s linear 5.74s both}
+.q{font-size:300px;font-weight:800;color:var(--acc);left:0;right:0;top:50px;text-align:center;animation:qin .5s cubic-bezier(.3,1.6,.5,1) 5.74s both, pulse 1.2s ease-in-out 6.34s infinite}
 @keyframes qin{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0)}}
 @keyframes pulse{0%,100%{scale:1}50%{scale:1.08}}
-.ring{left:490px;top:120px;width:300px;height:300px;border-radius:50%;border:4px dashed rgba(21,94,239,.35);animation:spin 8s linear 6.27s infinite}
+.ring{left:490px;top:120px;width:300px;height:300px;border-radius:50%;border:4px dashed rgba(21,94,239,.35);animation:spin 8s linear 5.74s infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* C */
-#C{animation:sceneio 5s linear 7.53s both}
-.code{left:90px;top:110px;width:560px;height:340px;border-radius:24px;background:var(--dark);padding:34px 36px;box-shadow:0 24px 60px rgba(16,17,20,.3);animation:slidein .5s ease-out 7.73s both}
+#C{animation:sceneio 4.5s linear 7.3s both}
+.code{left:90px;top:110px;width:560px;height:340px;border-radius:24px;background:var(--dark);padding:34px 36px;box-shadow:0 24px 60px rgba(16,17,20,.3);animation:slidein .5s ease-out 7.39s both}
 @keyframes slidein{from{transform:translateX(-60px);opacity:0}to{transform:none;opacity:1}}
 .dots{position:absolute;top:14px;left:20px;display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;background:#3a3d44}
 .cl{font-family:"DejaVu Sans Mono",monospace;font-size:27px;color:#e7e9ee;white-space:pre;margin-top:12px;overflow:hidden;
  animation:type .7s steps(26,end) var(--d) both;width:max-content;max-width:100%}
 @keyframes type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .kw{color:#7aa7ff}.st{color:#8fe3a8}.fn{color:#ffd479}
-.arrow{left:670px;top:272px;width:150px;height:6px;background:repeating-linear-gradient(90deg,var(--acc) 0 18px,transparent 18px 30px);animation:flow 1s linear 10.1s infinite, fadein .3s 10.1s both;background-size:30px 6px}
+.arrow{left:670px;top:272px;width:150px;height:6px;background:repeating-linear-gradient(90deg,var(--acc) 0 18px,transparent 18px 30px);animation:flow 1s linear 9.88s infinite, fadein .3s 9.88s both;background-size:30px 6px}
 @keyframes flow{to{background-position:30px 0}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-.phone{left:850px;top:50px;width:260px;height:440px;border-radius:44px;background:#fff;border:10px solid var(--dark);box-shadow:0 24px 60px rgba(16,17,20,.25);animation:slidein .5s ease-out 7.83s both;overflow:hidden}
-.btn{position:absolute;left:40px;bottom:60px;width:160px;height:56px;border-radius:28px;background:var(--acc);color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:tap .4s ease-in-out 10.9s both}
+.phone{left:850px;top:50px;width:260px;height:440px;border-radius:44px;background:#fff;border:10px solid var(--dark);box-shadow:0 24px 60px rgba(16,17,20,.25);animation:slidein .5s ease-out 7.5s both;overflow:hidden}
+.btn{position:absolute;left:40px;bottom:60px;width:160px;height:56px;border-radius:28px;background:var(--acc);color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;animation:tap .4s ease-in-out 10.72s both}
 @keyframes tap{0%{transform:scale(1)}40%{transform:scale(.88);background:#0F46B8}100%{transform:scale(1)}}
-.bubble{position:absolute;left:30px;top:90px;padding:16px 26px;border-radius:24px 24px 24px 6px;background:#EAF1FF;color:var(--acc);font-size:30px;font-weight:700;animation:pop .6s cubic-bezier(.3,1.6,.5,1) 11.3s both}
+.bubble{position:absolute;left:30px;top:90px;padding:16px 26px;border-radius:24px 24px 24px 6px;background:#EAF1FF;color:var(--acc);font-size:30px;font-weight:700;animation:pop .6s cubic-bezier(.3,1.6,.5,1) 11.14s both}
 /* D */
-#D{animation:sceneio 4.98s linear 11.92s both}
-.card{width:260px;height:260px;border-radius:36px;background:#fff;box-shadow:0 18px 44px rgba(16,17,20,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;top:110px;font-size:28px;font-weight:700;color:var(--dark);animation:pop .7s cubic-bezier(.3,1.6,.5,1) var(--d) both, shrink .5s ease-in 14.1s both}
+#D{animation:sceneio 4.8s linear 11.7s both}
+.card{width:260px;height:260px;border-radius:36px;background:#fff;box-shadow:0 18px 44px rgba(16,17,20,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;top:110px;font-size:28px;font-weight:700;color:var(--dark);animation:pop .7s cubic-bezier(.3,1.6,.5,1) var(--d) both, shrink .5s ease-in 13.4s both}
 @keyframes shrink{to{transform:scale(.6) translateY(-190px);opacity:0}}
-.ar{top:228px;font-size:70px;color:var(--acc);font-weight:800;animation:fadein .4s var(--d) both, shrink2 .4s 14.1s both}
+.ar{top:228px;font-size:70px;color:var(--acc);font-weight:800;animation:fadein .4s var(--d) both, shrink2 .4s 13.4s both}
 @keyframes shrink2{to{opacity:0}}
-.title{left:0;right:0;top:190px;text-align:center;font-size:62px;font-weight:800;color:var(--dark);line-height:1.2;animation:rise .6s ease-out 14.3s both}
+.title{left:0;right:0;top:190px;text-align:center;font-size:62px;font-weight:800;color:var(--dark);line-height:1.2;animation:rise .6s ease-out 13.95s both}
 .title b{color:var(--acc)}
-.title2{left:0;right:0;top:430px;text-align:center;font-size:32px;color:var(--muted);animation:rise .6s ease-out 15.1s both}
+.title2{left:0;right:0;top:430px;text-align:center;font-size:32px;color:var(--muted);animation:rise .6s ease-out 14.75s both}
 @keyframes rise{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 /* subtitles */
 .sub{left:80px;right:80px;bottom:34px;text-align:center;font-size:31px;font-weight:700;color:#fff;background:rgba(16,17,20,.82);padding:12px 24px;border-radius:18px;opacity:0;width:auto;animation:subs var(--len) linear var(--s) both;z-index:9}
 @keyframes subs{0%{opacity:0;transform:translateY(10px)}6%{opacity:1;transform:none}94%{opacity:1}100%{opacity:0}}
-.prog{left:0;bottom:0;height:6px;background:var(--acc);width:100%;transform-origin:left;animation:progr 16.9s linear 0s both;z-index:10}
+.prog{left:0;bottom:0;height:6px;background:var(--acc);width:100%;transform-origin:left;animation:progr 16.5s linear 0s both;z-index:10}
 @keyframes progr{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 </style></head><body>
 <div class="blob" style="left:1000px;top:-120px;width:420px;height:420px"></div>
@@ -71,29 +71,29 @@ body{width:1280px;height:720px;overflow:hidden;font-family:Inter,"DejaVu Sans",s
 
 <div class="scene" id="C">
  <div class="abs code"><div class="dots"><i></i><i></i><i></i></div>
-  <div class="cl" style="--d:7.93s"><span class="kw">if</span> (кнопка_нажата) {</div>
-  <div class="cl" style="--d:8.65s">  <span class="fn">показать</span>(<span class="st">"Привет!"</span>);</div>
-  <div class="cl" style="--d:9.37s">}</div>
+  <div class="cl" style="--d:7.61s"><span class="kw">if</span> (кнопка_нажата) {</div>
+  <div class="cl" style="--d:8.36s">  <span class="fn">показать</span>(<span class="st">"Привет!"</span>);</div>
+  <div class="cl" style="--d:9.12s">}</div>
  </div>
  <div class="abs arrow"></div>
  <div class="abs phone"><div class="bubble">Привет!</div><div class="btn">Нажать</div></div>
 </div>
 
 <div class="scene" id="D">
- <div class="abs card" style="--d:12.22s;left:150px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Человек</div>
- <div class="abs ar" style="--d:12.55s;left:430px">→</div>
- <div class="abs card" style="--d:12.75s;left:510px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Код</div>
- <div class="abs ar" style="--d:13.1s;left:790px">→</div>
- <div class="abs card" style="--d:13.3s;left:870px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>Компьютер</div>
+ <div class="abs card" style="--d:12.11s;left:150px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Человек</div>
+ <div class="abs ar" style="--d:12.39s;left:430px">→</div>
+ <div class="abs card" style="--d:12.57s;left:510px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Код</div>
+ <div class="abs ar" style="--d:12.87s;left:790px">→</div>
+ <div class="abs card" style="--d:13.04s;left:870px"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#155EEF" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>Компьютер</div>
  <div class="abs title">Программа · Алгоритм<br><b>Язык программирования</b></div>
  <div class="abs title2">Разберёмся шаг за шагом</div>
 </div>
 
-<div class="abs sub" style="--s:0.2s;--len:2.25s">Вы каждый день пользуетесь программами.</div>
-<div class="abs sub" style="--s:2.45s;--len:3.82s">Мессенджер, карты, банк, музыка — всё это программы.</div>
-<div class="abs sub" style="--s:6.27s;--len:1.56s">Но что это на самом деле?</div>
-<div class="abs sub" style="--s:7.83s;--len:4.39s">Внутри — чёткие инструкции, которые компьютер выполняет шаг за шагом.</div>
-<div class="abs sub" style="--s:12.22s;--len:1.98s">Их пишут люди — программисты.</div>
-<div class="abs sub" style="--s:14.2s;--len:2.27s">И сегодня мы узнаем, как это работает.</div>
+<div class="abs sub" style="--s:0.2s;--len:2.37s">Вы каждый день пользуетесь программами.</div>
+<div class="abs sub" style="--s:2.57s;--len:3.17s">Мессенджер, карты, банк, музыка — всё это программы.</div>
+<div class="abs sub" style="--s:5.74s;--len:1.76s">Но что это на самом деле?</div>
+<div class="abs sub" style="--s:7.5s;--len:4.61s">Внутри — чёткие инструкции, которые компьютер выполняет шаг за шагом.</div>
+<div class="abs sub" style="--s:12.11s;--len:1.70s">Их пишут люди — программисты.</div>
+<div class="abs sub" style="--s:13.81s;--len:2.26s">И сегодня мы узнаем, как это работает.</div>
 <div class="abs prog"></div>
 </body></html>
