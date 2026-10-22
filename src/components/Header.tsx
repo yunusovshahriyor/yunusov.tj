@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { Container } from "./ui/Container";
 
 const navItems = [
-  { href: "#about", label: "Обо мне" },
-  { href: "#projects", label: "Проекты" },
-  { href: "#services", label: "Услуги" },
-  { href: "#technologies", label: "Технологии" },
-  { href: "#blog", label: "Блог" },
-  { href: "#contact", label: "Контакты" },
+  { href: "/#about", label: "Обо мне" },
+  { href: "/#projects", label: "Проекты" },
+  { href: "/#services", label: "Услуги" },
+  { href: "/#technologies", label: "Технологии" },
+  { href: "/#blog", label: "Блог" },
+  { href: "/#contact", label: "Контакты" },
 ];
 
 export function Header() {
