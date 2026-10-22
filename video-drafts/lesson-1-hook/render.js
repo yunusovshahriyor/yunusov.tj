@@ -3,11 +3,11 @@ const { chromium } = require('playwright-core');
   const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox'] });
   const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
   await p.goto('file://' + __dirname + '/hook.html');
-  const fps = 30, total = 30;
+  const fps = 30, total = 26.5;
   await p.evaluate(() => document.getAnimations().forEach(a => a.pause()));
-  for (let i = 0; i < fps * total; i++) {
+  for (let i = 0; i < Math.round(fps * total); i++) {
     await p.evaluate(t => document.getAnimations().forEach(a => { a.currentTime = t; }), (i / fps) * 1000);
-    await p.screenshot({ path: `${__dirname}/frames/f${String(i).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 92 });
+    await p.screenshot({ path: `/tmp/fr/f${String(i).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 92 });
   }
   await b.close();
 })();
