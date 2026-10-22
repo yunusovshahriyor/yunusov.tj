@@ -47,7 +47,7 @@ export default async function CoursePage({ params }: Props) {
   const first = courses[0];
 
   return (
-    <section className="py-12 sm:py-20">
+    <section className="pt-[calc(72px+3rem)] pb-12 sm:pt-[calc(72px+5rem)] sm:pb-20">
       <Container className="flex flex-col gap-12">
         <div className="flex flex-col gap-6">
           <Link href="/#courses" className="text-sm text-muted hover:text-accent">

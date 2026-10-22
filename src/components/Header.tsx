@@ -33,21 +33,23 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-colors duration-300 ${
-        scrolled ? "bg-background/90 backdrop-blur border-b border-border" : "bg-transparent"
+      className={`sticky top-0 z-50 -mb-[72px] h-[72px] w-full border-b transition-all duration-300 ${
+        scrolled
+          ? "border-border/70 bg-background/70 shadow-sm shadow-black/[0.03] backdrop-blur-xl"
+          : "border-transparent bg-transparent"
       }`}
     >
-      <Container className="flex items-center justify-between py-4">
+      <Container className="flex h-full items-center justify-between">
         <Link href="#top" className="text-base font-semibold tracking-tight text-foreground">
           Shahriyor Yunusov
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden items-center gap-1 rounded-full border border-border bg-background/80 p-1 shadow-sm backdrop-blur md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm text-muted transition-colors hover:text-foreground"
+              className="rounded-full px-4 py-2 text-sm text-muted transition-colors hover:bg-accent-soft hover:text-accent-strong"
             >
               {item.label}
             </Link>
@@ -89,7 +91,7 @@ export function Header() {
       </Container>
 
       <div
-        className={`md:hidden overflow-hidden border-b border-border bg-background transition-[max-height] duration-300 ease-out ${
+        className={`md:hidden overflow-hidden border-b border-border bg-background/95 backdrop-blur-xl transition-[max-height] duration-300 ease-out ${
           open ? "max-h-96" : "max-h-0"
         }`}
       >

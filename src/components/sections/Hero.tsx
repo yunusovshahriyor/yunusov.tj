@@ -13,7 +13,7 @@ const facts = [
 
 export function Hero() {
   return (
-    <section id="top" className="relative isolate overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32 lg:pt-36 lg:pb-40">
+    <section id="top" className="relative isolate overflow-hidden pt-[calc(72px+3rem)] pb-24 sm:pt-[calc(72px+5rem)] sm:pb-32 lg:pt-[calc(72px+6rem)] lg:pb-40">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-b from-accent-soft/70 via-background to-background" />
         <div
