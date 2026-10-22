@@ -1,6 +1,7 @@
 import { Container } from "../ui/Container";
 import { Reveal } from "../ui/Reveal";
 import { Button } from "../ui/Button";
+import { courses } from "@/data/courses";
 
 export function Courses() {
   return (
@@ -15,10 +16,24 @@ export function Courses() {
               Обучаю программированию и делюсь практическим опытом разработки
             </h2>
             <p className="max-w-xl text-base leading-relaxed text-muted">
-              Образовательное направление находится в разработке. Здесь появятся
-              курсы и материалы по программированию, основанные на реальном
-              опыте создания мобильных приложений и сайтов.
+              Образовательное направление находится в разработке. Планирую
+              запустить курсы по следующим темам:
             </p>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              {courses.map((course) => (
+                <div
+                  key={course.title}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3"
+                >
+                  <span className="text-sm text-foreground">{course.title}</span>
+                  <span className="shrink-0 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-strong">
+                    Скоро
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <Button href="#contact" variant="secondary">
               Узнать первым о запуске
             </Button>
