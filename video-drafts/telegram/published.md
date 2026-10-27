@@ -5,3 +5,4 @@
 | Дата | message_id | Пост | Файлы |
 |---|---|---|---|
 | 2026-10-27 | 1961 | Дарси 1: Тағйирёбанда (видео + конспект) | `../reel-variable-v4/reel.mp4`, `post-01-variable.html` |
+| 2026-10-27 | 1962–1966 | Шпаргалка: Тағйирёбанда дар 5 слайд (альбом) | `../reel-variable-v4/promo/carousel-1…5.jpg`, `post-02-variable-album.html` |
