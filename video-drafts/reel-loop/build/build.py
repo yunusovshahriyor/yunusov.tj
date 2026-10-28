@@ -1,6 +1,6 @@
 # Ролик «Давр: loop». Тайминги — из timeline.json (точная разметка ElevenLabs v4).
 import json, re
-TL = json.load(open('timeline2.json')); SN = TL['sentences']; PRE = TL['pre']
+TL = json.load(open('timeline3.json')); SN = TL['sentences']; PRE = TL['pre']
 TOTAL = TL['total']; END = round(TOTAL + 1.2, 2)
 T = [s['start'] for s in SN]; E = [s['end'] for s in SN]
 V = set("аеёиоуэюяӣӯ")
@@ -209,7 +209,7 @@ sfx("riser", t_sj - 1.0, 0.6); sfx("hit", t_sj, 1.0); sfx("pop", WT(20, "сиф�
 for k in range(int((T[21] - t_q) / 0.5)): sfx("tick", t_q + k * 0.5, 0.8)
 
 # K: CTA — кодовое слово «ДАВР» → шпаргалка в Direct
-t_kw = WT(21, "давр"); t_pdf = WT(21, "шпаргалкаи"); t_dm = WT(21, "direct")
+t_kw = WT(21, "давр"); t_pdf = WT(21, "шпаргалкаи"); t_dm = WT(21, "директ")
 H.append(f'''<div class="sc" style="{S(T[21] - 0.05, T[22] - 0.1)}">
  <div class="pwd" style="top:215px;left:60px;right:60px;height:74px;animation:scin .35s ease-out {f(T[21])} both"><span class="emo" style="position:static;font-size:28px">💬</span><div class="type" style="--a:{f(t_kw)};--d:.4s;--n:4;font-size:34px;color:#B4472E">ДАВР</div><span class="res2 ink-bg pop" style="--a:{f(t_kw + 0.5)};right:14px">➤</span></div>
  <svg style="position:absolute;left:0;top:0" width="540" height="640"><path class="draw" pathLength="100" d="M270 300 L270 345" stroke="#1F3F44" stroke-width="6" style="--len:101;--a:{f(t_pdf - 0.3)};--d:.25s"/></svg>
