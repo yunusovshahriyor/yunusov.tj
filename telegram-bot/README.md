@@ -1,6 +1,7 @@
 # Telegram SMM-бот: калимаи рамзӣ → ссилка
 
 Ҳамон механизме, ки дар Instagram ҳаст (обуначӣ калимаи рамзӣ менависад → маводро мегирад), барои Telegram.
+Бот дар **Cloudflare Workers** кор мекунад (webhook) ва маълумотро дар базаи **D1** `smm-bot` нигоҳ медорад.
 
 ## Чӣ тавр кор мекунад
 
@@ -17,13 +18,10 @@
 ## Танзими Telegram (як бор)
 
 1. Канал бояд **гурӯҳи шарҳҳо** (Discussion) дошта бошад: *Канал → Танзимот → Discussion*.
-2. Ботро ба **гурӯҳи шарҳҳо** илова кунед ва **админ** кунед (ҳуқуқи иловагӣ лозим нест).
-   Бе ҳуқуқи админ бот шарҳҳоро намебинад.
+2. Ботро ба **гурӯҳи шарҳҳо** илова кунед ва **админ** кунед. Бе ҳуқуқи админ бот шарҳҳоро намебинад.
 3. Барои санҷиши обуна бот бояд дар **канал** низ админ бошад.
 
-## Калимаҳои рамзӣ
-
-Дар `keywords.json` (ё дар тағйирёбандаи `KEYWORDS_JSON` бо ҳамон формат):
+## Калимаҳои рамзӣ — `keywords.json`
 
 ```json
 [
@@ -41,49 +39,53 @@
 - `words` — калимаҳо ё ибораҳо. Ҳарфи калон/хурд ва аломатҳо аҳамият надоранд; калима бояд алоҳида бошад («гайд» ≠ «гайдҳо»).
 - `message` — `{url}` бо ссилка иваз мешавад. `message` ва `button` ихтиёрӣ ҳастанд.
 
-Барои ҳар пост метавонед калимаи алоҳида ва маводи алоҳида илова кунед.
+Барои ҳар пост метавонед калимаи алоҳида ва маводи алоҳида илова кунед. Пас аз тағйир commit кунед — бот худкор аз нав нашр мешавад.
 
-## Тағйирёбандаҳои муҳит
+## Танзимот — `wrangler.toml` (`[vars]`)
 
-| Ном | Ҳатмӣ | Тавсиф |
-| --- | --- | --- |
-| `TELEGRAM_BOT_TOKEN` | ҳа | Токени бот аз @BotFather |
-| `TELEGRAM_CHANNEL` | ҳа | `@username`-и канал |
-| `KEYWORDS_JSON` | не | Ба ҷои `keywords.json` |
-| `REQUIRE_SUBSCRIPTION` | не | `true` (пешфарз) — ссилка танҳо ба обуначиён |
-| `ADMIN_IDS` | не | ID-ҳо бо вергул; онҳо фармони `/stats`-ро истифода мебаранд |
-| `DB_PATH` | не | Роҳи SQLite (пешфарз `data/bot.db`) |
-| `COMMENT_COOLDOWN` | не | Сония (пешфарз 600) |
-| `DISCUSSION_CHAT_ID` | не | Одатан худкор аз канал муайян мешавад |
-| `COMMENT_REPLY`, `COMMENT_BUTTON`, `WELCOME_TEXT`, `NOT_SUBSCRIBED_TEXT` | не | Матнҳои бот |
+| Ном | Тавсиф |
+| --- | --- |
+| `TELEGRAM_CHANNEL` | `@username`-и канал |
+| `BOT_USERNAME` | username-и бот (барои ссилкаи `?start=`) |
+| `DISCUSSION_CHAT_ID` | ID-и гурӯҳи шарҳҳо (холӣ — худкор аз канал) |
+| `REQUIRE_SUBSCRIPTION` | `true` — ссилка танҳо ба обуначиён |
+| `ADMIN_IDS` | ID-ҳо бо вергул; онҳо фармони `/stats`-ро истифода мебаранд |
+| `COMMENT_COOLDOWN` | Сония байни ҷавобҳо (пешфарз 600) |
+| `COMMENT_REPLY`, `COMMENT_BUTTON`, `WELCOME_TEXT`, `NOT_SUBSCRIBED_TEXT` | Матнҳои бот (ихтиёрӣ) |
 
-## Оғоз дар компютер
+Токени бот дар `wrangler.toml` нест — он сирр аст (поёнтар).
+
+## Нашр (худкор тавассути GitHub Actions)
+
+Workflow `.github/workflows/deploy-telegram-bot.yml` ҳангоми ҳар тағйир дар `telegram-bot/` дар шохаи асосӣ:
+тестҳоро иҷро мекунад → Worker-ро ба Cloudflare мегузорад → webhook-и Telegram-ро танзим мекунад.
+
+Дар GitHub: *Settings → Secrets and variables → Actions* ин сирриҳоро илова кунед:
+
+| Сирр | Аз куҷо |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare → *My Profile → API Tokens* → шаблони **Edit Cloudflare Workers** (метавонед ҳамонеро, ки барои `darakhti-bot` доред, истифода баред) |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare → *Workers & Pages* → Account ID |
+| `TELEGRAM_BOT_TOKEN` | @BotFather |
+
+Баъд дар *Actions → Deploy Telegram SMM bot → Run workflow* -ро пахш кунед (ё ягон тағйир дар `telegram-bot/` commit кунед).
+
+Сирри webhook аз токен худкор ҳосил мешавад — сирри иловагӣ лозим нест.
+
+## Кор дар компютер
 
 ```bash
 cd telegram-bot
-python -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # пур кунед, баъд:
-set -a && . ./.env && set +a
-python -m bot.main
+npm install
+npm test            # тестҳои ёфтани калима
+npm run typecheck
+echo 'TELEGRAM_BOT_TOKEN=...' > .dev.vars
+npx wrangler d1 execute smm-bot --local --file=schema.sql
+npx wrangler dev
 ```
-
-Тестҳо: `python -m unittest`
-
-## Гузоштан ба Railway
-
-1. *New Project → Deploy from GitHub repo* → репозиторийи `yunusov.tj`-ро интихоб кунед.
-   Дар *Settings → Source* **Root Directory**-ро `telegram-bot` гузоред (бот дар ҳамин папка аст),
-   ва **Watch Paths**-ро `telegram-bot/**`, то тағйироти сайт ботро аз нав ба кор наандозад.
-2. Дар *Variables* `TELEGRAM_BOT_TOKEN` ва `TELEGRAM_CHANNEL` (ва ихтиёран `KEYWORDS_JSON`)-ро илова кунед.
-3. Барои он ки рӯйхати гирандагон ҳангоми redeploy гум нашавад, **Volume** илова кунед (масалан `/data`) ва `DB_PATH=/data/bot.db` гузоред.
-4. Фармони оғоз аллакай дар `railway.json` ҳаст: `python -m bot.main`.
-
-Бот бо long polling кор мекунад, бинобар ин домен ё порт лозим нест. Танҳо **як нусха**-ро ба кор андозед:
-ду нусха бо як токен ҳамзамон кор карда наметавонанд.
 
 ## Санҷиш
 
 1. Ба пости канал шарҳ нависед: `шпаргалка`.
 2. Бот бояд бо тугма ҷавоб диҳад → тугмаро пахш кунед → Start → ссилка ба директ меояд.
-3. Агар бот ҷавоб надиҳад, логҳоро бинед: ҳангоми оғоз бот мегӯяд, ки дар гурӯҳи шарҳҳо узв ё админ нест.
+3. Агар ҷавоб наояд: дар Cloudflare *Workers & Pages → smm-bot → Logs*-ро бинед ва санҷед, ки бот дар гурӯҳи шарҳҳо админ аст.
