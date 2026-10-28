@@ -1,0 +1,29 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+* { box-sizing:border-box; margin:0; }
+body { width:540px; height:960px; overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.07), transparent 45%); }
+.hdr { position:absolute; left:26px; right:26px; top:62px; display:flex; justify-content:space-between; font:600 11px "JetBrains Mono",monospace; letter-spacing:1.5px; padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+.chip { position:absolute; left:0; right:0; margin:auto; width:max-content; top:150px; background:var(--ink); color:var(--paper); font:700 15px "JetBrains Mono",monospace; letter-spacing:3px; padding:7px 14px; border-radius:6px; }
+.t1 { position:absolute; left:20px; right:20px; top:196px; text-align:center; font-size:66px; font-weight:900; letter-spacing:-1.5px; }
+.t2 { position:absolute; left:20px; right:20px; top:275px; text-align:center; font:900 40px "JetBrains Mono",monospace; color:var(--rust); }
+.big { position:absolute; left:0; right:0; top:345px; text-align:center; font-size:120px; font-weight:900; color:var(--rust); line-height:1; }
+.lab { position:absolute; left:0; right:0; top:475px; text-align:center; font-size:22px; font-weight:800; }
+.emo { font-family:"Noto Color Emoji"; }
+.parts { position:absolute; left:50px; right:50px; top:530px; display:flex; justify-content:center; gap:10px; }
+.parts span { padding:9px 14px; border-radius:12px; color:#fff; font-size:19px; font-weight:800; }
+.code { position:absolute; left:50px; right:50px; top:600px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.bar { height:22px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:9px; height:9px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.code p { padding:12px 18px; font:600 21px "JetBrains Mono",monospace; color:#EDE6D8; font-variant-ligatures:none; }
+.kw { color:#E0675A; } .a1 { color:#7FD49A; } .a2 { color:#E9B949; } .a3 { color:#E0675A; }
+</style></head><body>
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>ДАРСИ 03 / 12</span></div>
+<div class="chip">ДАРСИ 3</div>
+<div class="t1">Давр чист?</div>
+<div class="t2">for <span class="emo">🔁</span></div>
+<div class="big">1000</div>
+<div class="lab">бор · дар 1 сония <span class="emo">⚡</span></div>
+<div class="parts"><span style="background:#3E7C59">оғоз</span><span style="background:#E9B949;color:#1F3F44">шарт</span><span style="background:#B4472E">қадам</span></div>
+<div class="code"><div class="bar"><i></i><i></i><i></i></div><p><span class="kw">for</span> (<span class="a1">let i = 1</span>; <span class="a2">i &lt;= 10</span>; <span class="a3">i++</span>)</p></div>
+</body></html>

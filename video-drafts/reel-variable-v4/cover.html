@@ -1,0 +1,31 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; }
+* { box-sizing:border-box; margin:0; }
+body { width:540px; height:960px; overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.07), transparent 45%); }
+.hdr { position:absolute; left:26px; right:26px; top:62px; display:flex; justify-content:space-between; font:600 11px "JetBrains Mono",monospace; letter-spacing:1.5px; padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+.chip { position:absolute; left:0; right:0; margin:auto; width:max-content; top:150px; background:var(--ink); color:var(--paper); font:700 15px "JetBrains Mono",monospace; letter-spacing:3px; padding:7px 14px; border-radius:6px; }
+.t1 { position:absolute; left:20px; right:20px; top:196px; text-align:center; font-size:58px; font-weight:900; letter-spacing:-1.5px; line-height:1.02; }
+.t2 { position:absolute; left:20px; right:20px; top:322px; text-align:center; font-size:38px; font-weight:900; color:var(--rust); }
+.stage { position:absolute; left:140px; top:400px; width:260px; height:270px; }
+.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:#C8975A; }
+.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(#E2B070,#C8975A); z-index:3; display:flex; align-items:center; justify-content:center; box-shadow:0 20px 40px rgba(31,63,68,.18); }
+.flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; }
+.flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
+.tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
+.num { position:absolute; left:75px; top:40px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; rotate:-6deg; }
+.stamp { position:absolute; left:318px; top:420px; padding:6px 14px; border:4px solid var(--rust); border-radius:10px; color:var(--rust); font-size:28px; font-weight:900; letter-spacing:1px; background:rgba(244,239,230,.85); rotate:10deg; z-index:5; }
+.code { position:absolute; left:80px; right:80px; top:690px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.bar { height:24px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:9px; height:9px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.code p { padding:12px 20px; font:600 27px "JetBrains Mono",monospace; color:#EDE6D8; }
+.kw { color:#E0675A; } .nm { color:#E9B949; } .v { color:#7FD49A; }
+</style></head><body>
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>01 / БАРНОМАСОЗӢ</span></div>
+<div class="chip">ДАРСИ 1</div>
+<div class="t1">Тағйирёбанда<br>чист?</div>
+<div class="t2">дар 1 дақиқа</div>
+<div class="stage"><div class="flap l"></div><div class="flap r"></div><div class="back"></div><div class="num">25</div><div class="front"><div class="tag">age</div></div></div>
+<div class="stamp">ОДДӢ!</div>
+<div class="code"><div class="bar"><i></i><i></i><i></i></div><p><span class="kw">let</span> <span class="nm">age</span> = <span class="v">25</span>;</p></div>
+</body></html>

@@ -1,0 +1,35 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+* { box-sizing:border-box; margin:0; }
+body { width:540px; height:960px; overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.07), transparent 45%); }
+.hdr { position:absolute; left:26px; right:26px; top:62px; display:flex; justify-content:space-between; font:600 11px "JetBrains Mono",monospace; letter-spacing:1.5px; padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+.chip { position:absolute; left:0; right:0; margin:auto; width:max-content; top:150px; background:var(--ink); color:var(--paper); font:700 15px "JetBrains Mono",monospace; letter-spacing:3px; padding:7px 14px; border-radius:6px; }
+.t1 { position:absolute; left:20px; right:20px; top:196px; text-align:center; font-size:66px; font-weight:900; letter-spacing:-1.5px; line-height:1.02; }
+.t2 { position:absolute; left:20px; right:20px; top:272px; text-align:center; font:900 40px "JetBrains Mono",monospace; color:var(--rust); }
+.q { position:absolute; left:0; right:0; margin:auto; width:max-content; top:350px; padding:10px 20px; border-radius:30px; background:var(--card); border:2px solid var(--line); font-size:24px; font-weight:800; box-shadow:0 10px 24px rgba(31,63,68,.10); }
+.emo { font-family:"Noto Color Emoji"; }
+svg { position:absolute; left:0; top:0; }
+.choice { position:absolute; width:190px; height:150px; border-radius:20px; background:var(--card); border:3px solid; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-size:22px; font-weight:800; box-shadow:0 12px 26px rgba(31,63,68,.10); }
+.choice .emo { font-size:56px; line-height:1; }
+.choice small { font:700 14px "JetBrains Mono",monospace; letter-spacing:2px; padding:3px 10px; border-radius:6px; color:#fff; }
+.yes { border-color:var(--green); } .no { border-color:var(--rust); }
+.code { position:absolute; left:60px; right:60px; top:640px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.bar { height:24px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:9px; height:9px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.code p { padding:12px 20px; font:600 26px "JetBrains Mono",monospace; color:#EDE6D8; }
+.kw { color:#E0675A; } .nm { color:#E9B949; } .v { color:#7FD49A; } .op { color:#9fb0b2; }
+</style></head><body>
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>02 / БАРНОМАСОЗӢ</span></div>
+<div class="chip">ДАРСИ 2</div>
+<div class="t1">Шарт чист?</div>
+<div class="t2">if / else</div>
+<div class="q"><span class="emo">🌧️</span> Борон меборад?</div>
+<svg width="540" height="960">
+ <path d="M235 405 Q170 425 150 460" stroke="#3E7C59" stroke-width="8" fill="none"/>
+ <path d="M305 405 Q370 425 390 460" stroke="#B4472E" stroke-width="8" fill="none"/>
+</svg>
+<div class="choice yes" style="left:50px;top:465px"><span class="emo">☂️</span>Чатр<small style="background:#3E7C59">ҲА</small></div>
+<div class="choice no" style="left:300px;top:465px"><span class="emo">😎</span>Айнак<small style="background:#B4472E">НЕ</small></div>
+<div class="code"><div class="bar"><i></i><i></i><i></i></div><p><span class="kw">if</span> (<span class="nm">age</span> <span class="op">&gt;=</span> <span class="v">18</span>) {…}</p></div>
+</body></html>

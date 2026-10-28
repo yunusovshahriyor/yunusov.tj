@@ -1,0 +1,122 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>
+:root{--acc:#155EEF;--dark:#101114;--muted:#5C616B}
+*{box-sizing:border-box;margin:0}
+body{width:540px;height:960px;overflow:hidden;font-family:Inter,"DejaVu Sans",sans-serif;background:linear-gradient(160deg,#EAF1FF,#F6F6F8);position:relative}
+.abs{position:absolute}
+.blob{position:absolute;border-radius:50%;background:var(--acc);opacity:.07}
+.title{left:0;right:0;top:110px;text-align:center;animation:rise .6s ease-out .05s both}
+.title b{display:block;font-size:50px;font-weight:800;color:var(--dark);letter-spacing:-1px}
+.title span{font-size:22px;color:var(--acc);font-weight:700;letter-spacing:3px}
+@keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pop{from{transform:scale(0) rotate(-12deg)}to{transform:scale(1) rotate(0)}}
+@keyframes hide{from{opacity:1}to{opacity:0}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes out{from{opacity:1;transform:none}to{opacity:0;transform:scale(.85)}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@keyframes pulse{0%,100%{scale:1}50%{scale:1.15}}
+.fl{padding:12px 22px;border-radius:16px;background:#101114;color:#8fe3a8;font:700 26px "DejaVu Sans Mono",monospace;box-shadow:0 12px 30px rgba(16,17,20,.2);
+ animation:pop .5s cubic-bezier(.3,1.6,.5,1) var(--d) both,float 2.6s ease-in-out calc(var(--d) + .5s) infinite,out .4s ease-in 6.76s forwards}
+.q{left:0;right:0;top:290px;text-align:center;font-size:150px;font-weight:800;color:var(--acc);animation:pop .5s cubic-bezier(.3,1.6,.5,1) 1.33s both,pulse 1.2s ease-in-out 1.83s infinite,out .4s ease-in 6.76s forwards}
+/* box */
+.stage{left:140px;top:205px;width:260px;height:260px;animation:pop .6s cubic-bezier(.3,1.6,.5,1) 7.11s both,glow 1.4s ease-in-out 36.79s 3,hide .35s ease-in 40.96s forwards,show .35s ease-out 52.29s forwards,out .4s ease-in 57.56s forwards}
+@keyframes glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px rgba(21,94,239,.6))}}
+.back{left:0;top:70px;width:260px;height:190px;border-radius:14px;background:#C8975A}
+.front{left:0;top:130px;width:260px;height:130px;border-radius:6px 6px 18px 18px;background:linear-gradient(#E2B070,#C8975A);z-index:3;display:flex;align-items:center;justify-content:center}
+.tag{background:#fff;border-radius:10px;padding:8px 22px;font:800 34px "DejaVu Sans Mono",monospace;color:var(--dark);box-shadow:0 4px 10px rgba(0,0,0,.18);animation:pop .5s cubic-bezier(.3,1.6,.5,1) 13.77s both}
+.flapL{left:-6px;top:50px;width:136px;height:30px;background:#B5844A;border-radius:6px;transform:rotate(-8deg)}
+.flapR{left:130px;top:50px;width:136px;height:30px;background:#B5844A;border-radius:6px;transform:rotate(8deg)}
+.num{left:75px;top:62px;width:110px;height:84px;border-radius:20px;background:linear-gradient(135deg,#3B7BFF,#0F46B8);color:#fff;font-size:52px;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:2;opacity:0}
+@keyframes drop{from{top:-60px;opacity:0}30%{opacity:1}to{top:62px;opacity:1}}
+@keyframes up{from{top:62px;opacity:1}to{top:-40px;opacity:0}}
+.n25{animation:drop .7s cubic-bezier(.4,1.4,.6,1) 17.75s forwards,up .45s ease-in 30.01s forwards}
+.n26{animation:drop .7s cubic-bezier(.4,1.4,.6,1) 31.97s forwards,up .45s ease-in 56.26s forwards}
+.n27{animation:drop .7s cubic-bezier(.4,1.4,.6,1) 56.76s forwards}
+/* code */
+.code{left:50px;right:50px;top:480px;height:118px;border-radius:18px;background:var(--dark);padding:20px 26px;box-shadow:0 14px 36px rgba(16,17,20,.28);opacity:0;animation:show .4s ease-out 19.16s forwards,hide .35s ease-in 40.96s forwards,show .35s ease-out 52.29s forwards,out .4s ease-in 57.56s forwards}
+.cl{font:600 29px "DejaVu Sans Mono",monospace;color:#e7e9ee;white-space:pre;width:max-content;clip-path:inset(0 100% 0 0)}
+@keyframes type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes dim{to{opacity:.4}}
+.kw{color:#7aa7ff}.nm{color:#ffd479}.v{color:#8fe3a8}
+.l1{animation:type .8s steps(14,end) 22.00s forwards,dim .3s linear 31.97s forwards}
+.l2{margin-top:6px;animation:type .7s steps(10,end) 31.97s forwards}
+/* labels */
+.lab{background:#fff;border:2px solid var(--acc);border-radius:12px;padding:6px 16px;font-size:24px;font-weight:800;color:var(--acc);opacity:0}
+.labN{left:28px;top:250px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) 33.94s forwards,show .01s 33.94s forwards,hide .35s ease-in 40.96s forwards,show .35s ease-out 52.29s forwards,pulse .6s ease-in-out 52.69s 2,out .4s ease-in 57.56s forwards}
+.labQ{left:388px;top:250px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) 34.73s forwards,show .01s 34.73s forwards,hide .35s ease-in 40.96s forwards,show .35s ease-out 52.29s forwards,pulse .6s ease-in-out 54.28s 2,out .4s ease-in 57.56s forwards}
+/* examples */
+.ex{left:40px;right:40px;top:225px;opacity:0;animation:show .35s ease-out 41.21s forwards,hide .35s ease-in 52.29s forwards}
+.exh{text-align:center;font-size:30px;font-weight:800;color:var(--dark);margin-bottom:18px}
+.card{position:relative;height:104px;border-radius:22px;background:#fff;box-shadow:0 12px 30px rgba(16,17,20,.12);margin-bottom:16px;display:flex;align-items:center;padding:0 22px;gap:18px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) var(--d) both}
+.ic{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.ct{font-size:24px;font-weight:700;color:var(--dark)}
+.val{position:absolute;right:24px;top:30px;font-size:34px;font-weight:800;color:var(--acc)}
+.old{animation:up2 .4s ease-in var(--c) forwards}
+.new{opacity:0;animation:in2 .4s ease-out calc(var(--c) + .3s) forwards}
+@keyframes up2{to{transform:translateY(-26px);opacity:0}}
+@keyframes in2{from{transform:translateY(26px);opacity:0}to{transform:none;opacity:1}}
+/* end */
+.end{left:36px;right:36px;top:250px;text-align:center;opacity:0;animation:show .5s ease-out 57.81s forwards}
+.end b{display:block;font-size:40px;line-height:1.2;color:var(--dark);font-weight:800}
+.chip{display:inline-block;margin-top:22px;border-radius:40px;padding:14px 28px;font-size:25px;font-weight:700;animation:pop .5s cubic-bezier(.3,1.6,.5,1) var(--d) both}
+.c1{background:var(--acc);color:#fff}.c2{background:#fff;color:var(--dark);border:2px solid #E4E5E9}
+.c3{background:var(--dark);color:#fff;animation:pop .5s cubic-bezier(.3,1.6,.5,1) var(--d) both,pulse 1s ease-in-out calc(var(--d) + .5s) infinite}
+/* subs */
+.sub{left:34px;right:34px;bottom:200px;text-align:center;font-size:28px;line-height:1.25;font-weight:800;color:#fff;background:rgba(16,17,20,.85);padding:12px 18px;border-radius:16px;opacity:0;animation:subs var(--len) linear var(--s) both;z-index:9}
+@keyframes subs{0%{opacity:0;transform:translateY(6px)}5%{opacity:1;transform:none}96%{opacity:1}100%{opacity:0}}
+.prog{left:0;bottom:0;height:5px;width:100%;background:var(--acc);transform-origin:left;animation:progr 70.12s linear 0s both;z-index:10}
+@keyframes progr{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+</style></head><body>
+<div class="blob" style="left:330px;top:-100px;width:360px;height:360px"></div>
+<div class="blob" style="left:-120px;top:700px;width:300px;height:300px"></div>
+<div class="abs title"><b>Тағйирёбанда</b><span>VARIABLE</span></div>
+<div class="abs fl" style="--d:1.53s;left:50px;top:270px">age</div>
+<div class="abs fl" style="--d:2.03s;left:300px;top:230px">name</div>
+<div class="abs fl" style="--d:2.53s;left:70px;top:390px">price</div>
+<div class="abs fl" style="--d:3.03s;left:310px;top:390px">city</div>
+<div class="abs q">?</div>
+<div class="abs stage">
+ <div class="abs flapL"></div><div class="abs flapR"></div>
+ <div class="abs back"></div>
+ <div class="abs num n25">25</div><div class="abs num n26">26</div><div class="abs num n27">27</div>
+ <div class="abs front"><div class="tag">age</div></div>
+</div>
+<div class="abs code"><div class="cl l1"><span class="kw">let</span> <span class="nm">age</span> = <span class="v">25</span>;</div><div class="cl l2"><span class="nm">age</span> = <span class="v">26</span>;</div></div>
+<div class="abs lab labN">ном</div>
+<div class="abs lab labQ">қимат</div>
+<div class="abs ex"><div class="exh">Дар ҳаёт</div>
+ <div class="card" style="--d:43.84s"><div class="ic" style="background:#FF9500"><svg width="38" height="38" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z"/></svg></div><div class="ct">Холи бозӣ</div><div class="val old" style="--c:50.62s">120</div><div class="val new" style="--c:50.62s">150</div></div>
+ <div class="card" style="--d:45.78s"><div class="ic" style="background:#155EEF"><svg width="38" height="38" viewBox="0 0 24 24" fill="#fff"><path d="M3 5h18a1 1 0 0 1 1 1v3H2V6a1 1 0 0 1 1-1zm-1 6h20v7a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-7zm3 4v2h5v-2H5z"/></svg></div><div class="ct">Бақияи ҳисоб</div><div class="val old" style="--c:50.87s">500 с.</div><div class="val new" style="--c:50.87s">350 с.</div></div>
+ <div class="card" style="--d:47.85s"><div class="ic" style="background:#E1306C"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><div class="ct">Пайравон</div><div class="val old" style="--c:51.12s">1 443</div><div class="val new" style="--c:51.12s">1 500</div></div>
+</div>
+<div class="abs end"><b>Номи қуттии шумо чӣ мебуд?<br>Дар дохилаш чӣ мегузоштед?</b>
+ <div class="chip c1" style="--d:64.78s">Дар шарҳ нависед</div><br>
+ <div class="chip c2" style="--d:66.23s">Дарси оянда: шарт (if/else)</div><br>
+ <div class="chip c3" style="--d:67.95s">Обуна шавед</div>
+</div>
+<div class="abs sub" style="--s:0.00s;--len:1.14s">Тағйирёбанда.</div>
+<div class="abs sub" style="--s:1.33s;--len:3.37s">Калимаи душвор менамояд, лекин аслан хеле оддӣ аст.</div>
+<div class="abs sub" style="--s:4.88s;--len:2.05s">Ҳозир дар як дақиқа мефаҳмем.</div>
+<div class="abs sub" style="--s:7.11s;--len:2.30s">Тасаввур кунед, ки як қуттӣ доред.</div>
+<div class="abs sub" style="--s:9.60s;--len:1.82s">Қуттии оддии картонӣ.</div>
+<div class="abs sub" style="--s:11.60s;--len:4.07s">Болои он ном менависем, масалан: «age», яъне синну сол.</div>
+<div class="abs sub" style="--s:15.83s;--len:3.14s">Ва дар дохили он рақам мегузорем: бисту панҷ.</div>
+<div class="abs sub" style="--s:19.16s;--len:4.96s">Дар барномасозӣ ин чунин навишта мешавад: let age = 25.</div>
+<div class="abs sub" style="--s:24.31s;--len:3.34s">Яъне қуттии «age» қимати бисту панҷ дорад.</div>
+<div class="abs sub" style="--s:27.83s;--len:1.13s">Як сол мегузарад.</div>
+<div class="abs sub" style="--s:29.15s;--len:4.03s">Рақами кӯҳнаро нест мекунем ва ба ҷои он бисту шашро мегузорем.</div>
+<div class="abs sub" style="--s:33.37s;--len:1.16s">Қуттӣ ҳамон, ном ҳамон.</div>
+<div class="abs sub" style="--s:34.73s;--len:1.87s">Танҳо қимат иваз шуд.</div>
+<div class="abs sub" style="--s:36.79s;--len:4.23s">Барои ҳамин онро «тағйирёбанда» мегӯянд: чизе, ки тағйир меёбад.</div>
+<div class="abs sub" style="--s:41.21s;--len:2.44s">Ин дар ҳаёт ҳам ҳаст, масалан:</div>
+<div class="abs sub" style="--s:43.84s;--len:6.59s">холи бозӣ, бақияи ҳисоби бонк, шумораи пайравонатон дар Instagram.</div>
+<div class="abs sub" style="--s:50.62s;--len:1.74s">Ҳамааш тағйирёбанда аст.</div>
+<div class="abs sub" style="--s:52.49s;--len:1.58s">Ном — болои қуттӣ.</div>
+<div class="abs sub" style="--s:54.08s;--len:1.87s">Қимат — дар дохили қуттӣ.</div>
+<div class="abs sub" style="--s:55.96s;--len:1.68s">Ва қимат тағйир меёбад.</div>
+<div class="abs sub" style="--s:57.81s;--len:3.52s">Ва акнун савол: агар қуттии худатонро медоштед,</div>
+<div class="abs sub" style="--s:61.21s;--len:3.38s">номаш чӣ мешуд ва дар дохилаш чӣ мегузоштед?</div>
+<div class="abs sub" style="--s:64.78s;--len:1.25s">Дар шарҳ нависед.</div>
+<div class="abs sub" style="--s:66.23s;--len:1.54s">Дарси оянда — шарт, «if/else».</div>
+<div class="abs sub" style="--s:67.95s;--len:1.79s">Обуна шавед!</div>
+<div class="abs prog"></div>
+</body></html>

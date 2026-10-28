@@ -1,0 +1,186 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>@property --n { syntax: '<integer>'; inherits: false; initial-value: 0; }
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --muted:#857D70; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+* { box-sizing:border-box; margin:0; }
+body { width:540px; height:960px; overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.05), transparent 45%); }
+.hdr { position:absolute; left:26px; right:26px; top:62px; display:flex; justify-content:space-between; font:600 11px "JetBrains Mono",monospace; letter-spacing:1.5px; color:var(--ink); padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+
+/* базовые появления */
+.sc { position:absolute; inset:0; opacity:0; animation:scin .35s cubic-bezier(.2,.9,.3,1.2) var(--a) forwards, scout .3s ease-in var(--b) forwards; }
+.ttl .sc { position:static; }
+@keyframes scin { from { opacity:0; translate:0 14px; } to { opacity:1; translate:0 0; } }
+@keyframes scout { from { opacity:1; } to { opacity:0; translate:0 -10px; } }
+.pop { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both; }
+@keyframes popin { from { scale:0; opacity:0; } 40% { opacity:1; } to { scale:1; opacity:1; } }
+@keyframes fadeo { to { opacity:0; scale:.8; } }
+
+/* заголовки */
+.ttl { position:absolute; left:20px; right:20px; top:92px; text-align:center; inset:auto 20px auto 20px; }
+.ttl.sc { inset:92px 20px auto 20px; }
+.t1 { font-size:31px; font-weight:800; letter-spacing:-.5px; }
+.t2 { font-size:28px; font-weight:800; color:var(--rust); margin-top:2px; }
+
+/* сцена 1 */
+.word { position:absolute; left:46px; right:46px; top:240px; height:160px; border-radius:20px; background:var(--card); border:2px solid var(--line); box-shadow:0 14px 30px rgba(31,63,68,.10); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.word .wl { font-size:40px; font-weight:900; letter-spacing:1px; }
+.word .ws { font:600 20px "JetBrains Mono",monospace; color:var(--rust); margin-top:4px; }
+.shake { animation:shake .5s ease-in-out var(--a) 3; }
+@keyframes shake { 0%,100% { rotate:0deg; } 25% { rotate:-2deg; translate:-4px 0; } 75% { rotate:2deg; translate:4px 0; } }
+.stamp { position:absolute; padding:6px 18px; border:4px solid var(--rust); border-radius:10px; color:var(--rust); font-size:40px; font-weight:900; letter-spacing:2px; background:rgba(244,239,230,.75); rotate:-9deg; opacity:0; animation:stampin .35s cubic-bezier(.2,1.4,.4,1) var(--a) forwards; z-index:6; }
+.stamp.big { font-size:34px; }
+@keyframes stampin { from { opacity:0; scale:2.4; } to { opacity:1; scale:1; } }
+.watch { position:absolute; left:210px; top:470px; width:120px; text-align:center; }
+.watch b { position:absolute; left:0; right:0; top:52px; font-size:22px; font-weight:900; }
+.ring { stroke-dasharray:201; stroke-dashoffset:0; transform:rotate(-90deg); transform-origin:60px 64px; animation:ring var(--d) linear var(--a) both; }
+@keyframes ring { from { stroke-dashoffset:0; } to { stroke-dashoffset:201; } }
+
+/* сцена 2: коробка */
+.stage { position:absolute; left:140px; top:205px; width:260px; height:270px; }
+.stage.pop.glow { animation:popin .55s cubic-bezier(.3,1.6,.5,1) var(--a) both, glow 1s ease-in-out var(--g) 3; }
+@keyframes glow { 50% { filter:drop-shadow(0 0 22px rgba(180,71,46,.55)); } }
+.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:#C8975A; }
+.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(#E2B070,#C8975A); z-index:3; display:flex; align-items:center; justify-content:center; }
+.flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; }
+.flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
+.tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
+.tag.pop.hlt { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, hlbox .5s ease-in-out var(--h) 2; }
+@keyframes hlbox { 50% { background:var(--gold); scale:1.12; } }
+.num { position:absolute; left:75px; top:62px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; opacity:0; animation:dropin .6s cubic-bezier(.4,1.5,.6,1) var(--a) forwards; }
+.num.flyout { animation:dropin .6s cubic-bezier(.4,1.5,.6,1) var(--a) forwards, flyout .45s ease-in var(--o) forwards; }
+@keyframes dropin { from { top:-60px; opacity:0; } 30% { opacity:1; } to { top:62px; opacity:1; } }
+@keyframes flyout { from { top:62px; opacity:1; } to { top:-50px; opacity:0; rotate:-25deg; } }
+.x { position:absolute; inset:10px 18px; opacity:0; animation:xin .2s ease-out var(--a) forwards; }
+.x::before, .x::after { content:""; position:absolute; left:-6px; right:-6px; top:50%; height:8px; margin-top:-4px; background:var(--rust); border-radius:4px; rotate:35deg; }
+.x::after { rotate:-35deg; }
+@keyframes xin { from { opacity:0; scale:1.8; } to { opacity:1; scale:1; } }
+.year { position:absolute; left:386px; top:215px; background:var(--rust); color:#fff; font-weight:800; font-size:22px; padding:8px 16px; border-radius:30px; rotate:6deg; }
+.year.pop.popout { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, fadeo .3s ease-in var(--b) forwards; }
+.term { position:absolute; inset:auto; left:40px; right:40px; top:490px; height:120px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.term.sc { inset:490px 40px auto 40px; }
+.bar { height:28px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:10px; height:10px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.bar span { margin-left:auto; margin-right:auto; font:500 12px "JetBrains Mono",monospace; color:#9fb0b2; }
+.code { padding:12px 20px; font:600 27px "JetBrains Mono",monospace; color:#EDE6D8; line-height:1.4; }
+.type { white-space:pre; width:max-content; clip-path:inset(0 100% 0 0); animation:typ var(--d) steps(var(--n), end) var(--a) forwards; }
+@keyframes typ { to { clip-path:inset(0 0 0 0); } }
+.kw { color:#E0675A; } .nm { color:#E9B949; } .v { color:#7FD49A; }
+.hl { border-radius:4px; animation:hltext .5s ease-in-out var(--h) 2; }
+@keyframes hltext { 50% { background:rgba(233,185,73,.35); } }
+.checks { position:absolute; inset:auto; left:70px; right:70px; top:492px; }
+.checks.sc { inset:492px 70px auto 70px; }
+.row { display:flex; align-items:center; gap:12px; background:var(--card); border:2px solid var(--line); border-radius:12px; padding:7px 14px; margin-bottom:7px; font-size:20px; font-weight:700; }
+.row b { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; background:var(--rust); }
+.row b.ok { background:var(--green); }
+.row.hot { border-color:var(--rust); color:var(--rust); }
+.row .k { color:var(--rust); }
+
+/* сцена 3 */
+.life .card { position:relative; display:flex; align-items:center; gap:16px; margin:0 40px 14px; height:92px; padding:0 20px; background:var(--card); border:2px solid var(--line); border-radius:18px; box-shadow:0 10px 24px rgba(31,63,68,.08); }
+.life .card:first-child { margin-top:225px; }
+.ic { width:56px; height:56px; border-radius:16px; color:#fff; font-size:28px; display:flex; align-items:center; justify-content:center; }
+.ct { font-size:22px; font-weight:700; }
+.cnt { margin-left:auto; font-size:34px; font-weight:900; color:var(--rust); --n:var(--from); counter-reset:c var(--n); animation:count .9s ease-out var(--a) both; }
+.cnt::after { content:counter(c); }
+@keyframes count { from { --n:var(--from); } to { --n:var(--to); } }
+
+/* сцена 4 */
+.sum { padding:0 40px; }
+.sumh { margin-top:228px; margin-bottom:14px; font-size:28px; font-weight:900; text-align:center; }
+.sum .row { font-size:22px; padding:12px 16px; margin-bottom:12px; }
+
+/* сцена 5 */
+.chat { inset:auto; left:40px; right:40px; top:212px; height:400px; border-radius:16px; background:var(--card); border:2px solid var(--line); box-shadow:0 14px 30px rgba(31,63,68,.10); overflow:hidden; }
+.chat.sc { inset:212px 40px auto 40px; }
+.chat .bar { background:#EFE7DA; } .chat .bar span { color:var(--muted); }
+.msg { display:flex; align-items:flex-start; gap:10px; margin:14px 16px 0; transform-origin:left center; }
+.msg span { background:var(--ink); color:var(--paper); padding:10px 14px; border-radius:4px 16px 16px 16px; font-size:19px; font-weight:700; }
+.msg .av { width:34px; height:34px; flex:none; border-radius:50%; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.msg.me { justify-content:flex-end; transform-origin:right center; }
+.msg.me span { background:var(--gold); color:var(--ink); border-radius:16px 4px 16px 16px; font-family:"JetBrains Mono",monospace; }
+.input { position:absolute; left:14px; right:14px; bottom:14px; height:48px; border:2px solid var(--line); border-radius:24px; display:flex; align-items:center; padding:0 18px; font:600 20px "JetBrains Mono",monospace; background:#fff; }
+.input.sc { inset:auto 14px 14px 14px; position:absolute; }
+.caret { width:2px; height:24px; background:var(--ink); margin-left:2px; animation:blink .8s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.lesson { position:absolute; left:110px; right:110px; top:225px; height:180px; border-radius:20px; background:var(--ink); color:var(--paper); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; box-shadow:0 18px 36px rgba(31,63,68,.25); rotate:-2deg; }
+.lesson small { font:700 13px "JetBrains Mono",monospace; letter-spacing:3px; color:var(--gold); }
+.lesson b { font-size:44px; font-weight:900; }
+.lesson code { font:700 24px "JetBrains Mono",monospace; color:#7FD49A; }
+.sub { position:absolute; left:145px; right:145px; top:440px; height:62px; border-radius:31px; background:var(--rust); color:#fff; font-size:23px; font-weight:800; display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow:0 10px 22px rgba(180,71,46,.35); }
+.sub .b1, .sub .b2 { position:absolute; }
+.sub .b2 { opacity:0; animation:in2 .25s ease-out var(--a) forwards; }
+.sub .b1 { animation:fadeo .15s linear var(--a) forwards; }
+@keyframes in2 { from { opacity:0; translate:0 18px; } to { opacity:1; translate:0 0; } }
+.press { position:absolute; width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.6); scale:0; animation:ripple .5s ease-out var(--a) forwards; }
+@keyframes ripple { from { scale:0; opacity:1; } to { scale:14; opacity:0; } }
+.cursor { position:absolute; left:440px; top:660px; opacity:0; z-index:8; animation:cmove .6s cubic-bezier(.3,.8,.3,1) var(--a) forwards, cclick .2s ease-in-out var(--c) 1; }
+@keyframes cmove { from { left:440px; top:660px; opacity:0; } 20% { opacity:1; } to { left:300px; top:470px; opacity:1; } }
+@keyframes cclick { 50% { scale:.8; } }
+
+/* субтитры по словам */
+.cap { position:absolute; left:0; right:0; margin:auto; width:max-content; max-width:480px; top:648px; background:var(--ink); color:var(--paper); font-size:25px; font-weight:800; padding:6px 14px; border-radius:6px; opacity:0; z-index:9; animation:capin .14s ease-out var(--a) forwards, capout .08s linear var(--b) forwards; }
+@keyframes capin { from { opacity:0; scale:.85; } to { opacity:1; scale:1; } }
+@keyframes capout { to { opacity:0; } }
+.prog { position:absolute; left:0; bottom:0; height:5px; width:100%; background:var(--rust); transform-origin:left; animation:progr var(--d) linear 0s both; z-index:10; }
+@keyframes progr { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+</style></head><body>
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>01 / БАРНОМАСОЗӢ</span></div>
+<div class="ttl sc" style="--a:0.00s;--b:7.06s"><div class="t1">Тағйирёбанда</div><div class="t2 sc" style="--a:4.10s;--b:75.22s">хеле оддӣ аст</div></div><div class="ttl sc" style="--a:7.11s;--b:15.78s"><div class="t1">Тасаввур кунед</div><div class="t2 sc" style="--a:7.36s;--b:75.22s">як қуттӣ</div></div><div class="ttl sc" style="--a:15.83s;--b:27.78s"><div class="t1">Дар дохили қуттӣ</div><div class="t2 sc" style="--a:16.08s;--b:75.22s">қимат</div></div><div class="ttl sc" style="--a:27.83s;--b:33.32s"><div class="t1">Як сол мегузарад</div><div class="t2 sc" style="--a:28.08s;--b:75.22s">қимат иваз мешавад</div></div><div class="ttl sc" style="--a:33.37s;--b:41.16s"><div class="t1">Қуттӣ ҳамон</div><div class="t2 sc" style="--a:33.62s;--b:75.22s">танҳо қимат нав</div></div><div class="ttl sc" style="--a:41.21s;--b:52.44s"><div class="t1">Дар ҳаёт</div><div class="t2 sc" style="--a:41.46s;--b:75.22s">ҳамааш тағйирёбанда</div></div><div class="ttl sc" style="--a:52.49s;--b:57.76s"><div class="t1">Хулоса</div><div class="t2 sc" style="--a:52.74s;--b:75.22s">ном ва қимат</div></div><div class="ttl sc" style="--a:57.81s;--b:66.18s"><div class="t1">Савол</div><div class="t2 sc" style="--a:58.06s;--b:75.22s">барои шумо</div></div><div class="ttl sc" style="--a:66.23s;--b:75.17s"><div class="t1">Дарси оянда</div><div class="t2 sc" style="--a:66.48s;--b:75.22s">шарт: if / else</div></div>
+
+<!-- сцена 1 -->
+<div class="sc" style="--a:0.10s;--b:7.01s">
+  <div class="word shake" style="--a:1.33s"><div class="wl">ТАҒЙИРЁБАНДА</div><div class="ws">variable</div></div>
+  <div class="stamp" style="--a:4.10s;left:300px;top:360px">ОДДӢ!</div>
+  <div class="watch pop" style="--a:4.88s"><svg viewBox="0 0 120 120" width="120" height="120"><circle cx="60" cy="64" r="44" fill="#FFFDF8" stroke="#1F3F44" stroke-width="8"/><rect x="52" y="6" width="16" height="12" rx="3" fill="#1F3F44"/><circle class="ring" cx="60" cy="64" r="32" fill="none" stroke="#B4472E" stroke-width="12" style="--a:4.88s;--d:2.23s"/></svg><b>1:00</b></div>
+</div>
+
+<!-- сцена 2: коробка -->
+<div class="sc" style="--a:7.11s;--b:41.11s">
+  <div class="stage pop glow" style="--a:7.11s;--g:38.01s">
+    <div class="flap l"></div><div class="flap r"></div><div class="back"></div>
+    <div class="num drop flyout" style="--a:18.22s;--o:30.57s">25<i class="x xs" style="--a:30.17s"></i></div>
+    <div class="num drop" style="--a:31.70s">26</div>
+    <div class="front"><div class="tag pop hlt" style="--a:14.19s;--h:24.69s">age</div></div>
+  </div>
+  <div class="year pop popout" style="--a:27.83s;--b:29.75s">+1 сол</div>
+  <div class="term sc" style="--a:19.16s;--b:33.37s"><div class="bar"><i></i><i></i><i></i><span>code.js</span></div>
+    <div class="code"><div class="type" style="--a:22.24s;--d:1.00s;--n:13"><span class="kw">let</span> <span class="nm hl" style="--h:24.69s">age</span> = <span class="v hl" style="--h:25.57s">25</span>;</div><div class="type" style="--a:31.80s;--d:0.69s;--n:9"><span class="nm">age</span> = <span class="v">26</span>;</div></div></div>
+  <div class="checks sc" style="--a:33.42s;--b:75.22s">
+    <div class="row pop" style="--a:33.47s"><b class="ok">✓</b> Қуттӣ ҳамон</div>
+    <div class="row pop" style="--a:33.96s"><b class="ok">✓</b> Ном ҳамон</div>
+    <div class="row pop hot" style="--a:34.73s"><b>↻</b> Қимат: 25 → 26</div>
+  </div>
+  <div class="stamp big" style="--a:38.01s;left:70px;top:330px">ТАҒЙИР МЕЁБАД</div>
+</div>
+
+<!-- сцена 3: жизнь -->
+<div class="sc life" style="--a:41.21s;--b:52.39s">
+  <div class="card pop" style="--a:43.84s"><div class="ic" style="background:#E9B949">★</div><div class="ct">Холи бозӣ</div><div class="cnt" style="--a:50.62s;--from:120;--to:150"></div></div>
+  <div class="card pop" style="--a:44.72s"><div class="ic" style="background:#1F3F44">◼</div><div class="ct">Бақияи ҳисоб</div><div class="cnt" style="--a:50.87s;--from:500;--to:350"></div></div>
+  <div class="card pop" style="--a:46.98s"><div class="ic" style="background:#B4472E">♥</div><div class="ct">Пайравон</div><div class="cnt" style="--a:51.12s;--from:1443;--to:1500"></div></div>
+</div>
+
+<!-- сцена 4: итог -->
+<div class="sc sum" style="--a:52.49s;--b:57.71s">
+  <div class="sumh">Тағйирёбанда =</div>
+  <div class="row pop" style="--a:52.54s"><b class="ok">✓</b> <span class="k">Ном</span> — болои қуттӣ</div>
+  <div class="row pop" style="--a:54.13s"><b class="ok">✓</b> <span class="k">Қимат</span> — дохили қуттӣ</div>
+  <div class="row pop hot" style="--a:56.01s"><b>↻</b> Қимат тағйир меёбад</div>
+</div>
+
+<!-- сцена 5: чат и подписка -->
+<div class="sc chat" style="--a:57.81s;--b:66.13s">
+  <div class="bar"><i></i><i></i><i></i><span>шарҳҳо</span></div>
+  <div class="msg pop" style="--a:57.91s"><b class="av">Ш</b><span>Номи қуттии шумо чӣ мебуд?</span></div>
+  <div class="msg pop" style="--a:61.37s"><b class="av">Ш</b><span>Дар дохилаш чӣ мегузоштед?</span></div>
+  <div class="msg me pop" style="--a:65.88s"><span>price = 100 😄</span></div>
+  <div class="input sc" style="--a:64.68s;--b:65.88s"><div class="type" style="--a:64.93s;--d:0.85s;--n:11">price = 100</div><i class="caret"></i></div>
+</div>
+<div class="sc next" style="--a:66.23s;--b:75.22s">
+  <div class="lesson pop" style="--a:66.28s"><small>ДАРСИ 2</small><b>Шарт</b><code>if / else</code></div>
+  <div class="sub pop" style="--a:67.95s"><span class="b1" style="--a:68.70s">Обуна шавед</span><span class="b2" style="--a:68.70s">Обуна шудед ✓</span><i class="press" style="--a:68.70s"></i></div>
+  <svg class="cursor" style="--a:68.05s;--c:68.70s" width="34" height="40" viewBox="0 0 24 28"><path d="M2 2l19 11-8.5 1.8L17 24l-3.6 1.6-4.4-9.2L2 22z" fill="#1F3F44" stroke="#fff" stroke-width="1.5"/></svg>
+</div>
+
+<div class="cap" style="--a:0.00s;--b:1.27s">Тағйирёбанда.</div><div class="cap" style="--a:1.33s;--b:2.93s">Калимаи душвор менамояд,</div><div class="cap" style="--a:2.93s;--b:4.10s">лекин аслан хеле</div><div class="cap" style="--a:4.10s;--b:4.83s">оддӣ аст.</div><div class="cap" style="--a:4.88s;--b:5.58s">Ҳозир дар як</div><div class="cap" style="--a:5.58s;--b:7.06s">дақиқа мефаҳмем.</div><div class="cap" style="--a:7.11s;--b:7.95s">Тасаввур кунед,</div><div class="cap" style="--a:7.95s;--b:8.95s">ки як қуттӣ</div><div class="cap" style="--a:8.95s;--b:9.54s">доред.</div><div class="cap" style="--a:9.60s;--b:11.55s">Қуттии оддии картонӣ.</div><div class="cap" style="--a:11.60s;--b:12.64s">Болои он ном</div><div class="cap" style="--a:12.64s;--b:13.46s">менависем,</div><div class="cap" style="--a:13.46s;--b:14.19s">масалан:</div><div class="cap" style="--a:14.19s;--b:14.51s">age,</div><div class="cap" style="--a:14.51s;--b:15.80s">яъне синну сол.</div><div class="cap" style="--a:15.83s;--b:16.74s">Ва дар дохили</div><div class="cap" style="--a:16.74s;--b:18.22s">он рақам мегузорем:</div><div class="cap" style="--a:18.22s;--b:19.10s">бисту панҷ.</div><div class="cap" style="--a:19.16s;--b:20.44s">Дар барномасозӣ ин</div><div class="cap" style="--a:20.44s;--b:22.24s">чунин навишта мешавад:</div><div class="cap" style="--a:22.24s;--b:23.45s">let age =</div><div class="cap" style="--a:23.45s;--b:24.25s">25.</div><div class="cap" style="--a:24.31s;--b:25.57s">Яъне қуттии age</div><div class="cap" style="--a:25.57s;--b:27.15s">қимати бисту панҷ</div><div class="cap" style="--a:27.15s;--b:27.78s">дорад.</div><div class="cap" style="--a:27.83s;--b:29.09s">Як сол мегузарад.</div><div class="cap" style="--a:29.15s;--b:30.34s">Рақами кӯҳнаро нест</div><div class="cap" style="--a:30.34s;--b:31.19s">мекунем ва ба</div><div class="cap" style="--a:31.19s;--b:32.04s">ҷои он бисту</div><div class="cap" style="--a:32.04s;--b:33.31s">шашро мегузорем.</div><div class="cap" style="--a:33.37s;--b:33.96s">Қуттӣ ҳамон,</div><div class="cap" style="--a:33.96s;--b:34.66s">ном ҳамон.</div><div class="cap" style="--a:34.73s;--b:36.26s">Танҳо қимат иваз</div><div class="cap" style="--a:36.26s;--b:36.73s">шуд.</div><div class="cap" style="--a:36.79s;--b:38.01s">Барои ҳамин онро</div><div class="cap" style="--a:38.01s;--b:39.41s">тағйирёбанда мегӯянд:</div><div class="cap" style="--a:39.41s;--b:39.85s">чизе,</div><div class="cap" style="--a:39.85s;--b:41.15s">ки тағйир меёбад.</div><div class="cap" style="--a:41.21s;--b:42.13s">Ин дар ҳаёт</div><div class="cap" style="--a:42.13s;--b:42.59s">ҳам ҳаст,</div><div class="cap" style="--a:42.59s;--b:43.78s">масалан:</div><div class="cap" style="--a:43.84s;--b:44.72s">холи бозӣ,</div><div class="cap" style="--a:44.72s;--b:46.98s">бақияи ҳисоби бонк,</div><div class="cap" style="--a:46.98s;--b:49.33s">шумораи пайравонатон</div><div class="cap" style="--a:49.33s;--b:50.56s">дар Instagram.</div><div class="cap" style="--a:50.62s;--b:52.09s">Ҳамааш тағйирёбанда</div><div class="cap" style="--a:52.09s;--b:52.49s">аст.</div><div class="cap" style="--a:52.49s;--b:52.87s">Ном —</div><div class="cap" style="--a:52.87s;--b:54.08s">болои қуттӣ.</div><div class="cap" style="--a:54.08s;--b:54.55s">Қимат —</div><div class="cap" style="--a:54.55s;--b:55.96s">дар дохили қуттӣ.</div><div class="cap" style="--a:55.96s;--b:57.03s">Ва қимат тағйир</div><div class="cap" style="--a:57.03s;--b:57.77s">меёбад.</div><div class="cap" style="--a:57.81s;--b:58.69s">Ва акнун савол:</div><div class="cap" style="--a:58.69s;--b:60.58s">агар қуттии худатонро</div><div class="cap" style="--a:60.58s;--b:61.37s">медоштед,</div><div class="cap" style="--a:61.37s;--b:62.25s">номаш чӣ мешуд</div><div class="cap" style="--a:62.25s;--b:63.59s">ва дар дохилаш</div><div class="cap" style="--a:63.59s;--b:64.72s">чӣ мегузоштед?</div><div class="cap" style="--a:64.78s;--b:66.16s">Дар шарҳ нависед.</div><div class="cap" style="--a:66.23s;--b:67.12s">Дарси оянда —</div><div class="cap" style="--a:67.12s;--b:67.42s">шарт,</div><div class="cap" style="--a:67.35s;--b:67.90s">if/else.</div><div class="cap" style="--a:67.95s;--b:69.87s">Обуна шавед!</div>
+<div class="prog" style="--d:70.22s"></div>
+</body></html>
