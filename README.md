@@ -69,4 +69,4 @@ TELEGRAM_CHAT_ID=...
 
 ## Telegram SMM-бот
 
-Дар папкаи `telegram-bot/` боти Telegram ҷойгир аст: обуначӣ дар шарҳҳои канал калимаи рамзӣ менависад ва бот ссилкаро ба директ мефиристад. Он аз сайт мустақил аст ва алоҳида (масалан, дар Railway бо Root Directory `telegram-bot`) ба кор андохта мешавад. Дастур — `telegram-bot/README.md`.
+Дар папкаи `telegram-bot/` боти Telegram ҷойгир аст: обуначӣ дар шарҳҳои канал калимаи рамзӣ менависад ва бот ссилкаро ба директ мефиристад. Он аз сайт мустақил аст ва ҳамчун Cloudflare Worker тавассути `.github/workflows/deploy-telegram-bot.yml` нашр мешавад. Дастур — `telegram-bot/README.md`.

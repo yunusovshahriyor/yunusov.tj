@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Боти Telegram — лоиҳаи алоҳидаи Cloudflare Worker.
+    "telegram-bot/**",
   ]),
 ]);
 

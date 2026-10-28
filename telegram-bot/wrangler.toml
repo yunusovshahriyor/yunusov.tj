@@ -1,0 +1,24 @@
+name = "smm-bot"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+TELEGRAM_CHANNEL = "@about_shahriyor_yunusov"
+BOT_USERNAME = "shahriyor_SMM_bot"
+# Гурӯҳи шарҳҳои канал (холӣ — худкор аз канал муайян мешавад)
+DISCUSSION_CHAT_ID = "-1001716828355"
+# "false" — ссилка бе санҷиши обуна дода мешавад
+REQUIRE_SUBSCRIPTION = "true"
+# ID-ҳои Telegram бо вергул, ки фармони /stats-ро истифода мебаранд
+ADMIN_IDS = ""
+# Сония байни ҷавобҳо ба як корбар бо як калима дар шарҳҳо
+COMMENT_COOLDOWN = "600"
+
+# Базаи D1: кӣ маводро гирифт ва кай бот ба шарҳ ҷавоб дод (ҷадвалҳо дар schema.sql)
+[[d1_databases]]
+binding = "DB"
+database_name = "smm-bot"
+database_id = "f8bbdd0b-a2d0-4deb-b841-ad8279d25dbc"
+
+# Сирр (дар GitHub Secrets ва тавассути workflow ба Cloudflare меравад):
+#   TELEGRAM_BOT_TOKEN

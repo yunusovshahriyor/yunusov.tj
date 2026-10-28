@@ -1,0 +1,17 @@
+{
+  "name": "smm-bot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "typecheck": "tsc -p .",
+    "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261023.1",
+    "typescript": "^5.5.3",
+    "wrangler": "^4.0.0"
+  }
+}

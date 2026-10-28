@@ -1,0 +1,75 @@
+name: Deploy Telegram SMM bot (Cloudflare Worker)
+
+on:
+  push:
+    branches:
+      - claude/clever-cori-8bobpv
+    paths:
+      - "telegram-bot/**"
+      - ".github/workflows/deploy-telegram-bot.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: telegram-bot
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
+    defaults:
+      run:
+        working-directory: telegram-bot
+    steps:
+      # То вақте ки сирриҳо илова нашудаанд, workflow бе хато мегузарад ва танҳо огоҳ мекунад.
+      - name: Check secrets
+        working-directory: .
+        env:
+          S_CF_TOKEN: ${{ (secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN) != '' }}
+          S_CF_ACCOUNT: ${{ (secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CF_ACCOUNT_ID) != '' }}
+          S_TG: ${{ secrets.TELEGRAM_BOT_TOKEN != '' }}
+        run: |
+          echo "CLOUDFLARE_API_TOKEN set: $S_CF_TOKEN"
+          echo "CLOUDFLARE_ACCOUNT_ID set: $S_CF_ACCOUNT"
+          echo "TELEGRAM_BOT_TOKEN set: $S_TG"
+          [ "$S_CF_TOKEN" = "true" ] || echo "::warning::CLOUDFLARE_API_TOKEN is empty - skipping bot deploy"
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+
+      - if: env.CF_TOKEN != ''
+        name: Deploy Worker
+        id: wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CF_ACCOUNT_ID }}
+          workingDirectory: telegram-bot
+          command: deploy
+          secrets: |
+            TELEGRAM_BOT_TOKEN
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+      # Сирри webhook аз токен ҳосил мешавад (ҳамон ҳисоб дар src/telegram.ts).
+      - if: env.CF_TOKEN != ''
+        name: Set Telegram webhook
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          URL: ${{ steps.wrangler.outputs.deployment-url }}
+        run: |
+          SECRET=$(printf 'webhook:%s' "$TELEGRAM_BOT_TOKEN" | sha256sum | cut -c1-64)
+          curl -fsS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook" \
+            --data-urlencode "url=${URL%/}/webhook" \
+            --data-urlencode "secret_token=${SECRET}" \
+            --data-urlencode 'allowed_updates=["message","callback_query"]' \
+            --data-urlencode "drop_pending_updates=true"
+          echo
+          curl -fsS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getWebhookInfo"
