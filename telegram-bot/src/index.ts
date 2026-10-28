@@ -26,6 +26,7 @@ export interface Env {
   BOT_USERNAME: string;
   DISCUSSION_CHAT_ID?: string;
   REQUIRE_SUBSCRIPTION?: string;
+  DIRECT_LINK?: string;
   ADMIN_IDS?: string;
   COMMENT_COOLDOWN?: string;
   COMMENT_REPLY?: string;
@@ -137,13 +138,14 @@ async function onComment(env: Env, tg: Telegram, message: Message): Promise<void
   if (!(await cooldownAllows(env, message.from.id, keyword.id))) return;
 
   const t = text(env);
+  // DIRECT_LINK=true: тугма худи ссилкаро мекушояд (бе бот ва санҷиши обуна).
+  const buttonUrl =
+    env.DIRECT_LINK === "true"
+      ? keyword.url
+      : `https://t.me/${env.BOT_USERNAME}?start=${keyword.id}`;
   await tg.sendMessage(message.chat.id, t.commentReply, {
     reply_parameters: { message_id: message.message_id, allow_sending_without_reply: true },
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: t.commentButton, url: `https://t.me/${env.BOT_USERNAME}?start=${keyword.id}` }],
-      ],
-    },
+    reply_markup: { inline_keyboard: [[{ text: t.commentButton, url: buttonUrl }]] },
   });
   console.log(`Keyword ${keyword.id} from ${message.from.id} in comments`);
 }
@@ -165,7 +167,10 @@ async function onPrivate(env: Env, tg: Telegram, message: Message): Promise<void
     const perKeyword = await env.DB.prepare(
       "SELECT keyword_id, COUNT(*) AS n FROM deliveries GROUP BY keyword_id ORDER BY n DESC",
     ).all<{ keyword_id: string; n: number }>();
-    const lines = [`Корбарон: ${total?.n ?? 0}`];
+    const replies = await env.DB.prepare(
+      "SELECT COUNT(*) AS n FROM comment_replies",
+    ).first<{ n: number }>();
+    const lines = [`Ҷавобҳо дар шарҳҳо: ${replies?.n ?? 0}`, `Дар директ гирифтанд: ${total?.n ?? 0}`];
     for (const row of perKeyword.results) lines.push(`• ${row.keyword_id}: ${row.n}`);
     await tg.sendMessage(user.id, lines.join("\n"));
     return;
