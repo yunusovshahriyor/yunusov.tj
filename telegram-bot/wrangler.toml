@@ -7,7 +7,10 @@ TELEGRAM_CHANNEL = "@about_shahriyor_yunusov"
 BOT_USERNAME = "shahriyor_SMM_bot"
 # Гурӯҳи шарҳҳои канал (холӣ — худкор аз канал муайян мешавад)
 DISCUSSION_CHAT_ID = "-1001716828355"
-# "false" — ссилка бе санҷиши обуна дода мешавад
+# "true" — тугмаи «Гирифтан» дар шарҳ худи ссилкаро мекушояд (бе бот);
+# "false" — тугма ботро мекушояд ва бот ссилкаро ба директ мефиристад
+DIRECT_LINK = "true"
+# "false" — ссилка бе санҷиши обуна дода мешавад (танҳо барои DIRECT_LINK = "false")
 REQUIRE_SUBSCRIPTION = "true"
 # ID-ҳои Telegram бо вергул, ки фармони /stats-ро истифода мебаранд
 ADMIN_IDS = ""

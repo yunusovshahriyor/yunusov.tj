@@ -49,3 +49,11 @@ test("keywords.json is valid", async () => {
   const { default: raw } = await import("../keywords.json", { with: { type: "json" } });
   assert.ok(parseKeywords(raw).length > 0);
 });
+
+test("current keywords.json words", async () => {
+  const { default: raw } = await import("../keywords.json", { with: { type: "json" } });
+  const current = new KeywordMatcher(parseKeywords(raw));
+  for (const text of ["Шпаргалка", "давр", "ШАРТ!", "Тағйирёбанда 🙏", "тағйиребанда"]) {
+    assert.equal(current.match(text)?.url, "https://t.me/about_shahriyor_yunusov/124", text);
+  }
+});
