@@ -95,7 +95,8 @@ for b in range(nb):
         if i0 + L > N: continue
         if k % 2 == 0: mus[i0:i0 + L] += .25 * sweep(90, 45, .25) * env(L, .002, .06)
         sh = rng.standard_normal(int(.05 * SR)); sh = sh - lp(sh, .3)
-        mus[i0 + int(beat / 2 * SR):i0 + int(beat / 2 * SR) + len(sh)] += .03 * sh * env(len(sh), .002, .012)
+        j0 = i0 + int(beat / 2 * SR)
+        if j0 + len(sh) <= N: mus[j0:j0 + len(sh)] += .03 * sh * env(len(sh), .002, .012)
 mus = lp(mus, .35)
 fade = np.ones(N); fl = int(1.5 * SR); end_i = int(END * SR)
 fade[end_i - fl:end_i] = np.linspace(1, 0, fl); fade[end_i:] = 0

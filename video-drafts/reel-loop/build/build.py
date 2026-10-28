@@ -1,6 +1,6 @@
 # Ролик «Давр: loop». Тайминги — из timeline.json (точная разметка ElevenLabs v4).
 import json, re
-TL = json.load(open('timeline.json')); SN = TL['sentences']
+TL = json.load(open('timeline2.json')); SN = TL['sentences']; PRE = TL['pre']
 TOTAL = TL['total']; END = round(TOTAL + 1.2, 2)
 T = [s['start'] for s in SN]; E = [s['end'] for s in SN]
 V = set("аеёиоуэюяӣӯ")
@@ -16,7 +16,7 @@ def syl(w):
     n = sum(c in V for c in w.lower())
     return max(1, n if n else len(re.sub(r'\W', '', w)) // 3 or 1)
 capw = []
-for s in SN:
+for s in PRE + SN:
     if s['text'] == s['tts']:
         capw += [(w['w'], w['t0'], w['t1'], s['i']) for w in s['words']]
     else:
@@ -38,9 +38,10 @@ for k, ch in enumerate(chunks):
     a = ch[0][1]; nxt = chunks[k + 1][0][1] if k + 1 < len(chunks) else END
     b = nxt if (k + 1 < len(chunks) and chunks[k + 1][0][3] == ch[0][3]) else min(nxt, ch[-1][2] + 0.25)
     words = []
-    for w, *_ in ch:
+    for w, wa, *_ in ch:
         w2 = w.replace("«", "").replace("»", "").replace("<", "&lt;")
-        words.append(f'<span class="kwd">{w2}</span>' if norm(w2) in KW or w2.lower().strip('.,:!?') in KW else w2)
+        kw = " kwd" if norm(w2) in KW or norm(w2).split("-")[0] in KW or w2.lower().strip('.,:!?') in KW else ""
+        words.append(f'<span class="w{kw}" style="--w:{wa:.2f}s">{w2}</span>')
     cap_html.append(f'<div class="cap" style="--a:{a:.2f}s;--b:{max(b, a + 0.3):.2f}s">{" ".join(words)}</div>')
 
 SFX = []
@@ -52,14 +53,15 @@ def typing(at, txt):
     return len(txt) / TYPE_CPS
 
 t_hazor = WT(17, "ҳазор")
-PUNCH = [0.02, WT(6, "давр"), WT(12, "қуттӣ"), t_hazor, WT(20, "санҷиш")]
+PUNCH = [0.02, T[0], WT(6, "давр"), WT(12, "қуттӣ"), t_hazor, WT(20, "санҷиш")]
 SHAKE = [0.05, WT(16, "хотима")]
-FLASH = [0.0, WT(20, "санҷиш")]
+FLASH = [0.0, T[0], WT(20, "санҷиш")]
 cam_anim = ", ".join([f"punch .4s ease-out {f(x)} 1" for x in PUNCH] + [f"shakecam .35s ease-in-out {f(x)} 1" for x in SHAKE])
 flash_html = "".join(f'<div class="flash" style="animation:flash .35s ease-out {f(x)} forwards"></div>' for x in FLASH)
 
 titles = [
-    (0, T[4], "Давр", "такрор бе хастагӣ", T[1]),
+    (0, T[0], "1000 бор", "дар як сония?", None),
+    (T[0], T[4], "Давр", "такрор бе хастагӣ", T[1]),
     (T[4], T[7], "Дар варзиш", "10 бор нишаст-хез", None),
     (T[7], T[12], "for", "се қисм", None),
     (T[12], T[14], "i = қуттӣ", "аз дарси 1", None),
@@ -67,7 +69,8 @@ titles = [
     (T[17], T[18], "Ҳазор бор?", "камтар аз 1 сония", None),
     (T[18], T[19], "Дар ҳаёт", "даврҳо ҳама ҷо", None),
     (T[19], T[20], "Хулоса", "оғоз + шарт + қадам", None),
-    (T[20], T[22], "Санҷиш", "чанд бор «Салом»?", None),
+    (T[20], T[21], "Санҷиш", "чанд бор «Салом»?", None),
+    (T[21], T[22], "Шпаргалка бепул", "дар шарҳ: ДАВР", None),
     (T[22], END + 5, "Дарси оянда", "рӯйхат: array", None),
 ]
 title_html = []
@@ -76,17 +79,30 @@ for k, (a, b, l1, l2, l2at) in enumerate(titles):
     if k: sfx("whoosh", a - 0.08, 0.45)
 
 H = []
+# 0: хук — сначала результат
+p0, p1 = PRE
+t_haz = [w for w in p0['words'] if norm(w['w']).startswith('ҳазор')][0]['t0']
+H.append(f'''<div class="sc" style="{S(0, T[0] - 0.12)}">
+ <div class="chip pop" style="--a:{f(0.1)};position:absolute;left:0;right:0;margin:auto;width:max-content;top:200px;background:#1F3F44;color:#F4EFE6;font:700 14px 'JetBrains Mono',monospace;letter-spacing:3px;padding:6px 12px;border-radius:6px">ДАРСИ 3 / 12</div>
+ <div class="bigcnt anim" style="--a:{f(t_haz)};--d:1.1s;--from:0;--to:1000;top:250px;color:#B4472E;font-size:130px"></div>
+ <div class="cntlab sc" style="{S(t_haz)};top:410px;color:#1F3F44">бор · дар 1 сония ⚡</div>
+ <div class="bubble ink-bg pop" style="--a:{f(p1['start'])};left:175px;top:490px;font-size:30px">Чӣ тавр? 🤔</div>
+</div>''')
+sfx("hit", 0.0, 0.9)
+for k in range(16): sfx("tick", t_haz + k * 0.07, 0.4)
+sfx("ding", t_haz + 1.15, 0.8); sfx("pop", p1['start'], 0.8)
+
 # A: хук — сто раз «Салом», устал / не устал
 t_sad = WT(1, "сад"); t_tired = T[2]; t_pc = T[3]
-H.append(f'''<div class="sc" style="{S(0, T[4] - 0.1)}">
- <div class="slam" style="--a:0s;top:205px;font-size:92px">ДАВР?</div>
- <div class="emo pop spin" style="--a:{f(0.3)};left:410px;top:420px;font-size:56px">🔁</div>
+H.append(f'''<div class="sc" style="{S(T[0] - 0.1, T[4] - 0.1)}">
+ <div class="slam" style="--a:{f(T[0] - 0.05)};top:205px;font-size:92px">ДАВР?</div>
+ <div class="emo pop spin" style="--a:{f(T[0] + 0.3)};left:410px;top:420px;font-size:56px">🔁</div>
  <div class="bigcnt anim" style="--a:{f(t_sad)};--d:{T[2] - t_sad:.2f}s;--from:0;--to:100;top:330px;font-size:96px"></div>
  <div class="cntlab sc" style="{S(t_sad)};top:450px">× «Салом»</div>
  <div class="bubble no-bg pop" style="--a:{f(t_tired)};left:50px;top:520px">😮‍💨 Шумо — хаста</div>
  <div class="bubble ok-bg pop" style="--a:{f(t_pc)};left:280px;top:575px">⚡ Компютер — не</div>
 </div>''')
-sfx("hit", 0.0, 1.0); sfx("pop", 0.3, 0.6)
+sfx("hit", T[0] - 0.05, 1.0); sfx("pop", T[0] + 0.3, 0.6)
 for k in range(14): sfx("tick", t_sad + k * (T[2] - t_sad) / 14, 0.35)
 sfx("buzz", t_tired, 0.4); sfx("chime", t_pc, 0.8)
 
@@ -184,15 +200,25 @@ for x in (T[19], t_og, t_sh, t_qd): sfx("pop", x, 0.7)
 # I: квиз
 t_sj = WT(20, "санҷиш"); t_q = WT(20, "чанд")
 QL = 'for (let i = 0; i < 3; i++) {'
-H.append(f'''<div class="sc" style="{S(T[20] - 0.05, T[22] - 0.1)}">
+H.append(f'''<div class="sc" style="{S(T[20] - 0.05, T[21] - 0.1)}">
  <div class="banner" style="--a:{f(t_sj)}">САНҶИШ</div>
  <div class="term2 pop" style="--a:{f(WT(20, "сифр"))};top:320px;left:28px;right:180px"><div class="bar"><i></i><i></i><i></i></div><div class="code2" style="font-size:15px"><div class="ln"><span class="kw">for</span> (<span class="kw">let</span> <span class="nm">i</span> = <span class="v">0</span>; <span class="nm">i</span> &lt; <span class="v">3</span>; <span class="nm">i</span>++) {{</div><div class="ln">  console.log(<span class="str">"Салом"</span>);</div><div class="ln">}}</div></div></div>
- <div class="quizq pop" style="--a:{f(t_q)};left:350px;top:320px;transform:scale(.85)"><svg width="170" height="170"><circle cx="85" cy="85" r="70" fill="#FFFDF8" stroke="#E3D9C7" stroke-width="10"/><circle class="cring" cx="85" cy="85" r="70" fill="none" stroke="#B4472E" stroke-width="10" style="--a:{f(t_q)};--d:{E[21] - t_q:.2f}s"/></svg><b>?</b></div>
- <div class="bubble ink-bg pop" style="--a:{f(T[21])};left:110px;top:540px;font-size:20px">💬 Ҷавоб дар шарҳ <span class="dots"><i></i><i></i><i></i></span></div>
+ <div class="quizq pop" style="--a:{f(t_q)};left:350px;top:320px;transform:scale(.85)"><svg width="170" height="170"><circle cx="85" cy="85" r="70" fill="#FFFDF8" stroke="#E3D9C7" stroke-width="10"/><circle class="cring" cx="85" cy="85" r="70" fill="none" stroke="#B4472E" stroke-width="10" style="--a:{f(t_q)};--d:{T[21] - t_q:.2f}s"/></svg><b>?</b></div>
 </div>''')
 sfx("riser", t_sj - 1.0, 0.6); sfx("hit", t_sj, 1.0); sfx("pop", WT(20, "сифр"), 0.6)
-for k in range(int((E[21] - t_q) / 0.5)): sfx("tick", t_q + k * 0.5, 0.8)
+for k in range(int((T[21] - t_q) / 0.5)): sfx("tick", t_q + k * 0.5, 0.8)
+
+# K: CTA — кодовое слово «ДАВР» → шпаргалка в Direct
+t_kw = WT(21, "давр"); t_pdf = WT(21, "шпаргалкаи"); t_dm = WT(21, "direct")
+H.append(f'''<div class="sc" style="{S(T[21] - 0.05, T[22] - 0.1)}">
+ <div class="pwd" style="top:215px;left:60px;right:60px;height:74px;animation:scin .35s ease-out {f(T[21])} both"><span class="emo" style="position:static;font-size:28px">💬</span><div class="type" style="--a:{f(t_kw)};--d:.4s;--n:4;font-size:34px;color:#B4472E">ДАВР</div><span class="res2 ink-bg pop" style="--a:{f(t_kw + 0.5)};right:14px">➤</span></div>
+ <svg style="position:absolute;left:0;top:0" width="540" height="640"><path class="draw" pathLength="100" d="M270 300 L270 345" stroke="#1F3F44" stroke-width="6" style="--len:101;--a:{f(t_pdf - 0.3)};--d:.25s"/></svg>
+ <div class="pop" style="--a:{f(t_pdf)};position:absolute;left:45px;right:45px;top:350px;height:236px;border-radius:16px;overflow:hidden;box-shadow:0 16px 34px rgba(31,63,68,.3);background:url(banner-h.jpg) center/cover"></div>
+ <div class="bubble ok-bg pop" style="--a:{f(t_dm)};left:300px;top:560px;font-size:22px">📩 ба Direct</div>
+</div>''')
 sfx("pop", T[21], 0.7)
+for k in range(4): sfx("key", t_kw + k * 0.1)
+sfx("click", t_kw + 0.5, 0.8); sfx("whoosh", t_pdf - 0.1, 0.6); sfx("chime", t_pdf, 0.8); sfx("pop", t_dm, 0.8)
 
 # J: следующий урок и подписка
 t_sub = WT(23, "обуна"); T_CLICK = t_sub + 0.8
@@ -205,7 +231,7 @@ sfx("whoosh", T[22], 0.8); sfx("pop", t_sub, 0.8); sfx("click", T_CLICK, 1.2); s
 
 css = open('style.css').read() + "@keyframes c2 { to { --n:2; } } @keyframes c3 { to { --n:3; } } @keyframes c10 { from { --n:3; } to { --n:10; } }"
 body = f'''<div class="cam" style="animation:{cam_anim}">
-<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>03 / БАРНОМАСОЗӢ</span></div>
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>ДАРСИ 03 / 12</span></div>
 {"".join(title_html)}
 {"".join(H)}
 {"".join(cap_html)}
