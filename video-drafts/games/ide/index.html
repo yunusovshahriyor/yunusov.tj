@@ -62,15 +62,33 @@ select{font:700 14px Inter,system-ui,sans-serif;padding:9px 10px;border-radius:1
 .sol{margin-top:8px}
 .sol pre{background:var(--code);color:#EDE6D8;border-radius:10px;padding:10px 12px;font:500 13px/1.55 ui-monospace,"DejaVu Sans Mono",monospace;overflow:auto;margin-top:6px;white-space:pre}
 .foot{text-align:center;font-size:12.5px;color:var(--muted);line-height:1.6;padding-top:4px}.foot b{color:var(--rust)}
+@media(max-width:600px){.hide-m{display:none}}
+.sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.sym::-webkit-scrollbar{display:none}
+.sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:40px;border-radius:10px;background:var(--code);color:#EDE6D8;font:700 17px ui-monospace,"DejaVu Sans Mono",monospace;display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sym button:active{background:var(--rust)}
+.sym button.tabk{font-size:13px;color:#9fb0b2}
+.progress{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 12px}
+.progress .pt{font-weight:800;font-size:14px}
+.pbar{flex:1;min-width:120px;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s}
+.cert{all:unset;cursor:pointer;font-weight:800;font-size:13px;padding:7px 12px;border-radius:10px;background:var(--gold);color:var(--ink)}
+.cert[disabled]{opacity:.45;pointer-events:none;background:var(--line)}
+dialog{border:none;border-radius:20px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+dialog::backdrop{background:rgba(31,63,68,.55)}
+dialog img{width:100%;border-radius:12px;border:2px solid var(--line);margin:10px 0}
+dialog p{font-size:14px;line-height:1.5;font-weight:600}
 canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 </style>
 </head>
 <body>
 <canvas id="fx"></canvas>
+<dialog id="dlg"><h2 style="font-size:22px;font-weight:900">🎓 Шаҳодатномаи шумо</h2><p id="dp"></p><img id="dimg" alt="Шаҳодатнома"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn run" id="dl" download="shahodatnoma.png" style="text-decoration:none">⬇ Зеркашӣ</a><button class="btn ghost" id="dclose">Пӯшидан</button></div></dialog>
 <div class="app">
   <div class="hdr"><span>ШАҲРИЁР ЮНУСОВ · IDE</span><a href="https://www.instagram.com/shahriyor_yunusov/" target="_blank" rel="noopener">@shahriyor_yunusov</a></div>
   <h1>Мини-<span>IDE</span> · кодро дар амал санҷед</h1>
   <div class="tabs" id="tabs"></div>
+  <div class="progress"><span class="pt" id="pt"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓 Шаҳодатнома</button></div>
   <div class="main">
     <div class="col">
       <div class="card" id="task" style="display:none"></div>
@@ -78,12 +96,14 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
         <div class="bar"><i></i><i></i><i></i><span id="fname">main.js</span></div>
         <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
       </div>
+      <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
       <div class="tools">
         <button class="btn run" id="run">▶ Иҷро</button>
         <button class="btn chk" id="check" style="display:none">✅ Санҷиш</button>
         <select id="ex" aria-label="Мисолҳо"></select>
         <button class="btn ghost" id="reset">↺ Аз нав</button>
         <button class="btn ghost" id="copy">📋 Нусха</button>
+        <button class="btn ghost" id="share">🔗 Пайванд</button>
       </div>
     </div>
     <div class="col">
@@ -170,6 +190,68 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
           check: function (c, R) { return R.run(c).then(function (r) { return [
             ["Давр истифода шуд", /\b(for|while)\b/.test(c)],
             ["Дар натиҷа 10, 9, … 1 аст", !r.err && r.out.join(",") === "10,9,8,7,6,5,4,3,2,1"]]; }); } }
+      ] },
+    { id: "l4", tab: "4 · Рӯйхат", tag: "ДАРСИ 4",
+      theory: "Рӯйхат (array) — тағйирёбанда бо <b>якчанд қимат</b>: <code>let fruits = [\"себ\", \"нок\", \"ангур\"];</code>. Ҳар қимат шумора дорад, ва шумора аз <b>0</b> оғоз мешавад: <code>fruits[0]</code> — себ. <code>fruits.length</code> — чанд қимат; <code>fruits.push(x)</code> — ба охир илова мекунад.",
+      tasks: [
+        { title: "Вазифаи 1: рӯйхати хӯрок", text: "Рӯйхати 3 хӯроки дӯстдоштаатонро бо номи <code>foods</code> созед ва қимати <b>дуюм</b>-ро нишон диҳед (бо шумора!).",
+          starter: "// let foods = [ ... ];\n", hint: 'let foods = ["палав", "самбуса", "ошташ"]; console.log(foods[1]); — шумораи дуюм 1 аст!',
+          solution: 'let foods = ["палав", "самбуса", "ошташ"];\nconsole.log(foods[1]);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { var m = /\bfoods\s*=\s*\[([^\]]*)\]/.exec(c), it = m ? m[1].split(",").map(function (x) { return x.trim().replace(/^["'`]|["'`]$/g, ""); }) : [];
+            return [["Рӯйхати foods созед (3 қимат)", it.length === 3 && it.every(function (x) { return x; })], ["Қимати дуюм бо foods[1] гирифта шуд", /foods\s*\[\s*1\s*\]/.test(c)], ["Дар натиҷа қимати дуюм аст", !r.err && it.length === 3 && r.out[r.out.length - 1] === it[1]]]; }); } },
+        { title: "Вазифаи 2: илова кардан", text: "Бо <code>push</code> «<b>анор</b>»-ро ба рӯйхат илова кунед ва шумораи қиматҳоро (<code>length</code>) нишон диҳед. Бояд <b>4</b> шавад.",
+          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// push ва length\n', hint: 'fruits.push("анор"); console.log(fruits.length);',
+          solution: 'let fruits = ["себ", "нок", "ангур"];\nfruits.push("анор");\nconsole.log(fruits.length);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["push истифода шуд", /fruits\.push\(/.test(c)], ["Шумораи қиматҳо 4 аст", !r.err && r.out[r.out.length - 1] === "4"]]; }); } },
+        { title: "Вазифаи 3: рӯйхат ва давр", text: "Бо давр ҳар як қимати рӯйхатро як-як нависед: себ, нок, ангур. Ёдовар: <code>i &lt; fruits.length</code>.",
+          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// давр нависед\n', hint: "for (let i = 0; i < fruits.length; i++) { console.log(fruits[i]); }",
+          solution: 'let fruits = ["себ", "нок", "ангур"];\nfor (let i = 0; i < fruits.length; i++) {\n  console.log(fruits[i]);\n}\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Давр истифода шуд", /\b(for|while)\b/.test(c)], ["Дар натиҷа: себ, нок, ангур", !r.err && r.out.join(",") === "себ,нок,ангур"]]; }); } }
+      ] },
+    { id: "l5", tab: "5 · Функсия", tag: "ДАРСИ 5",
+      theory: "Функсия — «рецепти» барнома: як маротиба менависем, бисёр бор истифода мебарем. <code>function double(x) { return x * 2; }</code> — қабул мекунад <code>x</code> ва <code>return</code> ҷавоб бармегардонад. Даъват: <code>double(5)</code> → 10.",
+      tasks: [
+        { title: "Вазифаи 1: ду баробар", text: "Функсияи <code>double(x)</code> нависед, ки рақамро <b>ду баробар</b> кунад ва баргардонад (<code>return</code>).",
+          starter: "function double(x) {\n  // return ...\n}\n", hint: "return x * 2;", solution: "function double(x) {\n  return x * 2;\n}\n",
+          check: function (c, R) { return R.run(c + "\nconsole.log(double(4), double(0), double(-3));").then(function (r) { return [["double(4) → 8, double(0) → 0, double(-3) → -6", !r.err && r.out[r.out.length - 1] === "8 0 -6"], ["return истифода шуд", /\breturn\b/.test(c)]]; }); } },
+        { title: "Вазифаи 2: калон аст?", text: "Функсияи <code>isAdult(age)</code> нависед: агар <code>age &gt;= 18</code> бошад — <code>true</code>, вагарна — <code>false</code> баргардонад.",
+          starter: "function isAdult(age) {\n  // ...\n}\n", hint: "return age >= 18;", solution: "function isAdult(age) {\n  return age >= 18;\n}\n",
+          check: function (c, R) { return R.run(c + "\nconsole.log(isAdult(20), isAdult(18), isAdult(17));").then(function (r) { return [["isAdult(20) → true", !r.err && r.out[r.out.length - 1].split(" ")[0] === "true"], ["isAdult(18) → true, isAdult(17) → false", !r.err && r.out[r.out.length - 1] === "true true false"]]; }); } },
+        { title: "Вазифаи 3: салом", text: "Функсияи <code>greet(name)</code> нависед: <b>«Салом, &lt;ном&gt;!»</b> баргардонад. Масалан <code>greet(\"Нигина\")</code> → <code>Салом, Нигина!</code>",
+          starter: "function greet(name) {\n  // ...\n}\n", hint: 'return "Салом, " + name + "!";', solution: 'function greet(name) {\n  return "Салом, " + name + "!";\n}\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(greet("Нигина")); console.log(greet("Фарҳод"));').then(function (r) { return [["greet(\"Нигина\") → Салом, Нигина!", !r.err && r.out[0] === "Салом, Нигина!"], ["greet(\"Фарҳод\") → Салом, Фарҳод!", !r.err && r.out[1] === "Салом, Фарҳод!"]]; }); } }
+      ] },
+    { id: "l6", tab: "6 · Объект", tag: "ДАРСИ 6",
+      theory: "Объект — «корти» чизе бо якчанд хусусият: <code>let person = { name: \"Нигина\", age: 20 };</code>. Хусусиятро бо нуқта мегиранд: <code>person.name</code>, иваз мекунанд: <code>person.age = 21</code>.",
+      tasks: [
+        { title: "Вазифаи 1: корт", text: "Объекти <code>person</code> созед: <code>name</code> — «<b>Нигина</b>», <code>age</code> — <b>20</b>.",
+          starter: "let person = {\n  \n};\n", hint: 'let person = { name: "Нигина", age: 20 };', solution: 'let person = {\n  name: "Нигина",\n  age: 20\n};\n',
+          check: function (c, R) { return R.run(c + "\nconsole.log(typeof person, person.name, person.age);").then(function (r) { return [["person объект аст", !r.err && /^object /.test(r.out[r.out.length - 1] || "")], ["name = Нигина ва age = 20", !r.err && r.out[r.out.length - 1] === "object Нигина 20"]]; }); } },
+        { title: "Вазифаи 2: иваз кардан", text: "Бо <code>person.age = ...</code> синну солро <b>1 зиёд</b> кунед (бояд 21 шавад) ва нишон диҳед.",
+          starter: 'let person = { name: "Нигина", age: 20 };\n\n// синну солро 1 зиёд кунед ва нишон диҳед\n', hint: "person.age = person.age + 1; console.log(person.age);",
+          solution: 'let person = { name: "Нигина", age: 20 };\nperson.age = person.age + 1;\nconsole.log(person.age);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Синну сол иваз шуд (person.age = …)", /person\.age\s*=/.test(c)], ["Дар натиҷа 21 аст", !r.err && r.out[r.out.length - 1] === "21"]]; }); } },
+        { title: "Вазифаи 3: хусусияти нав", text: "Ба объект хусусияти <code>city</code>-ро бо қимати «<b>Душанбе</b>» илова кунед ва онро нишон диҳед.",
+          starter: 'let person = { name: "Нигина", age: 20 };\n\n// city илова кунед\n', hint: 'person.city = "Душанбе"; console.log(person.city);',
+          solution: 'let person = { name: "Нигина", age: 20 };\nperson.city = "Душанбе";\nconsole.log(person.city);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["city дар код ҳаст", /\bcity\b/.test(c)], ["Дар натиҷа «Душанбе» аст", !r.err && r.out[r.out.length - 1] === "Душанбе"]]; }); } }
+      ] },
+    { id: "l7", tab: "7 · Хатогиро ёб", tag: "ДАРСИ 7",
+      theory: "Дебаг — ёфтан ва ислоҳи хато. Хатогӣ — муқаррарӣ аст! <b>Қадамҳо:</b> 1) хатои сурхро бихонед, 2) сатри нишондодашударо бубинед, 3) ишораи 💡-ро истифода баред. Дар ин ҷо коди хатодор ҳаст — ислоҳ кунед!",
+      tasks: [
+        { title: "Хатои 1: қавси гумшуда", text: "Барнома хато медиҳад. Чӣ гум шудааст? Ислоҳ кунед, то «<b>Гарм аст</b>» нишон дода шавад.",
+          starter: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n', hint: "Дар охир қавси } намерасад — онро илова кунед.",
+          solution: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n}\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «Гарм аст»", !r.err && r.out.join("|") === "Гарм аст"]]; }); } },
+        { title: "Хатои 2: давре, ки хотима намеёбад", text: "Давр бояд 1, 2, 3-ро нависад, вале «овезон» мешавад (♾️). Ислоҳ кунед.",
+          starter: "for (let i = 1; i <= 3; ) {\n  console.log(i);\n}\n", hint: "Қадам (i++) фаромӯш шудааст.", solution: "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Барнома қатъ мешавад (бе ♾️)", !r.timeout], ["Натиҷа: 1, 2, 3", !r.timeout && !r.err && r.out.join(",") === "1,2,3"]]; }); } },
+        { title: "Хатои 3: const-ро иваз кардан", text: "Барнома бояд ҷамъи 1 то 5-ро нависад (<b>15</b>), вале хато медиҳад. Ислоҳ кунед.",
+          starter: "const total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n", hint: "const-ро иваз кардан мумкин нест. Ба ҷои он let нависед.", solution: "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: 15", !r.err && r.out[r.out.length - 1] === "15"]]; }); } },
+        { title: "Хатои 4: шумораи нодуруст", text: "Барнома бояд «<b>тухм</b>»-ро нишон диҳад, вале <code>undefined</code> менависад. Шумора аз 0 оғоз мешавад! Ислоҳ кунед.",
+          starter: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[3]);\n', hint: "«тухм» сеюм аст, шумораи он 2 аст.", solution: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[2]);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «тухм»", !r.err && r.out.join("|") === "тухм"]]; }); } }
       ] }
   ];
 
@@ -270,7 +352,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
     ta.value = ls(key()) != null ? ls(key()) : (t ? t.starter : 'console.log("Салом, ҷаҳон!");\n');
     $("out").innerHTML = '<span class="i">Натиҷа ин ҷо пайдо мешавад.</span>';
-    drawTabs(); drawSide(); paint();
+    drawTabs(); drawSide(); paint(); drawProgress(); setHash();
   }
 
   /* ---------- иҷро ---------- */
@@ -296,7 +378,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     t.check(ta.value, R).then(function (rs) {
       var all = rs.every(function (r) { return r[1]; });
       $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + r[0] + "</div>"; }).join("");
-      if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); }
+      if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); drawProgress(); }
       else $("winbox").innerHTML = "";
       $("check").disabled = false;
     });
@@ -308,8 +390,72 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   function confetti() { var c = ["#B4472E", "#E9B949", "#3E7C59", "#1F3F44"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
   function tick() { cx.clearRect(0, 0, cv.width, cv.height); parts = parts.filter(function (p) { return p.y < cv.height + 20; }); parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); }); if (parts.length) requestAnimationFrame(tick); else { on = false; cx.clearRect(0, 0, cv.width, cv.height); } }
 
+
+  /* ---------- пешравӣ ва шаҳодатнома ---------- */
+  function totals() { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
+  function drawProgress() {
+    var t = totals(); $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = Math.round(100 * t[0] / t[1]) + "%";
+    $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
+    $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома (баъди ҳама вазифаҳо)" : "🎓 Шаҳодатнома гиред!";
+  }
+  function makeCert(name) {
+    var cv2 = document.createElement("canvas"); cv2.width = 1600; cv2.height = 1130; var x = cv2.getContext("2d");
+    x.fillStyle = "#F4EFE6"; x.fillRect(0, 0, 1600, 1130);
+    x.strokeStyle = "#B4472E"; x.lineWidth = 10; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#1F3F44"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
+    x.textAlign = "center"; var F = "Inter, 'DejaVu Sans', Arial, sans-serif";
+    x.fillStyle = "#B4472E"; x.font = "700 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
+    x.fillStyle = "#1F3F44"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
+    x.font = "600 38px " + F; x.fillStyle = "#5C616B"; x.fillText("Ин шаҳодатнома ба", 800, 450);
+    x.fillStyle = "#B4472E"; x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillText(nm, 800, 580);
+    x.fillStyle = "#1F3F44"; x.fillRect(420, 615, 760, 4);
+    x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
+    x.font = "800 36px " + F; x.fillStyle = "#3E7C59"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
+    x.fillStyle = "#857D70"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
+    x.fillStyle = "#1F3F44"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
+    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = "#E9B949"; x.fill(); x.fillStyle = "#1F3F44"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
+    return cv2.toDataURL("image/png");
+  }
+  $("cert").onclick = function () {
+    var nm = ls("name") || ""; var v = prompt("Номи худро нависед (барои шаҳодатнома):", nm); if (v === null) return; v = v.trim(); ls("name", v);
+    var url = makeCert(v); $("dimg").src = url; $("dl").href = url;
+    $("dp").innerHTML = "Офарин! 🎉 Шаҳодатномаро зеркашӣ кунед ва ба <b>сторис</b> гузоред: <b>@shahriyor_yunusov</b>-ро қайд кунед!"; $("dlg").showModal(); confetti();
+  };
+  $("dclose").onclick = function () { $("dlg").close(); };
+
+  /* ---------- пайвандҳо ба дарс ва нусхаи код ---------- */
+  function setHash() {
+    var L = lesson(), h = L.free ? "#free" : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
+    try { history.replaceState(null, "", h); } catch (e) {}
+  }
+  function b64u(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64u(b) { b = b.replace(/-/g, "+").replace(/_/g, "/"); while (b.length % 4) b += "="; return decodeURIComponent(escape(atob(b))); }
+  function parseHash() {
+    var h = location.hash || "", m;
+    if ((m = /^#code=(.+)$/.exec(h))) { try { cur = "free"; ls("code-free", unb64u(m[1])); return; } catch (e) {} }
+    if ((m = /^#dars-(\d+)(?:-(\d+))?$/.exec(h))) { var id = "l" + m[1]; if (LESSONS.some(function (L) { return L.id === id; })) { cur = id; ti = Math.max(0, (+m[2] || 1) - 1); var L = lesson(); if (ti >= L.tasks.length) ti = 0; ls("tab", cur); return; } }
+    if (h === "#free") cur = "free";
+  }
+  $("share").onclick = function () {
+    var b = this, u = location.href.split("#")[0] + "#code=" + b64u(ta.value);
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓ Пайванд нусха шуд"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗 Пайванд"; }, 1800); });
+  };
+
+  /* ---------- аломатҳои зуд (барои телефон) ---------- */
+  var SYMS = [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]];
+  SYMS.forEach(function (sy) {
+    var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
+    b.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
+      ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
+      var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
+      ta.focus(); ta.selectionStart = ta.selectionEnd = pos; paint(); saveCode();
+    });
+    $("sym").appendChild(b);
+  });
+
   window.__ide = { lessons: LESSONS, setCode: function (c) { ta.value = c; paint(); }, goto: function (id, i) { cur = id; ti = i || 0; load(); } };
-  load();
+  parseHash(); load();
+  addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
 })();
 </script>
 </body>
