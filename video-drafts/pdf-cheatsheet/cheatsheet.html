@@ -73,20 +73,23 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 .flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; } .flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
 .tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
 .num { position:absolute; left:75px; top:44px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; }
+
+.arr{display:flex;gap:6px;margin-top:8px}.arr div{flex:1;background:#C8975A;border-radius:10px;text-align:center;padding:16px 2px 8px;position:relative;font-weight:800;font-size:14px;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15)}.arr i{position:absolute;top:-9px;left:50%;translate:-50% 0;background:#E9B949;color:#1F3F44;font:900 13px ui-monospace,monospace;min-width:24px;border-radius:7px;font-style:normal;text-align:center}
 </style></head><body><section class="page cover-page"><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <div class="cover">
-  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–3</span>
+  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–4</span>
   <h1>Барномасозӣ<br>аз сифр</h1>
-  <h2>3 ғишти ҳар барнома</h2>
+  <h2>4 ғишти ҳар барнома</h2>
   <div class="box"><div class="flap l"></div><div class="flap r"></div><div class="back"></div><div class="num">25</div><div class="front"><div class="tag">age</div></div></div>
   <div class="toc">
     <div><b>01</b> Тағйирёбанда <code>let</code></div>
     <div><b>02</b> Шарт <code>if / else</code></div>
     <div><b>03</b> Давр <code>for</code></div>
+    <div><b>04</b> Рӯйхат <code>array [ ]</code></div>
     <div><b>+</b> Лоиҳаи хурд, вазифаҳо ва ҷавобҳо</div>
   </div>
   <p class="muted">Сабт кунед ва ҳар вақт ба он баргардед 📌</p>
-</div><div class="foot"><span>@shahriyor_yunusov</span><span>1 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+</div><div class="foot"><span>@shahriyor_yunusov</span><span>1 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҚАДАМИ 0</span>
 <h1 class="h">Кодро ҳозир санҷед</h1>
 <p>Барои оғоз ҳеҷ барнома насб кардан лозим нест. Браузер кифоя аст.</p>
@@ -101,8 +104,9 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
   <div><span class="emo">📦</span><b>Тағйирёбанда</b><small>маълумотро нигоҳ медорад</small></div>
   <div><span class="emo">🔀</span><b>Шарт</b><small>қарор қабул мекунад</small></div>
   <div><span class="emo">🔁</span><b>Давр</b><small>такрор мекунад</small></div>
+  <div><span class="emo">📋</span><b>Рӯйхат</b><small>якчанд қимат</small></div>
 </div>
-<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин се ғишт сохта шудааст.</p><div class="foot"><span>@shahriyor_yunusov</span><span>2 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин ғиштҳо сохта шудааст.</p><div class="foot"><span>@shahriyor_yunusov</span><span>2 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 1</span>
 <h1 class="h">📦 Тағйирёбанда</h1>
 <div class="def"><b>Тағйирёбанда</b> — қуттӣ бо <b>ном</b>, ки дар дохилаш <b>қимат</b> нигоҳ медорад. Қиматро иваз кардан мумкин аст.</div>
@@ -121,7 +125,7 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 <table>
 <tr><td class="ok">✓ <code>age</code>, <code>userName</code>, <code>score2</code></td><td class="no">✗ <code>2score</code>, <code>user name</code>, <code>let</code></td></tr>
 </table>
-<p class="muted">Номро бо ҳарф оғоз кунед, бе фосила. Калимаҳои дуюмро бо ҳарфи калон: <code>userName</code>.</p><div class="foot"><span>@shahriyor_yunusov</span><span>3 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<p class="muted">Номро бо ҳарф оғоз кунед, бе фосила. Калимаҳои дуюмро бо ҳарфи калон: <code>userName</code>.</p><div class="foot"><span>@shahriyor_yunusov</span><span>3 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 2</span>
 <h1 class="h">🔀 Шарт: if / else</h1>
 <div class="def"><b>if</b> — агар, <b>else</b> — вагарна. Шарт = <b>савол</b> + <b>ду роҳ</b>.</div>
@@ -145,7 +149,7 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 } <span class="kw">else</span> {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Боз кӯшиш кунед&quot;</span>);
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>Хуб</pre></div></div>
-<div class="tip warn"><b>⚠️ Хатои маъмул:</b> <code>=</code> қимат мегузорад, <code>===</code> муқоиса мекунад. Дар шарт ҳамеша <code>===</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>4 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> <code>=</code> қимат мегузорад, <code>===</code> муқоиса мекунад. Дар шарт ҳамеша <code>===</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>4 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 3</span>
 <h1 class="h">🔁 Давр: for</h1>
 <div class="def">Давр — такрори як амал чанд маротиба. <b>Давр = оғоз + шарт + қадам.</b></div>
@@ -161,7 +165,28 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>7 × 1 = 7
 7 × 2 = 14
 7 × 3 = 21</pre></div></div>
-<div class="tip warn"><b>⚠️ Давре, ки хотима намеёбад:</b> агар қадамро (<code>i++</code>) фаромӯш кунед, шарт ҳамеша дуруст мемонад ва барнома «овезон» мешавад.</div><div class="foot"><span>@shahriyor_yunusov</span><span>5 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<div class="tip warn"><b>⚠️ Давре, ки хотима намеёбад:</b> агар қадамро (<code>i++</code>) фаромӯш кунед, шарт ҳамеша дуруст мемонад ва барнома «овезон» мешавад.</div><div class="foot"><span>@shahriyor_yunusov</span><span>5 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<span class="chip">ДАРСИ 4</span>
+<h1 class="h">📋 Рӯйхат (array)</h1>
+<div class="def">Рӯйхат — <b>тағйирёбанда</b>, ки <b>якчанд қимат</b> нигоҳ медорад. Ҳар қимат <b>шумора</b> дорад, ва шумора аз <b>0</b> оғоз мешавад!</div>
+<div class="arr"><div><i>0</i>нон</div><div><i>1</i>шир</div><div><i>2</i>тухм</div><div><i>3</i>себ</div><div><i>4</i>нок</div></div>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>royhat.js</span></div><pre><span class="kw">let</span> <span class="id">shopping</span> = [<span class="st">&quot;нон&quot;</span>, <span class="st">&quot;шир&quot;</span>, <span class="st">&quot;тухм&quot;</span>, <span class="st">&quot;себ&quot;</span>, <span class="st">&quot;нок&quot;</span>];
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="id">shopping</span>[<span class="nu">2</span>]);      <span class="cm">// тухм</span>
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="id">shopping</span>.<span class="id">length</span>);  <span class="cm">// 5</span>
+<span class="id">shopping</span>.<span class="id">push</span>(<span class="st">&quot;анор&quot;</span>);         <span class="cm">// ба охир илова</span></pre></div>
+<h3>Амалҳои асосӣ</h3>
+<table class="ops">
+<tr><td><code>list[0]</code> қимати аввал</td><td><code>list.length</code> чанд қимат</td></tr>
+<tr><td><code>list.push(x)</code> илова</td><td><code>list[list.length - 1]</code> охирин</td></tr>
+</table>
+<h3>Рӯйхат + давр</h3>
+<div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">shopping</span>.<span class="id">length</span>; <span class="id">i</span>++) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span> + <span class="st">&quot;. &quot;</span> + <span class="id">shopping</span>[<span class="id">i</span>]);
+}</pre><div class="out"><b>▶ Натиҷа</b><pre>0. нон
+1. шир
+…
+5. анор</pre></div></div>
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> шумора аз <code>0</code> оғоз мешавад. Дар рӯйхати 3-қиматӣ охирин шумора <code>2</code> аст, ва <code>list[3]</code> → <code>undefined</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>6 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ЛОИҲАИ ХУРД</span>
 <h1 class="h">Ҳар се ғишт якҷоя</h1>
 <p>Барнома рақамҳои 1 то 6-ро месанҷад: ҷуфт ё тоқ?</p>
@@ -178,50 +203,49 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 5 — тоқ
 6 — ҷуфт</pre></div></div>
 <div class="tip"><b>💡</b> <code>i % 2</code> — бақияи тақсим ба 2. Агар бақия <code>0</code> бошад, рақам ҷуфт аст. Ва <code>i</code> — ҳамон 📦 тағйирёбанда.</div>
-<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 7)</h3>
+<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 8)</h3>
 <ol class="tasks">
 <li>Тағйирёбандаи <code>myName</code> созед ва «Салом, …!» нишон диҳед.</li>
 <li>Агар <code>temperature &gt; 30</code> — «Гарм аст», вагарна — «Хунук аст».</li>
 <li>Бо давр аз 10 то 1 баръакс ҳисоб кунед.</li>
-</ol><div class="foot"><span>@shahriyor_yunusov</span><span>6 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<li>Рӯйхати 3 хӯроки дӯстдоштаатонро созед ва қимати <b>дуюм</b>-ро нишон диҳед.</li>
+<li>Бо <code>push</code> хӯроки чорум илова кунед ва бо давр ҳамаро нишон диҳед.</li>
+</ol><div class="foot"><span>@shahriyor_yunusov</span><span>7 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҶАВОБҲО</span>
 <h1 class="h">Худро санҷед ✅</h1>
-<div class="quiz"><b>Санҷиши дарси 1:</b> <code>let age = 25; age = 26;</code> → дар қуттӣ <b class="good">26</b>. Қимати нав кӯҳнаро иваз мекунад, ҷамъ намешавад.</div>
-<div class="quiz"><b>Санҷиши дарси 2:</b> <code>age = 15</code> → <b class="good">«Ҳанӯз барвақт»</b>. 15 &lt; 18, шарт нодуруст → <code>else</code>.</div>
+<div class="quiz"><b>Санҷиши дарси 1:</b> <code>let age = 25; age = 26;</code> → <b class="good">26</b>. Қимати нав кӯҳнаро иваз мекунад.</div>
+<div class="quiz"><b>Санҷиши дарси 2:</b> <code>age = 15</code> → <b class="good">«Ҳанӯз барвақт»</b>: 15 &lt; 18, шарт нодуруст → <code>else</code>.</div>
 <div class="quiz"><b>Санҷиши дарси 3:</b> <code>for (let i = 0; i &lt; 3; i++)</code> → <b class="good">3 бор</b>: i = 0, 1, 2.</div>
+<div class="quiz"><b>Санҷиши дарси 4:</b> нон — 0, шир — 1, <b class="good">тухм — 2</b>. Шумора аз <code>0</code> оғоз мешавад.</div>
 <h3>Ҳалли вазифаҳо</h3>
 <div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="cm">// 1</span>
 <span class="kw">let</span> <span class="id">myName</span> = <span class="st">&quot;Нигина&quot;</span>;
 <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Салом, &quot;</span> + <span class="id">myName</span> + <span class="st">&quot;!&quot;</span>);
-
 <span class="cm">// 2</span>
 <span class="kw">let</span> <span class="id">temperature</span> = <span class="nu">34</span>;
-<span class="kw">if</span> (<span class="id">temperature</span> &gt; <span class="nu">30</span>) {
-  <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Гарм аст&quot;</span>);
-} <span class="kw">else</span> {
-  <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хунук аст&quot;</span>);
-}
-
+<span class="kw">if</span> (<span class="id">temperature</span> &gt; <span class="nu">30</span>) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Гарм аст&quot;</span>); }
+<span class="kw">else</span> { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хунук аст&quot;</span>); }
 <span class="cm">// 3</span>
-<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">10</span>; <span class="id">i</span> &gt;= <span class="nu">1</span>; <span class="id">i</span>--) {
-  <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span>);
-}</pre><div class="out"><b>▶ Натиҷа</b><pre>Салом, Нигина!
-Гарм аст
-10
-9
-…
-1</pre></div></div><div class="foot"><span>@shahriyor_yunusov</span><span>7 / 8</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">10</span>; <span class="id">i</span> &gt;= <span class="nu">1</span>; <span class="id">i</span>--) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span>); }
+<span class="cm">// 4</span>
+<span class="kw">let</span> <span class="id">fav</span> = [<span class="st">&quot;палав&quot;</span>, <span class="st">&quot;самбуса&quot;</span>, <span class="st">&quot;ошташ&quot;</span>];
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="id">fav</span>[<span class="nu">1</span>]);   <span class="cm">// самбуса</span>
+<span class="cm">// 5</span>
+<span class="id">fav</span>.<span class="id">push</span>(<span class="st">&quot;қурутоб&quot;</span>);
+<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">fav</span>.<span class="id">length</span>; <span class="id">i</span>++) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">fav</span>[<span class="id">i</span>]);
+}</pre></div><div class="foot"><span>@shahriyor_yunusov</span><span>8 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҚАДАМИ НАВБАТӢ</span>
 <h1 class="h">Роҳи шумо 🚀</h1>
 <div class="road">
   <div class="done"><b>01</b>Тағйирёбанда ✓</div>
   <div class="done"><b>02</b>Шарт ✓</div>
   <div class="done"><b>03</b>Давр ✓</div>
-  <div><b>04</b>Рӯйхат (array)</div>
+  <div class="done"><b>04</b>Рӯйхат ✓</div>
   <div><b>05</b>Функсия</div>
   <div><b>06</b>Объект</div>
   <div><b>07</b>Хатогӣ ва дебаг</div>
-  <div><b>08–09</b>Бозии «Рақамро ёб»</div>
+  <div><b>08–09</b>Лоиҳаи хурд</div>
   <div><b>10–12</b>Сайт, HTML/CSS/JS, AI</div>
 </div>
 <div class="tip"><b>💡 Маслиҳат:</b> ҳар рӯз 20 дақиқа. Кодро на танҳо хонед — <b>худатон нависед</b> ва иваз кунед: «агар 10-ро ба 100 иваз кунам, чӣ мешавад?»</div>
@@ -229,4 +253,4 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
   <div>📲 Дарсҳои нав дар Instagram<br><b>@shahriyor_yunusov</b></div>
   <div>💬 Савол доред? Дар шарҳ ё Direct нависед — ҷавоб медиҳам.</div>
   <div>🤝 Ин файлро ба дӯсте фиристед, ки барномасозиро мехоҳад.</div>
-</div><div class="foot"><span>@shahriyor_yunusov</span><span>8 / 8</span></div></section></body></html>
+</div><div class="foot"><span>@shahriyor_yunusov</span><span>9 / 9</span></div></section></body></html>

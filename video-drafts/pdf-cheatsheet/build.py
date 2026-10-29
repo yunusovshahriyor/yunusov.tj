@@ -1,4 +1,4 @@
-# Шпаргалка «Барномасозӣ аз сифр · Дарсҳои 1–3» → cheatsheet.html (печать в PDF через Playwright).
+# Шпаргалка «Барномасозӣ аз сифр · Дарсҳои 1–4» → cheatsheet.html (печать в PDF через Playwright).
 import html, re
 
 KW = {"let", "const", "if", "else", "for", "while", "true", "false", "typeof"}
@@ -22,21 +22,22 @@ def code(src, out=None, title=None):
 pages = []
 def page(n, body, cls=""):
     pages.append(f'<section class="page {cls}"><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>{body}'
-                 f'<div class="foot"><span>@shahriyor_yunusov</span><span>{n} / 8</span></div></section>')
+                 f'<div class="foot"><span>@shahriyor_yunusov</span><span>{n} / 9</span></div></section>')
 
 BOX = '<div class="box"><div class="flap l"></div><div class="flap r"></div><div class="back"></div><div class="num">25</div><div class="front"><div class="tag">age</div></div></div>'
 
 # 1. Обложка
 page(1, f'''
 <div class="cover">
-  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–3</span>
+  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–4</span>
   <h1>Барномасозӣ<br>аз сифр</h1>
-  <h2>3 ғишти ҳар барнома</h2>
+  <h2>4 ғишти ҳар барнома</h2>
   {BOX}
   <div class="toc">
     <div><b>01</b> Тағйирёбанда <code>let</code></div>
     <div><b>02</b> Шарт <code>if / else</code></div>
     <div><b>03</b> Давр <code>for</code></div>
+    <div><b>04</b> Рӯйхат <code>array [ ]</code></div>
     <div><b>+</b> Лоиҳаи хурд, вазифаҳо ва ҷавобҳо</div>
   </div>
   <p class="muted">Сабт кунед ва ҳар вақт ба он баргардед 📌</p>
@@ -58,8 +59,9 @@ page(2, f'''
   <div><span class="emo">📦</span><b>Тағйирёбанда</b><small>маълумотро нигоҳ медорад</small></div>
   <div><span class="emo">🔀</span><b>Шарт</b><small>қарор қабул мекунад</small></div>
   <div><span class="emo">🔁</span><b>Давр</b><small>такрор мекунад</small></div>
+  <div><span class="emo">📋</span><b>Рӯйхат</b><small>якчанд қимат</small></div>
 </div>
-<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин се ғишт сохта шудааст.</p>''')
+<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин ғиштҳо сохта шудааст.</p>''')
 
 # 3. Тағйирёбанда
 page(3, f'''
@@ -127,8 +129,29 @@ console.log(sum);""", "5050", "ҷамъи 1 то 100")}
 }""", "7 × 1 = 7\n7 × 2 = 14\n7 × 3 = 21", "ҷадвали зарб")}
 <div class="tip warn"><b>⚠️ Давре, ки хотима намеёбад:</b> агар қадамро (<code>i++</code>) фаромӯш кунед, шарт ҳамеша дуруст мемонад ва барнома «овезон» мешавад.</div>''')
 
-# 6. Мини-проект
+# 6. Рӯйхат
 page(6, f'''
+<span class="chip">ДАРСИ 4</span>
+<h1 class="h">📋 Рӯйхат (array)</h1>
+<div class="def">Рӯйхат — <b>тағйирёбанда</b>, ки <b>якчанд қимат</b> нигоҳ медорад. Ҳар қимат <b>шумора</b> дорад, ва шумора аз <b>0</b> оғоз мешавад!</div>
+<div class="arr"><div><i>0</i>нон</div><div><i>1</i>шир</div><div><i>2</i>тухм</div><div><i>3</i>себ</div><div><i>4</i>нок</div></div>
+{code('''let shopping = ["нон", "шир", "тухм", "себ", "нок"];
+console.log(shopping[2]);      // тухм
+console.log(shopping.length);  // 5
+shopping.push("анор");         // ба охир илова''', None, "royhat.js")}
+<h3>Амалҳои асосӣ</h3>
+<table class="ops">
+<tr><td><code>list[0]</code> қимати аввал</td><td><code>list.length</code> чанд қимат</td></tr>
+<tr><td><code>list.push(x)</code> илова</td><td><code>list[list.length - 1]</code> охирин</td></tr>
+</table>
+<h3>Рӯйхат + давр</h3>
+{code('''for (let i = 0; i < shopping.length; i++) {
+  console.log(i + ". " + shopping[i]);
+}''', "0. нон\n1. шир\n…\n5. анор")}
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> шумора аз <code>0</code> оғоз мешавад. Дар рӯйхати 3-қиматӣ охирин шумора <code>2</code> аст, ва <code>list[3]</code> → <code>undefined</code>.</div>''')
+
+# 7. Мини-проект
+page(7, f'''
 <span class="chip">ЛОИҲАИ ХУРД</span>
 <h1 class="h">Ҳар се ғишт якҷоя</h1>
 <p>Барнома рақамҳои 1 то 6-ро месанҷад: ҷуфт ё тоқ?</p>
@@ -140,51 +163,55 @@ page(6, f'''
   }
 }""", "1 — тоқ\n2 — ҷуфт\n3 — тоқ\n4 — ҷуфт\n5 — тоқ\n6 — ҷуфт", "juft-toq.js")}
 <div class="tip"><b>💡</b> <code>i % 2</code> — бақияи тақсим ба 2. Агар бақия <code>0</code> бошад, рақам ҷуфт аст. Ва <code>i</code> — ҳамон 📦 тағйирёбанда.</div>
-<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 7)</h3>
+<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 8)</h3>
 <ol class="tasks">
 <li>Тағйирёбандаи <code>myName</code> созед ва «Салом, …!» нишон диҳед.</li>
 <li>Агар <code>temperature &gt; 30</code> — «Гарм аст», вагарна — «Хунук аст».</li>
 <li>Бо давр аз 10 то 1 баръакс ҳисоб кунед.</li>
+<li>Рӯйхати 3 хӯроки дӯстдоштаатонро созед ва қимати <b>дуюм</b>-ро нишон диҳед.</li>
+<li>Бо <code>push</code> хӯроки чорум илова кунед ва бо давр ҳамаро нишон диҳед.</li>
 </ol>''')
 
 # 7. Ответы
-page(7, f'''
+page(8, f'''
 <span class="chip">ҶАВОБҲО</span>
 <h1 class="h">Худро санҷед ✅</h1>
-<div class="quiz"><b>Санҷиши дарси 1:</b> <code>let age = 25; age = 26;</code> → дар қуттӣ <b class="good">26</b>. Қимати нав кӯҳнаро иваз мекунад, ҷамъ намешавад.</div>
-<div class="quiz"><b>Санҷиши дарси 2:</b> <code>age = 15</code> → <b class="good">«Ҳанӯз барвақт»</b>. 15 &lt; 18, шарт нодуруст → <code>else</code>.</div>
+<div class="quiz"><b>Санҷиши дарси 1:</b> <code>let age = 25; age = 26;</code> → <b class="good">26</b>. Қимати нав кӯҳнаро иваз мекунад.</div>
+<div class="quiz"><b>Санҷиши дарси 2:</b> <code>age = 15</code> → <b class="good">«Ҳанӯз барвақт»</b>: 15 &lt; 18, шарт нодуруст → <code>else</code>.</div>
 <div class="quiz"><b>Санҷиши дарси 3:</b> <code>for (let i = 0; i &lt; 3; i++)</code> → <b class="good">3 бор</b>: i = 0, 1, 2.</div>
+<div class="quiz"><b>Санҷиши дарси 4:</b> нон — 0, шир — 1, <b class="good">тухм — 2</b>. Шумора аз <code>0</code> оғоз мешавад.</div>
 <h3>Ҳалли вазифаҳо</h3>
 {code("""// 1
 let myName = "Нигина";
 console.log("Салом, " + myName + "!");
-
 // 2
 let temperature = 34;
-if (temperature > 30) {
-  console.log("Гарм аст");
-} else {
-  console.log("Хунук аст");
-}
-
+if (temperature > 30) { console.log("Гарм аст"); }
+else { console.log("Хунук аст"); }
 // 3
-for (let i = 10; i >= 1; i--) {
-  console.log(i);
-}""", "Салом, Нигина!\nГарм аст\n10\n9\n…\n1")}''')
+for (let i = 10; i >= 1; i--) { console.log(i); }
+// 4
+let fav = ["палав", "самбуса", "ошташ"];
+console.log(fav[1]);   // самбуса
+// 5
+fav.push("қурутоб");
+for (let i = 0; i < fav.length; i++) {
+  console.log(fav[i]);
+}""")}''')
 
 # 8. Дальше
-page(8, f'''
+page(9, f'''
 <span class="chip">ҚАДАМИ НАВБАТӢ</span>
 <h1 class="h">Роҳи шумо 🚀</h1>
 <div class="road">
   <div class="done"><b>01</b>Тағйирёбанда ✓</div>
   <div class="done"><b>02</b>Шарт ✓</div>
   <div class="done"><b>03</b>Давр ✓</div>
-  <div><b>04</b>Рӯйхат (array)</div>
+  <div class="done"><b>04</b>Рӯйхат ✓</div>
   <div><b>05</b>Функсия</div>
   <div><b>06</b>Объект</div>
   <div><b>07</b>Хатогӣ ва дебаг</div>
-  <div><b>08–09</b>Бозии «Рақамро ёб»</div>
+  <div><b>08–09</b>Лоиҳаи хурд</div>
   <div><b>10–12</b>Сайт, HTML/CSS/JS, AI</div>
 </div>
 <div class="tip"><b>💡 Маслиҳат:</b> ҳар рӯз 20 дақиқа. Кодро на танҳо хонед — <b>худатон нависед</b> ва иваз кунед: «агар 10-ро ба 100 иваз кунам, чӣ мешавад?»</div>
