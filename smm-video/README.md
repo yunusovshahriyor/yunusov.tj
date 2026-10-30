@@ -14,6 +14,7 @@
 | `chatbot/` | матнҳо ва баннерҳои Chatplace («калима → Direct») |
 | `stories/` | сторисҳо |
 | `ide/` | манбаи IDE (дар сайт: `public/ide/index.html` дар шохаи `claude/clever-cori-8bobpv`) |
+| `brand/` | стили ягона: `STYLE.md` (қоидаҳо), `brand.css` (рангҳо ва ҷузъҳо) |
 | `plans/` | нақшаҳои пештара |
 | `archive/` | версияҳои кӯҳна ва радшуда |
 
