@@ -1,23 +1,28 @@
 <!doctype html><html><head><meta charset="utf-8"><style>
 *{margin:0;box-sizing:border-box}
-body{width:2560px;height:1440px;overflow:hidden;background:#F4EFE6;font-family:Inter,sans-serif;color:#1F3F44;position:relative}
-body::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 30%,rgba(233,185,73,.30),transparent 38%),radial-gradient(circle at 20% 75%,rgba(31,63,68,.10),transparent 40%)}
-.bgcode{position:absolute;font:600 34px "DejaVu Sans Mono",monospace;color:rgba(31,63,68,.10);white-space:pre;line-height:1.7}
+body{--bg:#F4EFE6;--ink:#1F3F44;--sub:#3d5a5e;--acc:#B4472E;--gold:#E9B949;--chip:#1F3F44;--chipt:#fff;--code:rgba(31,63,68,.10);--glow1:rgba(233,185,73,.30);--glow2:rgba(31,63,68,.10);--num:#1F3F44;
+width:2560px;height:1440px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink);position:relative}
+body.vs{--bg:#1E1E1E;--ink:#FFFFFF;--sub:#D4D4D4;--acc:#4FC1FF;--gold:#DCDCAA;--chip:#2D2D30;--chipt:#D4D4D4;--code:rgba(86,156,214,.16);--glow1:rgba(79,193,255,.12);--glow2:rgba(78,201,176,.08);--num:#252526}
+body.teal{--bg:#0B1A1D;--ink:#EAF4F2;--sub:#9FB8B5;--acc:#3DDC97;--gold:#E9B949;--chip:#14302F;--chipt:#CFE7E2;--code:rgba(61,220,151,.10);--glow1:rgba(61,220,151,.13);--glow2:rgba(233,185,73,.08);--num:#0F2528}
+body.neon{--bg:#14111F;--ink:#F8F8F2;--sub:#B7B2CC;--acc:#FF79C6;--gold:#8BE9FD;--chip:#251F38;--chipt:#E6E1F5;--code:rgba(189,147,249,.14);--glow1:rgba(189,147,249,.18);--glow2:rgba(255,121,198,.10);--num:#1F1A2E}
+body::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 30%,var(--glow1),transparent 38%),radial-gradient(circle at 20% 75%,var(--glow2),transparent 40%)}
+.bgcode{position:absolute;font:600 34px "DejaVu Sans Mono",monospace;color:var(--code);white-space:pre;line-height:1.7}
 .safe{position:absolute;left:507px;top:509px;width:1546px;height:423px;display:flex;align-items:center;gap:70px;padding:0 40px}
 .box{position:relative;width:260px;height:270px;flex:none;zoom:1.25}
 .back{position:absolute;left:0;top:70px;width:260px;height:190px;border-radius:14px;background:#C8975A}
 .front{position:absolute;left:0;top:130px;width:260px;height:130px;border-radius:6px 6px 18px 18px;background:linear-gradient(#E2B070,#C8975A);z-index:3;display:flex;align-items:center;justify-content:center}
-.tag{background:#fff;border-radius:10px;padding:8px 22px;font:800 34px "DejaVu Sans Mono",monospace;box-shadow:0 4px 10px rgba(0,0,0,.18)}
-.num{position:absolute;left:55px;top:50px;width:150px;height:96px;border-radius:20px;background:#1F3F44;color:#E9B949;font:900 50px "DejaVu Sans Mono",monospace;display:flex;align-items:center;justify-content:center;z-index:2}
+.tag{color:#1F3F44;background:#fff;border-radius:10px;padding:8px 22px;font:800 34px "DejaVu Sans Mono",monospace;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.num{position:absolute;left:55px;top:50px;width:150px;height:96px;border-radius:20px;background:var(--num);color:var(--gold);font:900 50px "DejaVu Sans Mono",monospace;display:flex;align-items:center;justify-content:center;z-index:2}
 .txt{flex:1}
-.kick{font:800 30px "DejaVu Sans Mono",monospace;letter-spacing:4px;color:#B4472E;margin-bottom:14px}
+.kick{font:800 30px "DejaVu Sans Mono",monospace;letter-spacing:4px;color:var(--acc);margin-bottom:14px}
 h1{white-space:nowrap;font-weight:900;font-size:96px;letter-spacing:-3px;line-height:.95}
-.sub{white-space:nowrap;margin-top:18px;font-weight:700;font-size:38px;color:#3d5a5e}
-.sub b{color:#B4472E}
+.sub{white-space:nowrap;margin-top:18px;font-weight:700;font-size:38px;color:var(--sub)}
+.sub b{color:var(--acc)}
 .tags{display:flex;gap:16px;margin-top:28px}
-.tags span{background:#1F3F44;color:#fff;border-radius:999px;padding:12px 26px;font:800 28px Inter}
-.tags span.g{background:#E9B949;color:#1F3F44}
+.tags span{background:var(--chip);color:var(--chipt);border-radius:999px;padding:12px 26px;font:800 28px Inter}
+.tags span.g{background:var(--gold);color:#111}
 </style></head><body>
+<script>document.body.className=location.hash.slice(1)</script>
 <div class="bgcode" style="left:60px;top:80px">let age = 25;
 age = 26;
 console.log(age);</div>
