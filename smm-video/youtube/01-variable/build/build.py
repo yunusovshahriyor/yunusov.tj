@@ -291,7 +291,7 @@ ide.sort(key=lambda o: o['t']); ptr.sort(key=lambda o: o['t'])
 TL = dict(end=END, scenes=scenes, ide=ide, marks=marks, rings=rings, ptr=ptr, chips=chips, zooms=zooms, caps=caps, chapters=chapters, cd=[cd0])
 
 # ---------- страница ----------
-src = open('../../games/ide/index.html', encoding='utf8').read()
+src = open('../../../ide/index.html', encoding='utf8').read()
 PTR = '<svg id="ptr" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.6L21 11z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>'
 inject_head = '<style>' + open('video.css', encoding='utf8').read() + '</style>'
 inject_body = ('<div id="ovl">' + PTR + '<div id="rip"></div></div>' + ''.join(slides) +
