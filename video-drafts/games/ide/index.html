@@ -41,8 +41,18 @@ code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);co
 .card b{color:var(--white)}
 .ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
 .bar{display:flex;align-items:center;gap:6px;padding:0 12px;height:34px;background:var(--panel);border-bottom:1px solid var(--line)}
-.bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
-.bar span{margin:0 auto;font:500 12px var(--mono);color:var(--muted)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57;flex:none}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{font:500 12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed .bar{height:42px;gap:8px}
+.ed .bar #fname{margin-right:auto}
+.ed .bar select{max-width:130px;padding:5px 8px;font-size:12px}
+.acts{display:flex;gap:6px;flex:none}
+.ic{all:unset;cursor:pointer;height:30px;min-width:32px;padding:0 9px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ic:hover{background:#37373d}.ic:active{transform:scale(.95)}
+.ic.run{background:var(--green);border-color:var(--green);color:#fff}.ic.chk{background:var(--blue);border-color:var(--blue);color:#fff;font-size:13px}
+.ic[disabled]{opacity:.5;pointer-events:none}
+@media(max-width:600px){.bar i.dots,.ed .bar #fname{display:none}.ed .bar select{margin-right:auto}.ic{height:34px;min-width:34px;padding:0 8px}.ic .lbl{display:none}.ed .bar{padding:0 8px;gap:6px}}
+.main.free{grid-template-columns:1fr}.main.free .left{display:none}
 .editor{position:relative;display:flex;height:clamp(230px,40vh,400px)}
 @media(min-width:1000px){.editor{height:auto;flex:1;min-height:220px}}
 .gut{white-space:pre;flex:none;width:44px;padding:12px 8px 12px 0;text-align:right;color:#858585;font:500 13.5px/1.65 var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
@@ -58,12 +68,11 @@ code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);co
 .sym button:active{background:var(--blue)}
 .sym button.tabk{font-size:12px;color:var(--muted)}
 @media(min-width:1000px){.sym{display:none}}
-.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 10px;background:var(--panel);border-top:1px solid var(--line)}
 .btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
-.run{background:var(--green);color:#fff;font-size:15px;padding:10px 18px}
-.run:hover,.chk:hover{filter:brightness(1.1)}
-.chk{background:var(--blue);color:#fff;font-size:15px;padding:10px 16px}
+.btn.run{background:var(--green);color:#fff;font-size:15px;padding:10px 18px}
+.btn.run:hover,.ic.run:hover,.ic.chk:hover{filter:brightness(1.1)}
+.btn.chk{background:var(--blue);color:#fff;font-size:15px;padding:10px 16px}
 .ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
 .ghost:hover{background:#37373d}
 .btn[disabled]{opacity:.5;pointer-events:none}
@@ -108,18 +117,11 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     </aside>
     <section class="work">
       <div class="ed">
-        <div class="bar"><i></i><i></i><i></i><span id="fname">main.js</span></div>
+        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span>
+          <div class="acts"><button class="ic run" id="run" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро">▶</button><button class="ic chk" id="check" title="Санҷиш" aria-label="Санҷиш" style="display:none">✓ <span class="lbl">Санҷиш</span></button><button class="ic" id="reset" title="Аз нав" aria-label="Аз нав">↺</button><button class="ic" id="copy" title="Нусха" aria-label="Нусха">📋</button><button class="ic" id="share" title="Пайванд" aria-label="Пайванд">🔗</button></div></div>
         <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
       </div>
       <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
-      <div class="tools">
-        <button class="btn run" id="run">▶ Иҷро</button>
-        <button class="btn chk" id="check" style="display:none">✓ Санҷиш</button>
-        <select id="ex" aria-label="Мисолҳо"></select>
-        <button class="btn ghost" id="reset">↺ Аз нав</button>
-        <button class="btn ghost" id="copy">📋 Нусха</button>
-        <button class="btn ghost" id="share">🔗 Пайванд</button>
-      </div>
       <div class="con"><div class="bar"><span>НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
     </section>
   </div>
@@ -134,7 +136,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   /* ---------- мисолҳо ва вазифаҳо ---------- */
   var EXAMPLES = [
-    ["— Мисол интихоб кунед —", ""],
+    ["Мисолҳо ▾", ""],
     ["Салом, ҷаҳон", 'console.log("Салом, ҷаҳон!");\n'],
     ["Тағйирёбанда", 'let age = 25;\nconsole.log(age);\nage = 26;\nconsole.log(age);\n\nconst name = "Шаҳриёр";\nconsole.log("Салом, " + name + "!");\n'],
     ["Шарт (if / else)", 'let age = 15;\n\nif (age >= 18) {\n  console.log("Хуш омадед!");\n} else {\n  console.log("Ҳанӯз барвақт");\n}\n'],
@@ -359,7 +361,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   }
   function load() {
     var L = lesson(), t = task();
-    $("task").style.display = L.free ? "none" : "block"; $("check").style.display = L.free ? "none" : "inline-flex"; $("ex").style.display = L.free ? "" : "none";
+    $("task").style.display = L.free ? "none" : "block"; $("check").style.display = L.free ? "none" : "inline-flex"; $("ex").style.display = L.free ? "" : "none"; document.querySelector(".main").classList.toggle("free", !!L.free);
     $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
     ta.value = ls(key()) != null ? ls(key()) : (t ? t.starter : 'console.log("Салом, ҷаҳон!");\n');
     $("out").innerHTML = '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
@@ -380,7 +382,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   $("run").onclick = doRun;
   $("clr").onclick = function () { $("out").innerHTML = ""; };
   $("reset").onclick = function () { var t = task(); if (confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) { ta.value = t ? t.starter : 'console.log("Салом, ҷаҳон!");\n'; paint(); saveCode(); } };
-  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓ Нусха шуд"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓ Нусха шуд"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋 Нусха"; }, 1500); }); };
+  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋"; }, 1500); }); };
   $("ex").innerHTML = EXAMPLES.map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
   $("ex").onchange = function () { var e = EXAMPLES[+this.value]; if (e && e[1]) { ta.value = e[1]; paint(); saveCode(); } this.value = 0; };
 
@@ -448,7 +450,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   }
   $("share").onclick = function () {
     var b = this, u = location.href.split("#")[0] + "#code=" + b64u(ta.value);
-    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓ Пайванд нусха шуд"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗 Пайванд"; }, 1800); });
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗"; }, 1800); });
   };
 
   /* ---------- аломатҳои зуд (барои телефон) ---------- */
