@@ -4,6 +4,7 @@ body{--bg:#F4EFE6;--ink:#1F3F44;--sub:#3d5a5e;--acc:#B4472E;--gold:#E9B949;--chi
 width:2560px;height:1440px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink);position:relative}
 body.vs{--bg:#1E1E1E;--ink:#FFFFFF;--sub:#D4D4D4;--acc:#4FC1FF;--gold:#DCDCAA;--chip:#2D2D30;--chipt:#D4D4D4;--code:rgba(86,156,214,.16);--glow1:rgba(79,193,255,.12);--glow2:rgba(78,201,176,.08);--num:#252526}
 body.teal{--bg:#0B1A1D;--ink:#EAF4F2;--sub:#9FB8B5;--acc:#3DDC97;--gold:#E9B949;--chip:#14302F;--chipt:#CFE7E2;--code:rgba(61,220,151,.10);--glow1:rgba(61,220,151,.13);--glow2:rgba(233,185,73,.08);--num:#0F2528}
+body.mix{--bg:#1E1E1E;--ink:#FFFFFF;--sub:#D4D4D4;--acc:#BD93F9;--gold:#DCDCAA;--chip:#2D2D30;--chipt:#D4D4D4;--code:rgba(86,156,214,.16);--glow1:rgba(189,147,249,.16);--glow2:rgba(255,121,198,.07);--num:#252526}
 body.neon{--bg:#14111F;--ink:#F8F8F2;--sub:#B7B2CC;--acc:#FF79C6;--gold:#8BE9FD;--chip:#251F38;--chipt:#E6E1F5;--code:rgba(189,147,249,.14);--glow1:rgba(189,147,249,.18);--glow2:rgba(255,121,198,.10);--num:#1F1A2E}
 body::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 30%,var(--glow1),transparent 38%),radial-gradient(circle at 20% 75%,var(--glow2),transparent 40%)}
 .bgcode{position:absolute;font:600 34px "DejaVu Sans Mono",monospace;color:var(--code);white-space:pre;line-height:1.7}
@@ -21,6 +22,10 @@ h1{white-space:nowrap;font-weight:900;font-size:96px;letter-spacing:-3px;line-he
 .tags{display:flex;gap:16px;margin-top:28px}
 .tags span{background:var(--chip);color:var(--chipt);border-radius:999px;padding:12px 26px;font:800 28px Inter}
 .tags span.g{background:var(--gold);color:#111}
+body.mix .tags span.g{background:linear-gradient(90deg,#BD93F9,#FF79C6);color:#1E1E1E}
+body.mix .sub b{background:linear-gradient(90deg,#BD93F9,#FF79C6);-webkit-background-clip:text;color:transparent}
+body.mix .num{color:#BD93F9}
+body.mix .bgcode .k{color:rgba(197,134,192,.30)}
 </style></head><body>
 <script>document.body.className=location.hash.slice(1)</script>
 <div class="bgcode" style="left:60px;top:80px">let age = 25;
