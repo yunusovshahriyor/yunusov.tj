@@ -292,9 +292,9 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   function hintFor(name, msg) {
     var m;
     if (name === "ReferenceError" && (m = /(\w+) is not defined/.exec(msg))) return "Тағйирёбандаи «" + m[1] + "» муайян нашудааст. Оё <code>let " + m[1] + " = …</code> навишта будед? Имлоро низ санҷед (ҳарфи калон ва хурд фарқ мекунад).";
+    if (/already been declared/.test(msg)) return "Ин ном аллакай ҳаст. Дубора <code>let</code> нанависед: ба ҷои <code>let x = 5</code> фақат <code>x = 5</code> нависед.";
     if (name === "SyntaxError") return "Хатои навиштан. Қавсҳо <code>( )</code> <code>{ }</code>, нуқтавергул <code>;</code> ва нохунакҳо <code>\"</code>-ро санҷед.";
     if (name === "TypeError" && /constant/.test(msg)) return "Қимати <code>const</code>-ро иваз кардан мумкин нест. Ба ҷои он <code>let</code> нависед.";
-    if (/already been declared/.test(msg)) return "Ин ном аллакай ҳаст. Дубора <code>let</code> нанависед: ба ҷои <code>let x = 5</code> фақат <code>x = 5</code> нависед.";
     return "";
   }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
