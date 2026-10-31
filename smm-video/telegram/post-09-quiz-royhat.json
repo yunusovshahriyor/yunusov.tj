@@ -1,0 +1,8 @@
+{
+  "type": "quiz",
+  "question": "🧠 Санҷиш: чӣ чоп мешавад?\n\nlet fruits = [\"себ\", \"нок\", \"ангур\"];\nfruits.push(\"анор\");\nconsole.log(fruits[3]);",
+  "options": ["анор", "ангур", "undefined", "3"],
+  "correct_option_id": 0,
+  "explanation": "push() қимати навро ба охир мегузорад. Шумора аз 0: себ — 0, нок — 1, ангур — 2, анор — 3.",
+  "is_anonymous": true
+}
