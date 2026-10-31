@@ -91,4 +91,4 @@
 - Дар дохил: `script.md` ё `narration.md` (матн), `build/` (скриптҳо), натиҷа (`*.mp4`, `cover.jpg`, `caption.txt`).
 - Файлҳои калони муваққатӣ (`*.wav`, кадрҳо) ба git намераванд (`.gitignore`).
 - Кори кӯҳна ё радшуда → `archive/`.
-- Шохаи корӣ: `ccr-47cddaaf-bmhhpv`; сайт (GitHub Pages): шохаи `claude/clever-cori-8bobpv`.
+- Шохаи асосии репозиторий: `claude/clever-cori-8bobpv` — ҳам сайт (GitHub Pages), ҳам `smm-video/`. Ҳар push ба он сайтро аз нав месозад, бинобар ин видеоҳо ва файлҳои калонро танҳо вақте ба он мефиристем, ки тайёр ва тасдиқ шудаанд.
