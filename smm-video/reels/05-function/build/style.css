@@ -66,3 +66,5 @@ animation:capin .12s linear var(--a) forwards,capout .1s linear var(--b) forward
 .box::before{content:"";position:absolute;left:0;right:0;top:0;height:22px;background:rgba(0,0,0,.12);border-radius:10px 10px 0 0}
 .box .tag{font:800 17px var(--mono);margin-top:12px}
 .box .num{font:900 38px var(--mono);line-height:1}
+.btn.small{width:24px;height:24px;font-size:0;line-height:0}
+.mach .btn{position:absolute}

@@ -57,7 +57,7 @@ def TYP(at, dur, html, raw):
 
 H = []
 # заголовок (шапка)
-hdr = '<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ · <b>05</b> / БАРНОМАСОЗӢ</span><span>ДАРСИ <b>5</b> / 12</span></div>'
+hdr = ''  # шапкаи боло бардошта шуд
 
 def scene(a, b, body, whoosh=True):
     H.append(f'<div class="sc" style="{S(a, b)}">{body}</div>')
@@ -93,9 +93,9 @@ t_q = T[3]; t_btn = T[4]
 mach = f'''<div class="mach" style="left:195px;top:300px"><div class="top"><i></i><i></i><i></i></div>
   <div class="win idle"></div><div class="win run fade" style="--a:{t_wash:.2f}s"></div>
   <div class="abs fade" style="--a:{t_q + 0.1:.2f}s;left:25px;top:48px;width:100px;height:100px;border-radius:50%;background:rgba(30,30,30,.88);color:var(--purple);font:900 54px/100px var(--mono);text-align:center">?</div>
+<div class="btn small" style="right:14px;top:9px;animation:press .5s ease-out {t_press:.2f}s both,press .5s ease-out {t_btn:.2f}s both,press .5s ease-out {t_btn + 0.6:.2f}s both"></div>
 </div>
-<div class="btn press" style="--a:{t_press:.2f}s;left:248px;top:466px">▶</div>
-<div class="btn press" style="--a:{t_btn:.2f}s;left:248px;top:466px"></div><div class="btn press" style="--a:{t_btn + 0.6:.2f}s;left:248px;top:466px"></div>'''
+'''
 cloth_in = f'<div class="abs emo pop" style="--a:{t_cloth:.2f}s;left:50px;top:360px;font-size:62px;animation:popin .45s cubic-bezier(.3,1.6,.5,1) {f(t_cloth)} both,slidein .5s ease-in {f(t_in)} forwards">👕</div>'
 clean = f'<div class="abs emo pop" style="--a:{t_wash + 1.0:.2f}s;left:370px;top:360px;font-size:62px">✨👕</div>'
 scene(T[0] - 0.1, T[5] - 0.1, f'''{hdr}
