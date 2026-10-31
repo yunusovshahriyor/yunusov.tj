@@ -72,7 +72,7 @@
   // прямоугольник символов [c0, c1) строки line в подсвеченном коде
   function charRect(line, c0, c1) {
     var lines = ta.value.split("\n"), off = 0;
-    for (var i = 0; i < line; i++) off += lines[i].length + 1;
+    for (var i = 0; i < line; i++) { if (lines[i] === undefined) return null; off += lines[i].length + 1; }
     var a = off + c0, b = off + c1, w = document.createTreeWalker(hl, NodeFilter.SHOW_TEXT), n, pos = 0, r = document.createRange(), sa = 0, sb = 0;
     while ((n = w.nextNode())) {
       var L = n.nodeValue.length;
