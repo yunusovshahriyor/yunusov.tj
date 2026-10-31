@@ -1,0 +1,304 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>@property --n { syntax: '<integer>'; inherits: false; initial-value: 0; }
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --muted:#857D70; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+* { box-sizing:border-box; margin:0; }
+body { width:540px; height:960px; overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.05), transparent 45%); }
+.hdr { position:absolute; left:26px; right:26px; top:62px; display:flex; justify-content:space-between; font:600 11px "JetBrains Mono",monospace; letter-spacing:1.5px; color:var(--ink); padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+
+/* базовые появления */
+.sc { position:absolute; inset:0; opacity:0; animation:scin .35s cubic-bezier(.2,.9,.3,1.2) var(--a) forwards, scout .3s ease-in var(--b) forwards; }
+.ttl .sc { position:static; }
+@keyframes scin { from { opacity:0; translate:0 14px; } to { opacity:1; translate:0 0; } }
+@keyframes scout { from { opacity:1; } to { opacity:0; translate:0 -10px; } }
+.pop { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both; }
+@keyframes popin { from { scale:0; opacity:0; } 40% { opacity:1; } to { scale:1; opacity:1; } }
+@keyframes fadeo { to { opacity:0; scale:.8; } }
+
+/* заголовки */
+.ttl { position:absolute; left:20px; right:20px; top:92px; text-align:center; inset:auto 20px auto 20px; }
+.ttl.sc { inset:92px 20px auto 20px; }
+.t1 { font-size:31px; font-weight:800; letter-spacing:-.5px; }
+.t2 { font-size:28px; font-weight:800; color:var(--rust); margin-top:2px; }
+
+/* сцена 1 */
+.word { position:absolute; left:46px; right:46px; top:240px; height:160px; border-radius:20px; background:var(--card); border:2px solid var(--line); box-shadow:0 14px 30px rgba(31,63,68,.10); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.word .wl { font-size:40px; font-weight:900; letter-spacing:1px; }
+.word .ws { font:600 20px "JetBrains Mono",monospace; color:var(--rust); margin-top:4px; }
+.shake { animation:shake .5s ease-in-out var(--a) 3; }
+@keyframes shake { 0%,100% { rotate:0deg; } 25% { rotate:-2deg; translate:-4px 0; } 75% { rotate:2deg; translate:4px 0; } }
+.stamp { position:absolute; padding:6px 18px; border:4px solid var(--rust); border-radius:10px; color:var(--rust); font-size:40px; font-weight:900; letter-spacing:2px; background:rgba(244,239,230,.75); rotate:-9deg; opacity:0; animation:stampin .35s cubic-bezier(.2,1.4,.4,1) var(--a) forwards; z-index:6; }
+.stamp.big { font-size:34px; }
+@keyframes stampin { from { opacity:0; scale:2.4; } to { opacity:1; scale:1; } }
+.watch { position:absolute; left:210px; top:470px; width:120px; text-align:center; }
+.watch b { position:absolute; left:0; right:0; top:52px; font-size:22px; font-weight:900; }
+.ring { stroke-dasharray:201; stroke-dashoffset:0; transform:rotate(-90deg); transform-origin:60px 64px; animation:ring var(--d) linear var(--a) both; }
+@keyframes ring { from { stroke-dashoffset:0; } to { stroke-dashoffset:201; } }
+
+/* сцена 2: коробка */
+.stage { position:absolute; left:140px; top:205px; width:260px; height:270px; }
+.stage.pop.glow { animation:popin .55s cubic-bezier(.3,1.6,.5,1) var(--a) both, glow 1s ease-in-out var(--g) 3; }
+@keyframes glow { 50% { filter:drop-shadow(0 0 22px rgba(180,71,46,.55)); } }
+.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:#C8975A; }
+.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(#E2B070,#C8975A); z-index:3; display:flex; align-items:center; justify-content:center; }
+.flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; }
+.flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
+.tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
+.tag.pop.hlt { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, hlbox .5s ease-in-out var(--h) 2; }
+@keyframes hlbox { 50% { background:var(--gold); scale:1.12; } }
+.num { position:absolute; left:75px; top:62px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; opacity:0; animation:dropin .6s cubic-bezier(.4,1.5,.6,1) var(--a) forwards; }
+.num.flyout { animation:dropin .6s cubic-bezier(.4,1.5,.6,1) var(--a) forwards, flyout .45s ease-in var(--o) forwards; }
+@keyframes dropin { from { top:-60px; opacity:0; } 30% { opacity:1; } to { top:62px; opacity:1; } }
+@keyframes flyout { from { top:62px; opacity:1; } to { top:-50px; opacity:0; rotate:-25deg; } }
+.x { position:absolute; inset:10px 18px; opacity:0; animation:xin .2s ease-out var(--a) forwards; }
+.x::before, .x::after { content:""; position:absolute; left:-6px; right:-6px; top:50%; height:8px; margin-top:-4px; background:var(--rust); border-radius:4px; rotate:35deg; }
+.x::after { rotate:-35deg; }
+@keyframes xin { from { opacity:0; scale:1.8; } to { opacity:1; scale:1; } }
+.year { position:absolute; left:386px; top:215px; background:var(--rust); color:#fff; font-weight:800; font-size:22px; padding:8px 16px; border-radius:30px; rotate:6deg; }
+.year.pop.popout { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, fadeo .3s ease-in var(--b) forwards; }
+.term { position:absolute; inset:auto; left:40px; right:40px; top:490px; height:120px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.term.sc { inset:490px 40px auto 40px; }
+.bar { height:28px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:10px; height:10px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.bar span { margin-left:auto; margin-right:auto; font:500 12px "JetBrains Mono",monospace; color:#9fb0b2; }
+.code { padding:12px 20px; font:600 27px "JetBrains Mono",monospace; color:#EDE6D8; line-height:1.4; }
+.type { white-space:pre; width:max-content; clip-path:inset(0 100% 0 0); animation:typ var(--d) steps(var(--n), end) var(--a) forwards; }
+@keyframes typ { to { clip-path:inset(0 0 0 0); } }
+.kw { color:#E0675A; } .nm { color:#E9B949; } .v { color:#7FD49A; }
+.hl { border-radius:4px; animation:hltext .5s ease-in-out var(--h) 2; }
+@keyframes hltext { 50% { background:rgba(233,185,73,.35); } }
+.checks { position:absolute; inset:auto; left:70px; right:70px; top:492px; }
+.checks.sc { inset:492px 70px auto 70px; }
+.row { display:flex; align-items:center; gap:12px; background:var(--card); border:2px solid var(--line); border-radius:12px; padding:7px 14px; margin-bottom:7px; font-size:20px; font-weight:700; }
+.row b { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; background:var(--rust); }
+.row b.ok { background:var(--green); }
+.row.hot { border-color:var(--rust); color:var(--rust); }
+.row .k { color:var(--rust); }
+
+/* сцена 3 */
+.life .card { position:relative; display:flex; align-items:center; gap:16px; margin:0 40px 14px; height:92px; padding:0 20px; background:var(--card); border:2px solid var(--line); border-radius:18px; box-shadow:0 10px 24px rgba(31,63,68,.08); }
+.life .card:first-child { margin-top:225px; }
+.ic { width:56px; height:56px; border-radius:16px; color:#fff; font-size:28px; display:flex; align-items:center; justify-content:center; }
+.ct { font-size:22px; font-weight:700; }
+.cnt { margin-left:auto; font-size:34px; font-weight:900; color:var(--rust); --n:var(--from); counter-reset:c var(--n); animation:count .9s ease-out var(--a) both; }
+.cnt::after { content:counter(c); }
+@keyframes count { from { --n:var(--from); } to { --n:var(--to); } }
+
+/* сцена 4 */
+.sum { padding:0 40px; }
+.sumh { margin-top:228px; margin-bottom:14px; font-size:28px; font-weight:900; text-align:center; }
+.sum .row { font-size:22px; padding:12px 16px; margin-bottom:12px; }
+
+/* сцена 5 */
+.chat { inset:auto; left:40px; right:40px; top:212px; height:400px; border-radius:16px; background:var(--card); border:2px solid var(--line); box-shadow:0 14px 30px rgba(31,63,68,.10); overflow:hidden; }
+.chat.sc { inset:212px 40px auto 40px; }
+.chat .bar { background:#EFE7DA; } .chat .bar span { color:var(--muted); }
+.msg { display:flex; align-items:flex-start; gap:10px; margin:14px 16px 0; transform-origin:left center; }
+.msg span { background:var(--ink); color:var(--paper); padding:10px 14px; border-radius:4px 16px 16px 16px; font-size:19px; font-weight:700; }
+.msg .av { width:34px; height:34px; flex:none; border-radius:50%; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.msg.me { justify-content:flex-end; transform-origin:right center; }
+.msg.me span { background:var(--gold); color:var(--ink); border-radius:16px 4px 16px 16px; font-family:"JetBrains Mono",monospace; }
+.input { position:absolute; left:14px; right:14px; bottom:14px; height:48px; border:2px solid var(--line); border-radius:24px; display:flex; align-items:center; padding:0 18px; font:600 20px "JetBrains Mono",monospace; background:#fff; }
+.input.sc { inset:auto 14px 14px 14px; position:absolute; }
+.caret { width:2px; height:24px; background:var(--ink); margin-left:2px; animation:blink .8s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.lesson { position:absolute; left:110px; right:110px; top:225px; height:180px; border-radius:20px; background:var(--ink); color:var(--paper); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; box-shadow:0 18px 36px rgba(31,63,68,.25); rotate:-2deg; }
+.lesson small { font:700 13px "JetBrains Mono",monospace; letter-spacing:3px; color:var(--gold); }
+.lesson b { font-size:44px; font-weight:900; }
+.lesson code { font:700 24px "JetBrains Mono",monospace; color:#7FD49A; }
+.sub { position:absolute; left:145px; right:145px; top:440px; height:62px; border-radius:31px; background:var(--rust); color:#fff; font-size:23px; font-weight:800; display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow:0 10px 22px rgba(180,71,46,.35); }
+.sub .b1, .sub .b2 { position:absolute; }
+.sub .b2 { opacity:0; animation:in2 .25s ease-out var(--a) forwards; }
+.sub .b1 { animation:fadeo .15s linear var(--a) forwards; }
+@keyframes in2 { from { opacity:0; translate:0 18px; } to { opacity:1; translate:0 0; } }
+.press { position:absolute; width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.6); scale:0; animation:ripple .5s ease-out var(--a) forwards; }
+@keyframes ripple { from { scale:0; opacity:1; } to { scale:14; opacity:0; } }
+.cursor { position:absolute; left:440px; top:660px; opacity:0; z-index:8; animation:cmove .6s cubic-bezier(.3,.8,.3,1) var(--a) forwards, cclick .2s ease-in-out var(--c) 1; }
+@keyframes cmove { from { left:440px; top:660px; opacity:0; } 20% { opacity:1; } to { left:300px; top:470px; opacity:1; } }
+@keyframes cclick { 50% { scale:.8; } }
+
+/* субтитры по словам */
+.cap { position:absolute; left:0; right:0; margin:auto; width:max-content; max-width:480px; top:648px; background:var(--ink); color:var(--paper); font-size:25px; font-weight:800; padding:6px 14px; border-radius:6px; opacity:0; z-index:9; animation:capin .14s ease-out var(--a) forwards, capout .08s linear var(--b) forwards; }
+@keyframes capin { from { opacity:0; scale:.85; } to { opacity:1; scale:1; } }
+@keyframes capout { to { opacity:0; } }
+.prog { position:absolute; left:0; bottom:0; height:5px; width:100%; background:var(--rust); transform-origin:left; animation:progr var(--d) linear 0s both; z-index:10; }
+@keyframes progr { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+
+.life .card.chl { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, cardhl .7s ease-in-out var(--h) 1; }
+@keyframes cardhl { 40% { scale:1.06; border-color:var(--rust); box-shadow:0 14px 30px rgba(180,71,46,.25); } }
+
+/* ===== ролик «Шарт» ===== */
+.cam { position:absolute; inset:0; transform-origin:50% 45%; }
+@keyframes punch { 0% { scale:1; } 30% { scale:1.07; } 100% { scale:1; } }
+@keyframes shakecam { 0%,100% { translate:0 0; } 20% { translate:-9px 4px; } 40% { translate:8px -5px; } 60% { translate:-6px 3px; } 80% { translate:4px -2px; } }
+.flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:20; pointer-events:none; }
+@keyframes flash { 0% { opacity:.85; } 100% { opacity:0; } }
+.slam { position:absolute; left:0; right:0; text-align:center; font-weight:900; color:var(--ink); opacity:0; animation:slam .45s cubic-bezier(.2,1.3,.4,1) var(--a) forwards; }
+@keyframes slam { from { opacity:0; scale:3; filter:blur(6px); } to { opacity:1; scale:1; filter:none; } }
+.emo { position:absolute; font-family:"Noto Color Emoji"; line-height:1; }
+.draw { fill:none; stroke-linecap:butt; stroke-dasharray:var(--len); stroke-dashoffset:var(--len); animation:draw var(--d,.5s) ease-out var(--a) forwards; }
+@keyframes draw { to { stroke-dashoffset:0; } }
+.bubble { position:absolute; padding:10px 16px; border-radius:16px; font-size:22px; font-weight:800; color:#fff; box-shadow:0 10px 22px rgba(31,63,68,.18); }
+.ok-bg { background:var(--green); } .no-bg { background:var(--rust); } .ink-bg { background:var(--ink); }
+.pill { position:absolute; left:0; right:0; margin:auto; width:max-content; padding:10px 20px; border-radius:30px; background:var(--card); border:2px solid var(--line); font-size:24px; font-weight:800; box-shadow:0 10px 24px rgba(31,63,68,.10); }
+.choice { position:absolute; width:200px; height:150px; border-radius:20px; background:var(--card); border:3px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-size:22px; font-weight:800; box-shadow:0 12px 26px rgba(31,63,68,.10); }
+.choice .emo { position:static; font-size:58px; }
+.choice small { font:700 14px "JetBrains Mono",monospace; letter-spacing:2px; padding:3px 10px; border-radius:6px; color:#fff; }
+.choice.yes { border-color:var(--green); } .choice.no { border-color:var(--rust); }
+.dict { position:absolute; left:50px; right:50px; height:92px; border-radius:18px; background:var(--card); border:2px solid var(--line); display:flex; align-items:center; gap:18px; padding:0 22px; box-shadow:0 12px 26px rgba(31,63,68,.10); font-size:30px; font-weight:800; }
+.dict code { font:800 34px "JetBrains Mono",monospace; color:#fff; background:var(--ink); padding:6px 16px; border-radius:10px; }
+.dict span.eq { color:var(--muted); }
+.sticker { position:absolute; background:var(--gold); color:var(--ink); font:800 15px "JetBrains Mono",monospace; letter-spacing:2px; padding:7px 12px; border-radius:8px; rotate:-8deg; box-shadow:0 6px 14px rgba(0,0,0,.15); z-index:5; }
+.term2 { position:absolute; left:28px; right:28px; top:200px; border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.term2 .code2 { padding:12px 16px; font:600 21px "JetBrains Mono",monospace; color:#EDE6D8; line-height:1.5; }
+.term2 .ln { height:32px; }
+.str { color:#7FD49A; } .op { color:#9fb0b2; }
+.condhl { border-radius:4px; animation:condhl .6s ease-in-out var(--h) 2; }
+@keyframes condhl { 50% { background:rgba(233,185,73,.4); } }
+.out { position:absolute; left:28px; right:28px; top:470px; height:56px; border-radius:12px; background:#10191B; color:#7FD49A; font:700 22px "JetBrains Mono",monospace; display:flex; align-items:center; padding:0 16px; gap:10px; box-shadow:0 10px 22px rgba(31,63,68,.2); }
+.out b { color:#9fb0b2; font-weight:600; }
+.dimmed { animation:dimto .3s linear var(--a) forwards; }
+@keyframes dimto { to { opacity:.35; } }
+.diamond { position:absolute; left:170px; top:300px; width:200px; height:120px; }
+.diamond svg { position:absolute; inset:0; }
+.diamond span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:800 21px "JetBrains Mono",monospace; color:#fff; }
+.scan { animation:scan .5s ease-in-out var(--a) 3; }
+@keyframes scan { 50% { filter:drop-shadow(0 0 18px rgba(233,185,73,.9)); scale:1.06; } }
+.val { position:absolute; left:0; right:0; margin:auto; width:max-content; top:212px; font:800 26px "JetBrains Mono",monospace; background:var(--card); border:2px solid var(--line); border-radius:12px; padding:8px 18px; }
+.flip { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both, flipout .25s ease-in var(--b) forwards; }
+@keyframes flipout { to { rotate:x 90deg; opacity:0; } }
+.flipin { opacity:0; animation:flipin .3s ease-out var(--a) forwards; }
+@keyframes flipin { from { rotate:x -90deg; opacity:0; } to { rotate:x 0deg; opacity:1; } }
+.res { position:absolute; width:210px; height:84px; border-radius:16px; border:3px solid var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; gap:8px; font-size:21px; font-weight:800; }
+.lit-ok { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a0) both, litok .4s ease-out var(--a) forwards; }
+.lit-no { animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a0) both, litno .4s ease-out var(--a) forwards; }
+@keyframes litok { to { background:var(--green); color:#fff; border-color:var(--green); scale:1.06; } }
+@keyframes litno { to { background:var(--rust); color:#fff; border-color:var(--rust); scale:1.06; } }
+.tlight { position:absolute; left:70px; top:200px; width:110px; height:300px; border-radius:26px; background:#22303A; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly; box-shadow:0 14px 30px rgba(0,0,0,.25); }
+.tlight i { width:70px; height:70px; border-radius:50%; background:#3a464e; }
+.lamp { animation:lampon .15s linear var(--a) forwards, lampoff .15s linear var(--b) forwards; }
+@keyframes lampon { to { background:var(--c); box-shadow:0 0 30px var(--c); } }
+@keyframes lampoff { to { background:#3a464e; box-shadow:none; } }
+.tl-lab { position:absolute; left:210px; font-size:26px; font-weight:800; padding:10px 18px; border-radius:14px; color:#fff; }
+.pwd { position:absolute; left:50px; right:50px; top:520px; height:86px; border-radius:16px; background:var(--card); border:3px solid var(--line); display:flex; align-items:center; padding:0 18px; gap:12px; font:800 26px "JetBrains Mono",monospace; }
+.pwd.state { animation:scin .35s ease-out var(--a0) both, pwok .3s linear var(--a) forwards, pwno .3s linear var(--b) forwards, shake .4s ease-in-out var(--b) 1; }
+@keyframes pwok { to { border-color:var(--green); } }
+@keyframes pwno { to { border-color:var(--rust); } }
+.pwd .res2 { margin-left:auto; font-family:Inter,sans-serif; font-size:20px; padding:6px 12px; border-radius:10px; color:#fff; position:absolute; right:14px; }
+.formula { position:absolute; left:20px; right:20px; top:225px; display:flex; justify-content:center; align-items:center; gap:10px; }
+.ftile { padding:12px 16px; border-radius:14px; background:var(--card); border:2px solid var(--line); font-size:26px; font-weight:900; box-shadow:0 10px 22px rgba(31,63,68,.10); }
+.ftile.dark { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.fop { font-size:32px; font-weight:900; color:var(--rust); }
+.path { position:absolute; left:50px; right:50px; height:74px; border-radius:16px; display:flex; align-items:center; gap:14px; padding:0 18px; font-size:24px; font-weight:800; color:#fff; }
+.banner { position:absolute; left:40px; right:40px; top:215px; height:86px; border-radius:16px; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-size:46px; font-weight:900; letter-spacing:4px; rotate:-3deg; opacity:0; animation:slam .45s cubic-bezier(.2,1.3,.4,1) var(--a) forwards; box-shadow:0 14px 30px rgba(180,71,46,.35); }
+.quizq { position:absolute; left:300px; top:330px; width:170px; height:170px; }
+.quizq b { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:96px; font-weight:900; color:var(--rust); }
+.cring { stroke-dasharray:440; stroke-dashoffset:0; transform:rotate(-90deg); transform-origin:85px 85px; animation:ring2 var(--d) linear var(--a) both; }
+@keyframes ring2 { to { stroke-dashoffset:440; } }
+.dots i { display:inline-block; width:9px; height:9px; margin:0 3px; border-radius:50%; background:var(--paper); animation:dot 1s ease-in-out infinite; }
+.dots i:nth-child(2) { animation-delay:.15s; } .dots i:nth-child(3) { animation-delay:.3s; }
+@keyframes dot { 0%,100% { translate:0 0; opacity:.5; } 50% { translate:0 -6px; opacity:1; } }
+.spin { animation:spin 2s linear infinite; display:inline-block; }
+@keyframes spin { to { rotate:360deg; } }
+.cap .kwd { color:var(--gold); }
+
+/* ===== ролик «Давр» ===== */
+.bigcnt { position:absolute; left:0; right:0; text-align:center; font:900 120px Inter,sans-serif; color:var(--ink); counter-reset:c var(--n); }
+.bigcnt::after { content:counter(c); }
+.bigcnt.anim { animation:count var(--d) var(--tf, ease-out) var(--a) both; }
+.cntlab { position:absolute; left:0; right:0; text-align:center; font-size:24px; font-weight:800; color:var(--rust); }
+.qpill { position:absolute; padding:8px 14px; border-radius:12px; color:#fff; font:800 18px Inter,sans-serif; }
+.c1 { background:#3E7C59; } .c2 { background:#E9B949; color:#1F3F44; } .c3 { background:#B4472E; }
+.hl1 { border-radius:4px; animation:hlg .6s ease-in-out var(--h) 2; }
+@keyframes hlg { 50% { background:rgba(233,185,73,.45); } }
+.phone3 { position:absolute; left:60px; top:215px; width:190px; height:330px; border-radius:28px; border:8px solid var(--ink); background:#fff; overflow:hidden; box-shadow:0 14px 30px rgba(31,63,68,.2); }
+.feed { position:absolute; left:10px; right:10px; top:10px; animation:feed 2.4s linear var(--a) infinite; }
+.feed i { display:block; height:110px; border-radius:12px; margin-bottom:10px; }
+@keyframes feed { from { transform:translateY(0); } to { transform:translateY(-360px); } }
+.game { position:absolute; left:285px; top:250px; width:200px; height:260px; border-radius:20px; background:#1B2A2D; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#7FD49A; font:800 18px "JetBrains Mono",monospace; box-shadow:0 14px 30px rgba(31,63,68,.25); }
+.game .emo { font-size:70px; animation:bob .5s ease-in-out infinite; }
+@keyframes bob { 50% { translate:0 -10px; } }
+
+.cap { font-size:27px; }
+.cap .w { opacity:.45; animation:won .1s linear var(--w) forwards; }
+@keyframes won { to { opacity:1; } }
+
+.paper{position:absolute;background:#FFFDF8;border:2px solid #E3D9C7;border-radius:16px;padding:14px 18px;box-shadow:0 14px 30px rgba(31,63,68,.12)}
+.paper h4{font:800 13px "JetBrains Mono",monospace;color:#B4472E;letter-spacing:2px;margin-bottom:6px}
+.pi{height:46px;display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;border-bottom:1.5px solid #EFE7DA;border-radius:8px;padding:0 6px}
+.pi .emo{position:static;font-size:26px}
+.pi .ix{margin-left:auto;font:900 20px "JetBrains Mono",monospace;min-width:34px;height:32px;border-radius:9px;background:#E9B949;color:#1F3F44;display:flex;align-items:center;justify-content:center}
+.pi.hot{background:rgba(180,71,46,.12)}
+.cellrow{position:absolute;left:14px;right:14px;display:flex;gap:8px;justify-content:center}
+.cellbox{position:relative;width:114px;height:104px;border-radius:16px;background:#C8975A;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,.18)}
+.cellbox .cv{background:#fff;color:#1F3F44;border-radius:9px;padding:7px 10px;font-size:19px;font-weight:900;opacity:0}
+.cellbox .ix{position:absolute;top:-17px;left:50%;translate:-50% 0;background:#E9B949;color:#1F3F44;font:900 18px "JetBrains Mono",monospace;min-width:36px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;opacity:0;font-style:normal;animation:popin .4s cubic-bezier(.3,1.6,.5,1) var(--ix) forwards}
+.cellbox{animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a, 0s) both, cellhl .6s ease-in-out var(--l) 1}
+@keyframes cellhl{40%{scale:1.12;filter:brightness(1.15) drop-shadow(0 0 14px rgba(180,71,46,.7))}}
+.hookgrid{position:absolute;left:70px;top:250px;width:400px;display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.hookgrid i{aspect-ratio:1;border-radius:4px;background:#C8975A;opacity:0;animation:popin .2s ease-out var(--a) forwards,hgout .5s ease-in var(--o) forwards}
+@keyframes hgout{to{opacity:0;scale:.2}}
+.listbar{position:absolute;left:40px;right:40px;top:290px;height:84px;border-radius:16px;background:#1F3F44;display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font:800 36px "JetBrains Mono",monospace}
+.iptr{position:absolute;top:314px;background:#B4472E;color:#fff;font:900 16px "JetBrains Mono",monospace;padding:5px 9px;border-radius:9px;opacity:0;animation:ptr .3s ease-out var(--a) forwards,hide2 .2s linear var(--b) forwards;z-index:5}
+@keyframes ptr{from{opacity:0;translate:0 -10px}to{opacity:1;translate:0 0}}
+@keyframes hide2{to{opacity:0}}
+.outbox{position:absolute;left:30px;right:30px;top:520px;display:flex;gap:8px;flex-wrap:wrap}
+.out2{background:#10191B;color:#7FD49A;font:700 20px "JetBrains Mono",monospace;padding:8px 14px;border-radius:10px}
+</style></head><body><div class="cam" style="animation:punch .4s ease-out 0.02s 1, punch .4s ease-out 6.42s 1, punch .4s ease-out 31.30s 1, punch .4s ease-out 42.29s 1, punch .4s ease-out 68.25s 1, shakecam .35s ease-in-out 0.05s 1, shakecam .35s ease-in-out 30.03s 1">
+<div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>ДАРСИ 04 / 12</span></div>
+<div class="ttl sc" style="--a:0.00s;--b:6.37s"><div class="t1">1 рӯйхат</div><div class="t2 sc" style="--a:0.20s;--b:95.21s">ба ҷои 100 тағйирёбанда</div></div><div class="ttl sc" style="--a:6.42s;--b:13.98s"><div class="t1">Рӯйхат</div><div class="t2 sc" style="--a:7.56s;--b:95.21s">рӯйхати харид</div></div><div class="ttl sc" style="--a:14.03s;--b:19.84s"><div class="t1">array</div><div class="t2 sc" style="--a:14.23s;--b:95.21s">якчанд қимат дар як ҷой</div></div><div class="ttl sc" style="--a:19.89s;--b:28.60s"><div class="t1">let fruits</div><div class="t2 sc" style="--a:20.09s;--b:95.21s">тағйирёбанда аз дарси 1</div></div><div class="ttl sc" style="--a:28.65s;--b:37.00s"><div class="t1">Шумора</div><div class="t2 sc" style="--a:28.85s;--b:95.21s">аз 0 оғоз мешавад!</div></div><div class="ttl sc" style="--a:37.05s;--b:44.27s"><div class="t1">.length ва .push</div><div class="t2 sc" style="--a:37.25s;--b:95.21s">чанд қимат / илова кардан</div></div><div class="ttl sc" style="--a:44.32s;--b:57.91s"><div class="t1">Рӯйхат + давр</div><div class="t2 sc" style="--a:44.52s;--b:95.21s">алоқаманд ҳастанд</div></div><div class="ttl sc" style="--a:57.96s;--b:64.49s"><div class="t1">Дар ҳаёт</div><div class="t2 sc" style="--a:58.16s;--b:95.21s">рӯйхатҳо ҳама ҷо</div></div><div class="ttl sc" style="--a:64.54s;--b:67.58s"><div class="t1">Хулоса</div><div class="t2 sc" style="--a:64.74s;--b:95.21s">қимат + шумора аз 0</div></div><div class="ttl sc" style="--a:67.63s;--b:78.09s"><div class="t1">Санҷиш</div><div class="t2 sc" style="--a:67.83s;--b:95.21s">«тухм» — шумораи чанд?</div></div><div class="ttl sc" style="--a:78.14s;--b:83.07s"><div class="t1">Шпаргалка бепул</div><div class="t2 sc" style="--a:78.34s;--b:95.21s">дар шарҳ: РӮЙХАТ</div></div><div class="ttl sc" style="--a:83.12s;--b:95.16s"><div class="t1">Дарси оянда</div><div class="t2 sc" style="--a:83.32s;--b:95.21s">функсия</div></div>
+<div class="sc" style="--a:0.00s;--b:6.30s">
+ <div class="chip pop" style="--a:0.10s;position:absolute;left:0;right:0;margin:auto;width:max-content;top:195px;background:#1F3F44;color:#F4EFE6;font:700 14px 'JetBrains Mono',monospace;letter-spacing:3px;padding:6px 12px;border-radius:6px">ДАРСИ 4 / 12</div>
+ <div class="hookgrid"><i style="--a:0.72s;--o:4.09s"></i><i style="--a:0.73s;--o:4.09s"></i><i style="--a:0.74s;--o:4.09s"></i><i style="--a:0.75s;--o:4.09s"></i><i style="--a:0.77s;--o:4.09s"></i><i style="--a:0.78s;--o:4.09s"></i><i style="--a:0.79s;--o:4.09s"></i><i style="--a:0.80s;--o:4.09s"></i><i style="--a:0.81s;--o:4.09s"></i><i style="--a:0.82s;--o:4.09s"></i><i style="--a:0.83s;--o:4.09s"></i><i style="--a:0.84s;--o:4.09s"></i><i style="--a:0.85s;--o:4.09s"></i><i style="--a:0.86s;--o:4.09s"></i><i style="--a:0.88s;--o:4.09s"></i><i style="--a:0.89s;--o:4.09s"></i><i style="--a:0.90s;--o:4.09s"></i><i style="--a:0.91s;--o:4.09s"></i><i style="--a:0.92s;--o:4.09s"></i><i style="--a:0.93s;--o:4.09s"></i><i style="--a:0.94s;--o:4.09s"></i><i style="--a:0.95s;--o:4.09s"></i><i style="--a:0.96s;--o:4.09s"></i><i style="--a:0.97s;--o:4.09s"></i><i style="--a:0.98s;--o:4.09s"></i><i style="--a:1.00s;--o:4.09s"></i><i style="--a:1.01s;--o:4.09s"></i><i style="--a:1.02s;--o:4.09s"></i><i style="--a:1.03s;--o:4.09s"></i><i style="--a:1.04s;--o:4.09s"></i><i style="--a:1.05s;--o:4.09s"></i><i style="--a:1.06s;--o:4.09s"></i><i style="--a:1.07s;--o:4.09s"></i><i style="--a:1.08s;--o:4.09s"></i><i style="--a:1.09s;--o:4.09s"></i><i style="--a:1.11s;--o:4.09s"></i><i style="--a:1.12s;--o:4.09s"></i><i style="--a:1.13s;--o:4.09s"></i><i style="--a:1.14s;--o:4.09s"></i><i style="--a:1.15s;--o:4.09s"></i><i style="--a:1.16s;--o:4.09s"></i><i style="--a:1.17s;--o:4.09s"></i><i style="--a:1.18s;--o:4.09s"></i><i style="--a:1.19s;--o:4.09s"></i><i style="--a:1.21s;--o:4.09s"></i><i style="--a:1.22s;--o:4.09s"></i><i style="--a:1.23s;--o:4.09s"></i><i style="--a:1.24s;--o:4.09s"></i><i style="--a:1.25s;--o:4.09s"></i><i style="--a:1.26s;--o:4.09s"></i><i style="--a:1.27s;--o:4.09s"></i><i style="--a:1.28s;--o:4.09s"></i><i style="--a:1.29s;--o:4.09s"></i><i style="--a:1.30s;--o:4.09s"></i><i style="--a:1.31s;--o:4.09s"></i><i style="--a:1.33s;--o:4.09s"></i><i style="--a:1.34s;--o:4.09s"></i><i style="--a:1.35s;--o:4.09s"></i><i style="--a:1.36s;--o:4.09s"></i><i style="--a:1.37s;--o:4.09s"></i><i style="--a:1.38s;--o:4.09s"></i><i style="--a:1.39s;--o:4.09s"></i><i style="--a:1.40s;--o:4.09s"></i><i style="--a:1.41s;--o:4.09s"></i><i style="--a:1.42s;--o:4.09s"></i><i style="--a:1.44s;--o:4.09s"></i><i style="--a:1.45s;--o:4.09s"></i><i style="--a:1.46s;--o:4.09s"></i><i style="--a:1.47s;--o:4.09s"></i><i style="--a:1.48s;--o:4.09s"></i><i style="--a:1.49s;--o:4.09s"></i><i style="--a:1.50s;--o:4.09s"></i><i style="--a:1.51s;--o:4.09s"></i><i style="--a:1.52s;--o:4.09s"></i><i style="--a:1.53s;--o:4.09s"></i><i style="--a:1.55s;--o:4.09s"></i><i style="--a:1.56s;--o:4.09s"></i><i style="--a:1.57s;--o:4.09s"></i><i style="--a:1.58s;--o:4.09s"></i><i style="--a:1.59s;--o:4.09s"></i><i style="--a:1.60s;--o:4.09s"></i><i style="--a:1.61s;--o:4.09s"></i><i style="--a:1.62s;--o:4.09s"></i><i style="--a:1.63s;--o:4.09s"></i><i style="--a:1.65s;--o:4.09s"></i><i style="--a:1.66s;--o:4.09s"></i><i style="--a:1.67s;--o:4.09s"></i><i style="--a:1.68s;--o:4.09s"></i><i style="--a:1.69s;--o:4.09s"></i><i style="--a:1.70s;--o:4.09s"></i><i style="--a:1.71s;--o:4.09s"></i><i style="--a:1.72s;--o:4.09s"></i><i style="--a:1.73s;--o:4.09s"></i><i style="--a:1.74s;--o:4.09s"></i><i style="--a:1.75s;--o:4.09s"></i><i style="--a:1.77s;--o:4.09s"></i><i style="--a:1.78s;--o:4.09s"></i><i style="--a:1.79s;--o:4.09s"></i><i style="--a:1.80s;--o:4.09s"></i><i style="--a:1.81s;--o:4.09s"></i></div>
+ <div class="cntlab sc" style="--a:0.72s;--b:95.21s;top:490px;color:#1F3F44;font-size:26px">100 тағйирёбанда 😵</div>
+ <div class="listbar pop" style="--a:4.29s"><span>[</span><span class="emo">🍞🥛🥚🍎🍐</span><span>]</span></div>
+ <div class="cntlab sc" style="--a:4.39s;--b:95.21s;top:420px;color:#B4472E;font-size:30px">1 рӯйхат ✅</div>
+ <div class="bubble ink-bg pop" style="--a:5.44s;left:175px;top:520px;font-size:30px">Чӣ тавр? 🤔</div>
+</div><div class="sc" style="--a:6.32s;--b:13.93s">
+ <div class="slam" style="--a:6.42s;top:215px;font-size:82px;letter-spacing:1px">РӮЙХАТ!</div>
+ <div class="paper pop" style="--a:7.56s;top:320px;left:70px;right:70px"><h4>РӮЙХАТИ ХАРИД</h4><div class="pi pop" style="--a:9.71s"><span class="emo">🍞</span>нон</div><div class="pi pop" style="--a:10.38s"><span class="emo">🥛</span>шир</div><div class="pi pop" style="--a:11.02s"><span class="emo">🥚</span>тухм</div><div class="pi pop" style="--a:11.61s"><span class="emo">🍎</span>себ</div><div class="pi pop" style="--a:12.15s"><span class="emo">🍐</span>нок</div></div>
+ <div class="bubble ok-bg pop" style="--a:12.69s;left:300px;top:250px;font-size:24px">5 чиз = 1 рӯйхат</div>
+</div><div class="sc" style="--a:13.98s;--b:57.86s">
+ <div class="cellrow" style="top:200px"><div class="cellbox pop" style="--a:14.18s;--ix:32.94s;--l:55.89s"><i class="ix">0</i><span class="cv pop" style="--a:26.80s">себ</span></div><div class="cellbox pop" style="--a:14.30s;--ix:34.50s;--l:56.43s"><i class="ix">1</i><span class="cv pop" style="--a:27.05s">нок</span></div><div class="cellbox pop" style="--a:14.42s;--ix:35.99s;--l:56.90s"><i class="ix">2</i><span class="cv pop" style="--a:27.30s">ангур</span></div><div class="cellbox" style="--ix:42.69s;--l:57.49s;background:transparent;border:3px dashed #C8975A;box-shadow:none"><i class="ix">3</i><span class="cv pop" style="--a:42.39s;position:absolute">анор</span></div></div>
+ <div class="stamp" style="--a:19.06s;left:330px;top:322px;font-size:28px">array</div>
+ <div class="sticker pop" style="--a:25.38s;left:30px;top:326px">ДАРСИ 1 · тағйирёбанда = қуттӣ</div>
+ <div class="banner" style="--a:30.03s;top:520px;font-size:30px;letter-spacing:2px;left:30px;right:30px;animation:slam .45s cubic-bezier(.2,1.3,.4,1) 30.03s forwards,hide2 .25s linear 36.95s forwards">ДИҚҚАТ: АЗ 0!</div>
+</div><div class="sc" style="--a:19.84s;--b:36.95s">
+ <div class="term2" style="inset:405px 20px auto 20px"><div class="bar"><i></i><i></i><i></i><span>royhat.js</span></div><div class="code2" style="font-size:18px"><div class="ln"><div class="type" style="--a:19.89s;--d:2.06s;--n:37"><span class="kw">let</span> <span class="nm">fruits</span> = [<span class="str">"себ"</span>, <span class="str">"нок"</span>, <span class="str">"ангур"</span>];</div></div></div></div>
+</div><div class="sc" style="--a:37.00s;--b:44.22s">
+ <div class="term2" style="inset:405px 20px auto 20px"><div class="bar"><i></i><i></i><i></i><span>royhat.js</span></div><div class="code2" style="font-size:17px">
+  <div class="ln"><div class="type" style="--a:37.05s;--d:1.50s;--n:27"><span class="fn">console</span>.log(<span class="nm">fruits</span>.length);</div></div>
+  <div class="ln"><div class="type" style="--a:41.56s;--d:1.11s;--n:20"><span class="nm">fruits</span>.push(<span class="str">"анор"</span>);</div></div></div></div>
+ <div class="bubble ok-bg pop" style="--a:39.74s;left:60px;top:560px;font-size:26px">length = 3</div>
+ <div class="bubble rust no-bg pop" style="--a:42.79s;left:290px;top:560px;font-size:26px">length = 4</div>
+</div><div class="sc" style="--a:44.27s;--b:57.86s">
+ <div class="iptr" style="--a:55.84s;--b:56.54s;left:42px">i = 0</div><div class="iptr" style="--a:56.38s;--b:57.08s;left:164px">i = 1</div><div class="iptr" style="--a:56.85s;--b:57.55s;left:286px">i = 2</div><div class="iptr" style="--a:57.44s;--b:58.14s;left:408px">i = 3</div>
+ <div class="term2" style="inset:405px 20px auto 20px"><div class="bar"><i></i><i></i><i></i><span>royhat.js</span></div><div class="code2" style="font-size:16px">
+  <div class="ln"><div class="type" style="--a:46.94s;--d:2.28s;--n:41"><span class="kw">for</span> (<span class="kw">let</span> <span class="nm">i</span> = <span class="v">0</span>; <span class="nm">i</span> &lt; <span class="nm">fruits</span>.length; <span class="nm">i</span>++) {</div></div>
+  <div class="ln"><div class="type" style="--a:49.32s;--d:1.39s;--n:25">  <span class="fn">console</span>.log(<span class="nm">fruits</span>[<span class="nm">i</span>]);</div></div></div></div>
+ <div class="outbox" style="top:545px"><div class="out2 pop" style="--a:55.89s">▶ себ</div><div class="out2 pop" style="--a:56.43s">▶ нок</div><div class="out2 pop" style="--a:56.90s">▶ ангур</div><div class="out2 pop" style="--a:57.49s">▶ анор</div></div>
+</div><div class="sc life" style="--a:57.96s;--b:64.44s">
+ <div class="card pop" style="--a:60.72s"><div class="ic" style="background:#B4472E">🎵</div><div class="ct">Рӯйхати мусиқӣ</div></div>
+ <div class="card pop" style="--a:61.45s"><div class="ic" style="background:#E9B949">🖼️</div><div class="ct">Суратҳо дар галерея</div></div>
+ <div class="card pop" style="--a:63.27s"><div class="ic" style="background:#1F3F44">👥</div><div class="ct">Обуначиёни Instagram</div></div>
+</div><div class="sc" style="--a:64.54s;--b:67.53s">
+ <div class="formula" style="top:290px;flex-wrap:wrap;row-gap:14px"><div class="ftile dark pop" style="--a:64.54s">РӮЙХАТ</div><div class="fop pop" style="--a:64.74s">=</div>
+  <div class="ftile pop" style="--a:65.49s;border-color:#3E7C59">якчанд қимат</div><div class="fop pop" style="--a:65.79s">+</div>
+  <div class="ftile pop" style="--a:66.58s;border-color:#E9B949">шумора аз 0</div></div>
+</div><div class="sc" style="--a:67.58s;--b:78.04s">
+ <div class="banner" style="--a:68.25s;top:215px">САНҶИШ</div>
+ <div class="paper pop" style="--a:70.18s;top:320px;left:60px;right:60px"><h4>РӮЙХАТИ ХАРИД</h4><div class="pi pop " style="--a:70.28s"><span class="emo">🍞</span>нон<span class="ix" style="">0</span></div><div class="pi pop " style="--a:70.79s"><span class="emo">🥛</span>шир<span class="ix" style="">1</span></div><div class="pi pop hot" style="--a:71.19s"><span class="emo">🥚</span>тухм<span class="ix" style="background:#B4472E;color:#fff">?</span></div><div class="pi pop " style="--a:71.66s"><span class="emo">🍎</span>себ<span class="ix" style="">3</span></div><div class="pi pop " style="--a:72.09s"><span class="emo">🍐</span>нок<span class="ix" style="">4</span></div></div>
+ <div class="bubble ink-bg pop" style="--a:74.21s;left:90px;top:592px;font-size:21px">☝ шумора аз 0 оғоз мешавад</div>
+</div><div class="sc" style="--a:78.09s;--b:83.02s">
+ <div class="pwd" style="top:215px;left:60px;right:60px;height:74px;animation:scin .35s ease-out 78.14s both"><span class="emo" style="position:static;font-size:28px">💬</span><div class="type" style="--a:79.09s;--d:.5s;--n:6;font-size:30px;color:#B4472E">РӮЙХАТ</div><span class="res2 ink-bg pop" style="--a:79.69s;right:14px">➤</span></div>
+ <svg style="position:absolute;left:0;top:0" width="540" height="640"><path class="draw" pathLength="100" d="M270 300 L270 345" stroke="#1F3F44" stroke-width="6" style="--len:101;--a:80.53s;--d:.25s"/></svg>
+ <div class="pop" style="--a:80.83s;position:absolute;left:45px;right:45px;top:350px;height:236px;border-radius:16px;overflow:hidden;box-shadow:0 16px 34px rgba(31,63,68,.3);background:url(banner-h.jpg) center/cover"></div>
+ <div class="bubble ok-bg pop" style="--a:82.14s;left:300px;top:560px;font-size:22px">📩 ба Direct</div>
+</div><div class="sc" style="--a:83.12s;--b:95.21s">
+ <div class="lesson pop" style="--a:83.17s"><small>ДАРСИ 5</small><b>Функсия</b><code>function ( )</code></div>
+ <div class="sub pop" style="--a:85.96s"><span class="b1" style="--a:86.76s">Обуна шавед</span><span class="b2" style="--a:86.76s">Обуна шудед ✓</span><i class="press" style="--a:86.76s"></i></div>
+ <svg class="cursor" style="--a:86.06s;--c:86.76s" width="34" height="40" viewBox="0 0 24 28"><path d="M2 2l19 11-8.5 1.8L17 24l-3.6 1.6-4.4-9.2L2 22z" fill="#1F3F44" stroke="#fff" stroke-width="1.5"/></svg>
+</div>
+<div class="cap" style="--a:0.30s;--b:1.73s"><span class="w" style="--w:0.30s">Барои</span> <span class="w" style="--w:0.72s">сад</span> <span class="w" style="--w:1.06s">рақам</span></div><div class="cap" style="--a:1.73s;--b:3.12s"><span class="w" style="--w:1.73s">сад</span> <span class="w kwd" style="--w:2.07s">тағйирёбанда</span> <span class="w" style="--w:2.78s">лозим</span></div><div class="cap" style="--a:3.12s;--b:3.79s"><span class="w" style="--w:3.12s">нест</span> <span class="w" style="--w:3.71s">—</span></div><div class="cap" style="--a:3.79s;--b:5.06s"><span class="w" style="--w:3.79s">як</span> <span class="w kwd" style="--w:4.09s">рӯйхат</span> <span class="w" style="--w:4.55s">кифоя</span></div><div class="cap" style="--a:5.06s;--b:5.44s"><span class="w" style="--w:5.06s">аст.</span></div><div class="cap" style="--a:5.44s;--b:6.19s"><span class="w" style="--w:5.44s">Чӣ</span> <span class="w" style="--w:5.61s">тавр?</span></div><div class="cap" style="--a:6.42s;--b:7.34s"><span class="w kwd" style="--w:6.42s">Рӯйхат!</span></div><div class="cap" style="--a:7.56s;--b:8.28s"><span class="w" style="--w:7.56s">Тасаввур</span> <span class="w" style="--w:7.98s">кунед,</span></div><div class="cap" style="--a:8.28s;--b:9.25s"><span class="w" style="--w:8.28s">ки</span> <span class="w" style="--w:8.36s">рӯйхати</span> <span class="w" style="--w:8.83s">харид</span></div><div class="cap" style="--a:9.25s;--b:9.71s"><span class="w" style="--w:9.25s">доред:</span></div><div class="cap" style="--a:9.71s;--b:10.38s"><span class="w" style="--w:9.71s">нон,</span></div><div class="cap" style="--a:10.38s;--b:11.02s"><span class="w" style="--w:10.38s">шир,</span></div><div class="cap" style="--a:11.02s;--b:11.61s"><span class="w" style="--w:11.02s">тухм,</span></div><div class="cap" style="--a:11.61s;--b:12.15s"><span class="w" style="--w:11.61s">себ,</span></div><div class="cap" style="--a:12.15s;--b:12.69s"><span class="w" style="--w:12.15s">нок.</span></div><div class="cap" style="--a:12.69s;--b:13.49s"><span class="w" style="--w:12.69s">Панҷ</span> <span class="w" style="--w:13.05s">чиз</span> <span class="w" style="--w:13.27s">дар</span></div><div class="cap" style="--a:13.49s;--b:14.03s"><span class="w" style="--w:13.49s">як</span> <span class="w" style="--w:13.70s">ҷой.</span></div><div class="cap" style="--a:14.03s;--b:15.45s"><span class="w" style="--w:14.03s">Дар</span> <span class="w" style="--w:14.21s">барномасозӣ</span> <span class="w kwd" style="--w:14.83s">рӯйхат</span></div><div class="cap" style="--a:15.45s;--b:15.75s"><span class="w" style="--w:15.45s">—</span></div><div class="cap" style="--a:15.55s;--b:16.69s"><span class="w" style="--w:15.55s">ин</span> <span class="w" style="--w:15.67s">тағйирёбандаест,</span></div><div class="cap" style="--a:16.69s;--b:17.49s"><span class="w" style="--w:16.69s">ки</span> <span class="w" style="--w:16.83s">дар</span> <span class="w" style="--w:16.98s">дохилаш</span></div><div class="cap" style="--a:17.49s;--b:18.76s"><span class="w" style="--w:17.49s">якчанд</span> <span class="w" style="--w:17.96s">қимат</span> <span class="w" style="--w:18.29s">дорад.</span></div><div class="cap" style="--a:18.76s;--b:19.89s"><span class="w" style="--w:18.76s">Номаш</span> <span class="w kwd" style="--w:19.39s">array.</span></div><div class="cap" style="--a:19.89s;--b:20.96s"><span class="w" style="--w:19.89s">let</span> <span class="w kwd" style="--w:20.16s">fruits</span> <span class="w" style="--w:20.69s">=</span></div><div class="cap" style="--a:20.96s;--b:21.26s"><span class="w" style="--w:20.96s">["себ",</span></div><div class="cap" style="--a:21.23s;--b:21.53s"><span class="w" style="--w:21.23s">"нок",</span></div><div class="cap" style="--a:21.50s;--b:22.31s"><span class="w" style="--w:21.50s">"ангур"]</span> <span class="w" style="--w:22.04s">—</span></div><div class="cap" style="--a:22.31s;--b:24.46s"><span class="w" style="--w:22.31s">ин</span> <span class="w" style="--w:22.58s">ҳамон</span> <span class="w kwd" style="--w:23.11s">тағйирёбанда,</span></div><div class="cap" style="--a:24.46s;--b:25.81s"><span class="w" style="--w:24.46s">яъне</span> <span class="w kwd" style="--w:25.00s">қуттӣ</span> <span class="w" style="--w:25.54s">аз</span></div><div class="cap" style="--a:25.81s;--b:26.80s"><span class="w" style="--w:25.81s">дарси</span> <span class="w" style="--w:26.34s">як.</span></div><div class="cap" style="--a:26.80s;--b:27.81s"><span class="w" style="--w:26.80s">Танҳо</span> <span class="w" style="--w:27.09s">дар</span> <span class="w" style="--w:27.30s">дохилаш</span></div><div class="cap" style="--a:27.81s;--b:28.65s"><span class="w" style="--w:27.81s">се</span> <span class="w" style="--w:27.96s">қимат</span> <span class="w" style="--w:28.36s">аст.</span></div><div class="cap" style="--a:28.65s;--b:29.63s"><span class="w" style="--w:28.65s">Ҳар</span> <span class="w" style="--w:28.90s">қимат</span> <span class="w kwd" style="--w:29.23s">шумора</span></div><div class="cap" style="--a:29.63s;--b:30.03s"><span class="w" style="--w:29.63s">дорад.</span></div><div class="cap" style="--a:30.03s;--b:30.65s"><span class="w" style="--w:30.03s">Диққат:</span></div><div class="cap" style="--a:30.65s;--b:31.59s"><span class="w kwd" style="--w:30.65s">шумора</span> <span class="w" style="--w:31.16s">аз</span> <span class="w kwd" style="--w:31.30s">сифр</span></div><div class="cap" style="--a:31.59s;--b:32.40s"><span class="w" style="--w:31.59s">оғоз</span> <span class="w" style="--w:31.90s">мешавад!</span></div><div class="cap" style="--a:32.40s;--b:33.43s"><span class="w" style="--w:32.40s">fruits[0]</span> <span class="w" style="--w:33.08s">—</span></div><div class="cap" style="--a:33.43s;--b:33.77s"><span class="w" style="--w:33.43s">себ,</span></div><div class="cap" style="--a:33.77s;--b:34.80s"><span class="w" style="--w:33.77s">fruits[1]</span> <span class="w" style="--w:34.46s">—</span></div><div class="cap" style="--a:34.80s;--b:35.15s"><span class="w" style="--w:34.80s">нок,</span></div><div class="cap" style="--a:35.15s;--b:36.18s"><span class="w" style="--w:35.15s">fruits[2]</span> <span class="w" style="--w:35.84s">—</span></div><div class="cap" style="--a:36.18s;--b:37.05s"><span class="w" style="--w:36.18s">ангур.</span></div><div class="cap" style="--a:37.05s;--b:38.24s"><span class="w" style="--w:37.05s">fruits.length</span> <span class="w" style="--w:37.84s">нишон</span></div><div class="cap" style="--a:38.24s;--b:38.84s"><span class="w" style="--w:38.24s">медиҳад,</span></div><div class="cap" style="--a:38.84s;--b:39.63s"><span class="w" style="--w:38.84s">ки</span> <span class="w" style="--w:39.04s">чанд</span> <span class="w" style="--w:39.24s">қимат</span></div><div class="cap" style="--a:39.63s;--b:39.93s"><span class="w" style="--w:39.63s">аст:</span></div><div class="cap" style="--a:39.83s;--b:40.21s"><span class="w" style="--w:39.83s">се.</span></div><div class="cap" style="--a:40.21s;--b:41.09s"><span class="w" style="--w:40.21s">Қимати</span> <span class="w" style="--w:40.54s">навро</span> <span class="w" style="--w:40.83s">илова</span></div><div class="cap" style="--a:41.09s;--b:41.56s"><span class="w" style="--w:41.09s">кунем?</span></div><div class="cap" style="--a:41.56s;--b:41.96s"><span class="w" style="--w:41.56s">fruits.push("анор")</span></div><div class="cap" style="--a:41.96s;--b:42.26s"><span class="w" style="--w:41.96s">—</span></div><div class="cap" style="--a:42.15s;--b:43.35s"><span class="w" style="--w:42.15s">ба</span> <span class="w" style="--w:42.35s">охири</span> <span class="w kwd" style="--w:42.95s">рӯйхат</span></div><div class="cap" style="--a:43.35s;--b:44.32s"><span class="w" style="--w:43.35s">мегузорад.</span></div><div class="cap" style="--a:44.32s;--b:45.27s"><span class="w kwd" style="--w:44.32s">Рӯйхат</span> <span class="w" style="--w:44.80s">ва</span> <span class="w kwd" style="--w:44.90s">давр</span></div><div class="cap" style="--a:45.27s;--b:46.18s"><span class="w" style="--w:45.27s">бо</span> <span class="w" style="--w:45.45s">ҳам</span> <span class="w" style="--w:45.63s">алоқаманд</span></div><div class="cap" style="--a:46.18s;--b:46.94s"><span class="w" style="--w:46.18s">ҳастанд.</span></div><div class="cap" style="--a:46.94s;--b:47.71s"><span class="w kwd" style="--w:46.94s">Давр</span> <span class="w" style="--w:47.13s">аз</span> <span class="w" style="--w:47.32s">дарси</span></div><div class="cap" style="--a:47.71s;--b:48.01s"><span class="w" style="--w:47.71s">се:</span></div><div class="cap" style="--a:47.90s;--b:48.20s"><span class="w kwd" style="--w:47.90s">i,</span></div><div class="cap" style="--a:48.09s;--b:48.85s"><span class="w" style="--w:48.09s">аз</span> <span class="w kwd" style="--w:48.28s">сифр</span> <span class="w" style="--w:48.47s">оғоз</span></div><div class="cap" style="--a:48.85s;--b:49.81s"><span class="w" style="--w:48.85s">мешавад</span> <span class="w" style="--w:49.43s">ва</span> <span class="w" style="--w:49.62s">то</span></div><div class="cap" style="--a:49.81s;--b:51.52s"><span class="w" style="--w:49.81s">охири</span> <span class="w kwd" style="--w:50.38s">рӯйхат</span> <span class="w" style="--w:50.77s">меравад.</span></div><div class="cap" style="--a:51.52s;--b:52.77s"><span class="w" style="--w:51.52s">console.log(fruits[i])</span></div><div class="cap" style="--a:52.77s;--b:54.52s"><span class="w" style="--w:52.77s">ҳар</span> <span class="w" style="--w:53.02s">қимати</span> <span class="w" style="--w:53.77s">рӯйхатро</span></div><div class="cap" style="--a:54.52s;--b:56.28s"><span class="w" style="--w:54.52s">як-як</span> <span class="w" style="--w:55.02s">нишон</span> <span class="w" style="--w:55.53s">медиҳад:</span></div><div class="cap" style="--a:56.28s;--b:56.58s"><span class="w" style="--w:56.28s">себ,</span></div><div class="cap" style="--a:56.53s;--b:56.83s"><span class="w" style="--w:56.53s">нок,</span></div><div class="cap" style="--a:56.78s;--b:57.28s"><span class="w" style="--w:56.78s">ангур,</span></div><div class="cap" style="--a:57.28s;--b:57.96s"><span class="w" style="--w:57.28s">анор.</span></div><div class="cap" style="--a:57.96s;--b:58.63s"><span class="w" style="--w:57.96s">Дар</span> <span class="w" style="--w:58.13s">ҳаёт</span> <span class="w" style="--w:58.46s">ҳам</span></div><div class="cap" style="--a:58.63s;--b:59.64s"><span class="w" style="--w:58.63s">рӯйхатҳо</span> <span class="w" style="--w:59.14s">ҳама</span> <span class="w" style="--w:59.47s">ҷо</span></div><div class="cap" style="--a:59.64s;--b:59.98s"><span class="w" style="--w:59.64s">ҳастанд:</span></div><div class="cap" style="--a:59.98s;--b:60.99s"><span class="w" style="--w:59.98s">рӯйхати</span> <span class="w" style="--w:60.48s">мусиқӣ,</span></div><div class="cap" style="--a:60.99s;--b:62.34s"><span class="w" style="--w:60.99s">суратҳо</span> <span class="w" style="--w:61.49s">дар</span> <span class="w" style="--w:61.66s">галерея,</span></div><div class="cap" style="--a:62.34s;--b:63.85s"><span class="w" style="--w:62.34s">рӯйхати</span> <span class="w" style="--w:62.84s">обуначиёни</span></div><div class="cap" style="--a:63.85s;--b:64.54s"><span class="w" style="--w:63.85s">Instagram.</span></div><div class="cap" style="--a:64.54s;--b:65.66s"><span class="w kwd" style="--w:64.54s">Рӯйхат</span> <span class="w" style="--w:64.99s">=</span> <span class="w" style="--w:65.21s">якчанд</span></div><div class="cap" style="--a:65.66s;--b:67.00s"><span class="w" style="--w:65.66s">қимат</span> <span class="w" style="--w:66.11s">+</span> <span class="w kwd" style="--w:66.33s">шумора</span></div><div class="cap" style="--a:67.00s;--b:67.63s"><span class="w" style="--w:67.00s">аз</span> <span class="w kwd" style="--w:67.23s">сифр.</span></div><div class="cap" style="--a:67.63s;--b:68.94s"><span class="w" style="--w:67.63s">Ва</span> <span class="w" style="--w:67.81s">акнун</span> <span class="w" style="--w:68.25s">санҷиш:</span></div><div class="cap" style="--a:68.94s;--b:70.10s"><span class="w" style="--w:68.94s">ҳамон</span> <span class="w" style="--w:69.22s">рӯйхати</span> <span class="w" style="--w:69.63s">харид</span></div><div class="cap" style="--a:70.10s;--b:70.40s"><span class="w" style="--w:70.10s">—</span></div><div class="cap" style="--a:70.18s;--b:70.69s"><span class="w" style="--w:70.18s">нон,</span></div><div class="cap" style="--a:70.69s;--b:71.09s"><span class="w" style="--w:70.69s">шир,</span></div><div class="cap" style="--a:71.09s;--b:71.56s"><span class="w" style="--w:71.09s">тухм,</span></div><div class="cap" style="--a:71.56s;--b:72.00s"><span class="w" style="--w:71.56s">себ,</span></div><div class="cap" style="--a:72.00s;--b:72.43s"><span class="w" style="--w:72.00s">нок.</span></div><div class="cap" style="--a:72.43s;--b:72.80s"><span class="w" style="--w:72.43s">Тухм</span></div><div class="cap" style="--a:72.80s;--b:73.52s"><span class="w" style="--w:72.80s">бо</span> <span class="w" style="--w:72.94s">кадом</span> <span class="w kwd" style="--w:73.23s">шумора</span></div><div class="cap" style="--a:73.52s;--b:74.21s"><span class="w" style="--w:73.52s">истодааст?</span></div><div class="cap" style="--a:74.21s;--b:74.83s"><span class="w" style="--w:74.21s">Ёдовар:</span></div><div class="cap" style="--a:74.83s;--b:75.74s"><span class="w kwd" style="--w:74.83s">шумора</span> <span class="w" style="--w:75.34s">аз</span> <span class="w kwd" style="--w:75.49s">сифр</span></div><div class="cap" style="--a:75.74s;--b:76.58s"><span class="w" style="--w:75.74s">оғоз</span> <span class="w" style="--w:76.08s">мешавад.</span></div><div class="cap" style="--a:76.58s;--b:77.56s"><span class="w" style="--w:76.58s">Ҷавобро</span> <span class="w" style="--w:77.12s">дар</span> <span class="w" style="--w:77.27s">шарҳ</span></div><div class="cap" style="--a:77.56s;--b:78.14s"><span class="w" style="--w:77.56s">нависед.</span></div><div class="cap" style="--a:78.14s;--b:79.26s"><span class="w" style="--w:78.14s">Ҷавоб</span> <span class="w" style="--w:78.46s">ва</span> <span class="w" style="--w:78.62s">калимаи</span></div><div class="cap" style="--a:79.26s;--b:80.06s"><span class="w kwd" style="--w:79.26s">РӮЙХАТ-ро</span> <span class="w" style="--w:79.74s">дар</span> <span class="w" style="--w:79.90s">шарҳ</span></div><div class="cap" style="--a:80.06s;--b:80.70s"><span class="w" style="--w:80.06s">нависед</span> <span class="w" style="--w:80.54s">—</span></div><div class="cap" style="--a:80.70s;--b:81.82s"><span class="w" style="--w:80.70s">шпаргалкаи</span> <span class="w" style="--w:81.34s">бепулро</span></div><div class="cap" style="--a:81.82s;--b:83.12s"><span class="w" style="--w:81.82s">ба</span> <span class="w" style="--w:81.98s">Direct</span> <span class="w" style="--w:82.30s">мефиристам!</span></div><div class="cap" style="--a:83.12s;--b:84.12s"><span class="w" style="--w:83.12s">Дарси</span> <span class="w" style="--w:83.52s">оянда</span> <span class="w" style="--w:84.07s">—</span></div><div class="cap" style="--a:84.12s;--b:84.76s"><span class="w" style="--w:84.12s">функсия:</span></div><div class="cap" style="--a:84.76s;--b:85.27s"><span class="w" style="--w:84.76s">рецепти</span></div><div class="cap" style="--a:85.27s;--b:85.96s"><span class="w" style="--w:85.27s">барнома.</span></div><div class="cap" style="--a:85.96s;--b:86.58s"><span class="w" style="--w:85.96s">Обуна</span> <span class="w" style="--w:86.25s">шавед,</span></div><div class="cap" style="--a:86.58s;--b:87.34s"><span class="w" style="--w:86.58s">то</span> <span class="w" style="--w:86.69s">аз</span> <span class="w" style="--w:86.90s">ҷаҳони</span></div><div class="cap" style="--a:87.34s;--b:88.47s"><span class="w" style="--w:87.34s">барномасозӣ</span> <span class="w" style="--w:88.07s">бехабар</span></div><div class="cap" style="--a:88.47s;--b:89.12s"><span class="w" style="--w:88.47s">намонед!</span></div>
+</div>
+<div class="flash" style="animation:flash .35s ease-out 0.00s forwards"></div><div class="flash" style="animation:flash .35s ease-out 6.42s forwards"></div><div class="flash" style="animation:flash .35s ease-out 68.25s forwards"></div>
+<div class="prog" style="--d:90.21s"></div></body></html>

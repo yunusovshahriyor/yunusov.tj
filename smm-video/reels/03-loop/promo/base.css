@@ -1,0 +1,25 @@
+:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+* { box-sizing:border-box; margin:0; }
+body { overflow:hidden; background:var(--paper); font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); position:relative; }
+body::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.6), transparent 50%), radial-gradient(circle at 90% 90%, rgba(180,71,46,.07), transparent 45%); }
+.hdr { position:absolute; left:28px; right:28px; top:28px; display:flex; justify-content:space-between; font:600 12px "JetBrains Mono",monospace; letter-spacing:1.5px; padding-bottom:7px; border-bottom:1.5px solid var(--rust); }
+.emo { font-family:"Noto Color Emoji"; }
+.chip { display:inline-block; background:var(--ink); color:var(--paper); font:700 14px "JetBrains Mono",monospace; letter-spacing:3px; padding:6px 12px; border-radius:6px; }
+h1 { font-size:52px; font-weight:900; letter-spacing:-1px; line-height:1.05; }
+h2 { font-size:30px; font-weight:900; color:var(--rust); }
+p { font-size:22px; line-height:1.4; font-weight:600; }
+.card { background:var(--card); border:2px solid var(--line); border-radius:18px; box-shadow:0 12px 26px rgba(31,63,68,.10); }
+.term { border-radius:14px; background:#1B2A2D; box-shadow:0 14px 30px rgba(31,63,68,.25); overflow:hidden; }
+.bar { height:24px; display:flex; align-items:center; gap:6px; padding:0 12px; background:rgba(255,255,255,.07); }
+.bar i { width:9px; height:9px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
+.term pre { padding:14px 20px; font:600 26px "JetBrains Mono",monospace; color:#EDE6D8; line-height:1.5; }
+.kw { color:#E0675A; } .nm { color:#E9B949; } .v { color:#7FD49A; } .cm { color:#7d8f91; }
+.foot { position:absolute; left:28px; right:28px; bottom:26px; display:flex; justify-content:space-between; align-items:center; font:700 14px "JetBrains Mono",monospace; color:#857D70; }
+.dots i { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--line); margin-left:6px; } .dots i.on { background:var(--rust); }
+.box { position:relative; width:260px; height:270px; margin:0 auto; }
+.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:#C8975A; }
+.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(#E2B070,#C8975A); z-index:3; display:flex; align-items:center; justify-content:center; }
+.flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; } .flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
+.tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
+.num { position:absolute; left:75px; top:44px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; }
+.stamp { display:inline-block; padding:6px 16px; border:4px solid var(--rust); border-radius:10px; color:var(--rust); font-size:30px; font-weight:900; rotate:-6deg; background:rgba(244,239,230,.85); }

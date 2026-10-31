@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="tg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Роботро ба ганҷ бибар</title>
+<meta name="description" content="Бозии оддӣ: бо тугмаҳои тир роботро ба ганҷ расонед. Фармонҳо дар навбат иҷро мешаванд — асоси барномасозӣ.">
+<style>
+:root{--paper:#F4EFE6;--ink:#1F3F44;--rust:#B4472E;--muted:#857D70;--card:#FFFDF8;--line:#E3D9C7;--gold:#E9B949;--green:#3E7C59}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;padding:14px 14px calc(26px + env(safe-area-inset-bottom));user-select:none;-webkit-user-select:none;
+ background-image:radial-gradient(circle at 15% 5%,rgba(255,255,255,.7),transparent 45%),radial-gradient(circle at 95% 95%,rgba(180,71,46,.08),transparent 40%)}
+.wrap{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.hdr{display:flex;justify-content:space-between;align-items:center;font:600 11px ui-monospace,monospace;letter-spacing:1.5px;padding-bottom:7px;border-bottom:1.5px solid var(--rust)}
+.hdr button{all:unset;cursor:pointer;font-size:18px;padding:2px 6px}
+h1{font-size:clamp(28px,8.5vw,38px);font-weight:900;letter-spacing:-1px;line-height:1.05}
+h1 span{color:var(--rust)}
+.lv{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.lv::-webkit-scrollbar{display:none}
+.lv button{all:unset;cursor:pointer;flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;background:var(--card);border:2px solid var(--line);color:var(--ink)}
+.lv button.cur{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lv button.done{border-color:var(--gold);background:#fff8e6}
+.lv button.lock{opacity:.35;pointer-events:none}
+.say{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;font-size:16px;line-height:1.4;font-weight:600}
+.say .face{font-size:30px;line-height:1}
+.board-wrap{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px;box-shadow:0 12px 26px rgba(31,63,68,.08);display:flex;justify-content:center}
+.board{position:relative;border-radius:10px;overflow:hidden}
+.cell{position:absolute;display:flex;align-items:center;justify-content:center;font-size:var(--fs)}
+.cell.a{background:#EFE7DA}.cell.b{background:#F7F1E6}
+.cell.wall{background:#9a7b5c;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.cell.goal{background:#e5f1ea}
+.trail{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--gold);opacity:.8;translate:-50% -50%}
+.robot{position:absolute;display:flex;align-items:center;justify-content:center;font-size:var(--fs);transition:left .3s ease,top .3s ease;z-index:3}
+.robot.bump{animation:bump .4s}
+.robot.win{animation:jump .6s ease-in-out 3}
+@keyframes bump{25%{translate:-6px 0}50%{translate:6px 0}75%{translate:-3px 0}}
+@keyframes jump{50%{translate:0 -14px;scale:1.2}}
+.prog{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px;min-height:76px}
+.prog h3{font-size:13px;color:var(--muted);font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between}
+.slots{display:flex;gap:6px;flex-wrap:wrap}
+.slot{min-width:46px;height:46px;border-radius:12px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:22px;background:#faf6ee}
+.slot.full{border-style:solid;border-color:var(--ink);background:#fff;cursor:pointer;padding:0 8px;font-weight:900;gap:2px;font-size:20px}
+.slot.full small{font-size:13px;color:var(--rust);font-weight:900}
+.slot.run{background:var(--gold);border-color:var(--gold)}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:14px;font-weight:900;transition:transform .1s;text-align:center}
+.btn:active{transform:scale(.94)}
+.arrow{height:64px;font-size:30px;background:var(--ink);color:var(--paper)}
+.arrow.rep{background:var(--rust)}
+.row2{display:flex;gap:8px;align-items:stretch}
+.rep-ctl{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:6px 8px}
+.rep-ctl.on{border-color:var(--rust);background:#fbeee9}
+.rep-ctl .tg{height:40px;padding:0 12px;background:var(--line);font-size:15px;flex:1;white-space:nowrap}
+.rep-ctl.on .tg{background:var(--rust);color:#fff}
+.rep-ctl .st{width:34px;height:34px;background:var(--ink);color:#fff;font-size:20px}
+.rep-ctl output{font-weight:900;font-size:18px;min-width:30px;text-align:center}
+.go{height:56px;flex:1.4;background:var(--green);color:#fff;font-size:20px}
+.sm{height:56px;width:56px;background:var(--card);border:2px solid var(--line);font-size:22px}
+.tip{font-size:14px;color:var(--muted);font-weight:600;text-align:center;line-height:1.4}
+.hintbtn{all:unset;cursor:pointer;color:var(--rust);font-weight:800;text-decoration:underline;font-size:14px}
+dialog{border:none;border-radius:22px;padding:22px 20px;max-width:360px;width:calc(100% - 32px);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center}
+dialog::backdrop{background:rgba(31,63,68,.55)}
+dialog h2{font-size:28px;font-weight:900;margin-bottom:6px}
+.stars{font-size:38px;letter-spacing:4px;margin:6px 0}
+dialog p{font-size:15px;line-height:1.45;font-weight:600;margin-bottom:12px}
+dialog .btn{width:100%;height:52px;background:var(--rust);color:#fff;font-size:18px;margin-top:8px}
+dialog .btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line);height:44px;font-size:15px}
+pre.code{text-align:left;background:#1B2A2D;color:#EDE6D8;border-radius:12px;padding:10px 12px;font:600 13px/1.6 ui-monospace,"DejaVu Sans Mono",monospace;overflow-x:auto;margin:6px 0 4px;white-space:pre;font-variant-ligatures:none}
+pre.code .k{color:#E0675A}pre.code .n{color:#E9B949}pre.code .c{color:#7d8f91}
+.foot{text-align:center;font-size:13px;color:var(--muted);line-height:1.6}.foot b{color:var(--rust)}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <div class="hdr"><span>ШАҲРИЁР ЮНУСОВ · БОЗӢ</span><button id="snd" aria-label="Садо">🔊</button></div>
+  <h1>Роботро ба <span>ганҷ</span> бибар 💎</h1>
+  <div class="lv" id="lv"></div>
+  <div class="say"><span class="face">🤖</span><span id="say"></span></div>
+  <div class="board-wrap"><div class="board" id="board"></div></div>
+  <div class="prog"><h3><span>📋 Фармонҳо (дар навбат)</span><span id="cnt"></span></h3><div class="slots" id="slots"></div></div>
+  <div class="pad" id="pad">
+    <button class="btn arrow" data-d="U" aria-label="Боло">⬆️</button>
+    <button class="btn arrow" data-d="L" aria-label="Чап">⬅️</button>
+    <button class="btn arrow" data-d="D" aria-label="Поён">⬇️</button>
+    <button class="btn arrow" data-d="R" aria-label="Рост">➡️</button>
+  </div>
+  <div class="row2" id="reprow">
+    <div class="rep-ctl" id="rep"><button class="btn tg" id="reptg">🔁 Такрор</button><button class="btn st" id="repm">−</button><output id="repn">3</output><button class="btn st" id="repp">+</button></div>
+  </div>
+  <div class="row2">
+    <button class="btn sm" id="undo" aria-label="Бекор кардан">⌫</button>
+    <button class="btn go" id="run">▶ Оғоз</button>
+    <button class="btn sm" id="clear" aria-label="Тоза кардан">🗑</button>
+  </div>
+  <div class="tip" id="tip"></div>
+  <div class="foot">Дарсҳои нав дар Instagram: <b>@shahriyor_yunusov</b><br>Шпаргалкаи бепул: дар шарҳ <b>ДАВР</b> нависед</div>
+</div>
+<dialog id="dlg"><h2 id="dh"></h2><div class="stars" id="ds"></div><p id="dp"></p><div id="dcode"></div><button class="btn" id="dnext"></button><button class="btn alt" id="dcode-btn">👀 Ин чӣ хел код мешавад?</button><button class="btn alt" id="dretry">🔄 Боз бозӣ кун</button></dialog>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var DIRS = { U: [0, -1, "⬆️", "боло"], D: [0, 1, "⬇️", "поён"], L: [-1, 0, "⬅️", "чап"], R: [1, 0, "➡️", "рост"] };
+  var FN = { U: "up", D: "down", L: "left", R: "right" };
+
+  /* R = робот, G = ганҷ, # = девор, . = холӣ.  sol: ҳалли намунавӣ (барои санҷиш ва «par») */
+  var LEVELS = [
+    { g: ["R..G."], slots: 5, rep: false, say: "Салом! Ман робот ҳастам. Ба ганҷи 💎 расонед: тугмаи ➡️-ро 3 бор пахш кунед, баъд «▶ Оғоз».", hint: "Ганҷ 3 қадам ба рост аст: ➡️ ➡️ ➡️", sol: ["R", "R", "R"] },
+    { g: ["R....", ".....", "..G.."], slots: 6, rep: false, say: "Акнун ба поён ҳам рафтан лозим. Ду бор ➡️ ва ду бор ⬇️.", hint: "2 қадам ба рост, 2 қадам ба поён.", sol: ["R", "R", "D", "D"] },
+    { g: ["R#...", ".#.G.", "....."], slots: 8, rep: false, say: "Дарвозаи 🧱 роҳро баста! Аз поён давр занед.", hint: "Аввал ⬇️⬇️, баъд ➡️➡️, баъд ⬆️ ва ➡️.", sol: ["D", "D", "R", "R", "U", "R"] },
+    { g: ["R..#G", "##.#.", "....."], slots: 9, rep: false, say: "Роҳи дароз! Дар ҳар гардиш ҳушёр бошед.", hint: "➡️➡️ ⬇️⬇️ ➡️➡️ ⬆️⬆️", sol: ["R", "R", "D", "D", "R", "R", "U", "U"] },
+    { g: ["R.....G", "......."], slots: 2, rep: true, say: "Ганҷ дур аст, ва фармон кам! 🤔 Тугмаи 🔁 «Такрор» кӯмак мекунад: як фармонро чанд бор такрор мекунад.", hint: "🔁 Такрор-ро пахш кунед, адади 6 интихоб кунед, баъд ➡️.", sol: ["*6R"] },
+    { g: ["R.....", "......", "......", ".....G"], slots: 3, rep: true, say: "Ду фармони такрорӣ кифоя аст!", hint: "🔁5 ➡️ ва 🔁3 ⬇️", sol: ["*5R", "*3D"] },
+    { g: ["R......", "######.", "G......"], slots: 4, rep: true, say: "Роҳ ба шакли ҳарфи U. Се такрор!", hint: "🔁6 ➡️, 🔁2 ⬇️, 🔁6 ⬅️", sol: ["*6R", "*2D", "*6L"] },
+    { g: ["R......", "######.", ".......", ".######", "G......"], slots: 5, rep: true, say: "Мор (🐍) роҳро печонд. Чор такрор!", hint: "ба рост, ба поён, ба чап, ба поён", sol: ["*6R", "*2D", "*6L", "*2D"] },
+    { g: ["R.....", "#####.", "......", ".#####", ".....G"], slots: 6, rep: true, say: "Роҳ боз ҳам печида шуд!", hint: "рост 5, поён 2, чап 5, поён 2, рост 5", sol: ["*5R", "*2D", "*5L", "*2D", "*5R"] },
+    { g: ["R..#...", "##.#.#.", "....  .#.".replace(/ /g, "."), ".#####.", "......G"], slots: 7, rep: true, say: "Сатҳи охирин! Ҳамаи донишро истифода баред. 🏆", hint: "рост 2, поён 2, рост 2, боло 2, рост 2, поён 4", sol: ["*2R", "*2D", "*2R", "*2U", "*2R", "*4D"] }
+  ];
+  /* сатҳи 10-ро дастӣ дуруст месозем */
+  LEVELS[9].g = ["R..#...", "##.#.#.", ".....#.", ".#####.", "......G"];
+  LEVELS[9].sol = ["*2R", "*2D", "*2R", "*2U", "*2R", "*4D"];
+  /* ҳалли сатҳи 10: (0,0)→(2,0)→(2,2)→(4,2)→(4,0)→(6,0)→(6,4)  */
+  var STORE = "robot-ganj-v1";
+  var cur = 0, prog = [], running = false, muted = false, repOn = false, repN = 3, pos = { x: 0, y: 0 }, save = { done: {} };
+  function store(v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(STORE) || "null"); localStorage.setItem(STORE, JSON.stringify(v)); } catch (e) { return null; } }
+  save = store() || save;
+
+  /* --- садо --- */
+  var ac = null;
+  function beep(f, d, t, g) {
+    if (muted) return;
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); var o = ac.createOscillator(), a = ac.createGain(); o.type = t || "sine"; o.frequency.value = f; a.gain.value = g || .07; a.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + d); o.connect(a); a.connect(ac.destination); o.start(); o.stop(ac.currentTime + d); } catch (e) {}
+  }
+  function tune(a) { a.forEach(function (f, i) { setTimeout(function () { beep(f, .2, "triangle", .07); }, i * 110); }); }
+  $("snd").onclick = function () { muted = !muted; this.textContent = muted ? "🔇" : "🔊"; };
+
+  /* --- конфетти --- */
+  var cv = $("fx"), cx = cv.getContext("2d"), parts = [], run = false;
+  function fit() { cv.width = innerWidth; cv.height = innerHeight; } addEventListener("resize", fit); fit();
+  function confetti() {
+    var cols = ["#B4472E", "#E9B949", "#3E7C59", "#1F3F44"];
+    for (var i = 0; i < 110; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .4, vx: (Math.random() - .5) * 13, vy: -Math.random() * 13 - 3, s: Math.random() * 8 + 4, c: cols[i % 4], r: 0, vr: (Math.random() - .5) * .4 });
+    if (!run) { run = true; requestAnimationFrame(tick); }
+  }
+  function tick() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(function (p) { return p.y < cv.height + 20; });
+    parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); });
+    if (parts.length) requestAnimationFrame(tick); else { run = false; cx.clearRect(0, 0, cv.width, cv.height); }
+  }
+
+  /* --- сатҳ --- */
+  function parse(L) {
+    var rows = L.g, h = rows.length, w = rows[0].length, walls = {}, start = null, goal = null;
+    rows.forEach(function (r, y) { for (var x = 0; x < w; x++) { var c = r[x]; if (c === "#") walls[x + "," + y] = 1; if (c === "R") start = { x: x, y: y }; if (c === "G") goal = { x: x, y: y }; } });
+    return { w: w, h: h, walls: walls, start: start, goal: goal };
+  }
+  var M = null, cell = 56;
+  function build() {
+    var L = LEVELS[cur]; M = parse(L);
+    var avail = Math.min(innerWidth - 56, 440);
+    cell = Math.max(34, Math.min(64, Math.floor(avail / M.w)));
+    var b = $("board"); b.style.width = M.w * cell + "px"; b.style.height = M.h * cell + "px"; b.style.setProperty("--fs", Math.round(cell * .62) + "px"); b.innerHTML = "";
+    for (var y = 0; y < M.h; y++) for (var x = 0; x < M.w; x++) {
+      var d = document.createElement("div"), k = x + "," + y;
+      d.className = "cell " + ((x + y) % 2 ? "a" : "b") + (M.walls[k] ? " wall" : "") + (M.goal.x === x && M.goal.y === y ? " goal" : "");
+      d.style.cssText += "left:" + x * cell + "px;top:" + y * cell + "px;width:" + cell + "px;height:" + cell + "px";
+      d.textContent = M.walls[k] ? "🧱" : (M.goal.x === x && M.goal.y === y ? "💎" : "");
+      b.appendChild(d);
+    }
+    var r = document.createElement("div"); r.className = "robot"; r.id = "robot"; r.textContent = "🤖"; r.style.width = r.style.height = cell + "px"; b.appendChild(r);
+    place(M.start);
+    $("say").textContent = L.say; $("tip").innerHTML = "";
+    $("reprow").style.display = L.rep ? "flex" : "none";
+    prog = []; repOn = false; drawProg(); drawLv(); drawPad();
+    $("tip").innerHTML = '<button class="hintbtn" id="hintbtn">💡 Кӯмак</button>';
+    $("hintbtn").onclick = function () { $("tip").textContent = "💡 " + L.hint; };
+  }
+  function place(p) { pos = { x: p.x, y: p.y }; var r = $("robot"); r.style.left = p.x * cell + "px"; r.style.top = p.y * cell + "px"; }
+  function clearTrail() { Array.prototype.forEach.call(document.querySelectorAll(".trail"), function (t) { t.remove(); }); }
+
+  function drawLv() {
+    $("lv").innerHTML = "";
+    LEVELS.forEach(function (_, i) {
+      var b = document.createElement("button"); b.textContent = i + 1;
+      var unlocked = i === 0 || save.done[i - 1] || save.done[i];
+      b.className = (i === cur ? "cur " : "") + (save.done[i] ? "done " : "") + (unlocked ? "" : "lock");
+      b.onclick = function () { if (!running) { cur = i; build(); } };
+      $("lv").appendChild(b);
+    });
+    var c = $("lv").children[cur]; if (c && c.scrollIntoView) { try { c.scrollIntoView({ block: "nearest", inline: "center" }); } catch (e) {} }
+  }
+  function drawPad() {
+    Array.prototype.forEach.call(document.querySelectorAll(".arrow"), function (b) { b.classList.toggle("rep", repOn); });
+    $("rep").classList.toggle("on", repOn); $("reptg").textContent = repOn ? "🔁 Такрор: ҲОЗИР" : "🔁 Такрор";
+    $("repn").textContent = repN;
+  }
+  function drawProg(active) {
+    var L = LEVELS[cur], h = "";
+    for (var i = 0; i < L.slots; i++) {
+      var p = prog[i];
+      if (p) h += '<div class="slot full' + (active === i ? " run" : "") + '" data-i="' + i + '">' + (p.n > 1 ? "<small>" + p.n + "×</small>" : "") + DIRS[p.d][2] + "</div>";
+      else h += '<div class="slot"></div>';
+    }
+    $("slots").innerHTML = h; $("cnt").textContent = prog.length + " / " + L.slots;
+    Array.prototype.forEach.call(document.querySelectorAll(".slot.full"), function (s) { s.onclick = function () { if (!running) { prog.splice(+s.dataset.i, 1); drawProg(); reset(); } }; });
+  }
+  function reset() { clearTrail(); place(M.start); $("robot").className = "robot"; }
+  function add(d) {
+    if (running) return; var L = LEVELS[cur];
+    if (prog.length >= L.slots) { $("tip").textContent = "Ҷой тамом шуд! 😮 " + (L.rep ? "Барои кам кардани қадамҳо 🔁 Такрор-ро истифода баред." : "Як фармонро бо ⌫ пок кунед."); beep(200, .15, "square", .05); return; }
+    prog.push({ d: d, n: repOn ? repN : 1 }); beep(520 + prog.length * 30, .08); if (repOn) repOn = false;
+    drawProg(); drawPad(); reset();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".arrow"), function (b) { b.onclick = function () { add(b.dataset.d); }; });
+  $("reptg").onclick = function () { if (!running) { repOn = !repOn; drawPad(); } };
+  $("repm").onclick = function () { repN = Math.max(2, repN - 1); drawPad(); };
+  $("repp").onclick = function () { repN = Math.min(9, repN + 1); drawPad(); };
+  $("undo").onclick = function () { if (!running) { prog.pop(); drawProg(); reset(); } };
+  $("clear").onclick = function () { if (!running) { prog = []; drawProg(); reset(); } };
+
+  function steps() { var s = []; prog.forEach(function (p, i) { for (var k = 0; k < p.n; k++) s.push({ d: p.d, i: i }); }); return s; }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  async function runProg() {
+    if (running) return; if (!prog.length) { $("tip").textContent = "Аввал фармон илова кунед ⬆️⬇️⬅️➡️"; return; }
+    running = true; reset(); $("tip").textContent = ""; $("run").disabled = true;
+    var seq = steps(), ok = false, crashed = false, r = $("robot");
+    for (var s = 0; s < seq.length; s++) {
+      drawProg(seq[s].i);
+      var dd = DIRS[seq[s].d], nx = pos.x + dd[0], ny = pos.y + dd[1];
+      if (nx < 0 || ny < 0 || nx >= M.w || ny >= M.h || M.walls[nx + "," + ny]) { crashed = true; r.classList.add("bump"); beep(150, .3, "sawtooth", .08); break; }
+      var t = document.createElement("div"); t.className = "trail"; t.style.left = (pos.x + .5) * cell + "px"; t.style.top = (pos.y + .5) * cell + "px"; $("board").insertBefore(t, r);
+      place({ x: nx, y: ny }); beep(330 + s * 25, .1); await sleep(360);
+      if (nx === M.goal.x && ny === M.goal.y) { ok = true; break; }
+    }
+    drawProg();
+    if (ok) await win();
+    else {
+      await sleep(crashed ? 700 : 300);
+      $("say").textContent = crashed ? "Бум! 💥 Ман ба девор ё канори майдон расидам. Фармонҳоро тағйир диҳед." : "Ман ба ганҷ нарасидам 😅 Фармони дигар илова кунед ё иваз кунед.";
+      beep(180, .3, "triangle", .06); reset();
+    }
+    running = false; $("run").disabled = false;
+  }
+  $("run").onclick = runProg;
+
+  function par(L) { return L.sol.length; }
+  function codeFor() {
+    var out = prog.map(function (p) {
+      return p.n > 1 ? '<span class="k">for</span> (<span class="k">let</span> <span class="n">i</span> = 0; <span class="n">i</span> &lt; ' + p.n + '; <span class="n">i</span>++) { ' + FN[p.d] + "(); }" : FN[p.d] + "();";
+    });
+    return '<pre class="code">' + out.join("\n") + "</pre>";
+  }
+  async function win() {
+    var L = LEVELS[cur], used = prog.length, stars = used <= par(L) ? 3 : used <= par(L) + 1 ? 2 : 1;
+    $("robot").classList.add("win"); tune([523, 659, 784, 1047]); confetti(); await sleep(900);
+    save.done[cur] = Math.max(save.done[cur] || 0, stars); store(save); drawLv();
+    var last = cur === LEVELS.length - 1;
+    $("dh").textContent = last ? "Офарин! 🏆" : "Ганҷ ёфт шуд! 🎉";
+    $("ds").textContent = "⭐⭐⭐".slice(0, stars) + "☆☆☆".slice(0, 3 - stars);
+    $("dp").textContent = last ? "Шумо ҳамаи 10 сатҳро гузаштед! Шумо ҳоло медонед, ки барнома фармонҳои пай дар пай аст, ва такрор онҳоро кӯтоҳ мекунад." :
+      (stars === 3 ? "Беҳтарин роҳ! Ҳеҷ як қадами изофӣ нест." : "Бо " + used + " фармон. Метавонед бо " + par(L) + " фармон ҳам расед.");
+    $("dnext").textContent = last ? "🔁 Аз аввал" : "Сатҳи навбатӣ ➜"; $("dcode").innerHTML = ""; $("dlg").showModal();
+  }
+  $("dcode-btn").onclick = function () { $("dcode").innerHTML = codeFor() + '<p style="font-size:13px;color:#857D70;margin:4px 0 0">Ин ҳамон фармонҳо ҳастанд, ки шумо пахш кардед, вале ҳамчун код.</p>'; };
+  $("dnext").onclick = function () { $("dlg").close(); cur = cur === LEVELS.length - 1 ? 0 : cur + 1; build(); };
+  $("dretry").onclick = function () { $("dlg").close(); build(); };
+  addEventListener("resize", function () { if (!running) { var p = prog.slice(); build(); prog = p; drawProg(); } });
+
+  /* аввалин сатҳи ҳалношуда */
+  for (var i = 0; i < LEVELS.length; i++) { if (!save.done[i]) { cur = i; break; } if (i === LEVELS.length - 1) cur = 0; }
+  window.__game = { levels: LEVELS, cur: function () { return cur; } };
+  build();
+})();
+</script>
+</body>
+</html>
