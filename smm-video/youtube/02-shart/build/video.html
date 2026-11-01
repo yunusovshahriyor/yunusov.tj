@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="tg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JS IDE</title>
+<meta name="description" content="Редактори код дар браузер: код нависед, иҷро кунед ва вазифаҳои дарсҳои тағйирёбанда, шарт ва давро санҷед.">
+<style>
+:root{--bg:#1e1e1e;--panel:#252526;--panel2:#2d2d30;--line:#3c3c3c;--text:#d4d4d4;--muted:#8b949e;--white:#fff;--blue:#0e639c;--cyan:#4fc1ff;--green:#2ea043;--teal:#4ec9b0;--red:#f48771;--yellow:#dcdcaa;--orange:#ce9178;--mono:ui-monospace,"JetBrains Mono","SF Mono","DejaVu Sans Mono",Consolas,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+.app{display:flex;flex-direction:column;min-height:100%}
+.top{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.logo{font:800 14px var(--mono);color:var(--cyan);letter-spacing:.5px}
+.logo b{color:var(--white)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 100%;min-width:0;order:3}
+@media(min-width:900px){.tabs{order:0;flex:1 1 0}}
+.tabs::-webkit-scrollbar{display:none}
+.tab{all:unset;cursor:pointer;flex:none;padding:7px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.tab:hover{color:var(--text);background:var(--panel2)}
+.tab.on{color:var(--white);background:var(--bg);border-bottom-color:var(--cyan)}
+.tab.ok::after{content:" ✓";color:var(--teal);font-weight:900}
+.progress{display:flex;align-items:center;gap:10px;margin-left:auto}
+.progress .pt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
+.pbar{width:90px;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--cyan));transition:width .4s}
+.cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 10px;border-radius:6px;background:var(--yellow);color:#1e1e1e;white-space:nowrap}
+.cert[disabled]{opacity:.35;pointer-events:none;background:var(--line);color:var(--muted)}
+.main{display:grid;grid-template-columns:1fr;flex:1;min-height:0}
+@media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 49px)}.left,.work{overflow:auto}}
+.left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line)}
+@media(min-width:1000px){.left{border-right:1px solid var(--line);border-bottom:0}}
+.work{display:flex;flex-direction:column;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card h2{font-size:16px;font-weight:800;color:var(--white);margin-bottom:6px}
+.card p,.card li{font-size:14px;line-height:1.6;color:#cccccc}
+.card ul{padding-left:18px}
+.tag{display:inline-block;font:700 10px var(--mono);letter-spacing:1.5px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:4px;margin-bottom:8px}
+code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--orange);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
+.card b{color:var(--white)}
+.ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
+.bar{display:flex;align-items:center;gap:6px;padding:0 12px;height:34px;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57;flex:none}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{font:500 12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed .bar{height:42px;gap:8px}
+.ed .bar #fname{margin-right:auto}
+.ed .bar select{max-width:130px;padding:5px 8px;font-size:12px}
+.acts{display:flex;gap:6px;flex:none}
+.ic{all:unset;cursor:pointer;height:30px;min-width:32px;padding:0 9px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ic:hover{background:#37373d}.ic:active{transform:scale(.95)}
+.ic.run{background:var(--green);border-color:var(--green);color:#fff}.ic.chk{background:var(--blue);border-color:var(--blue);color:#fff;font-size:13px}
+.ic[disabled]{opacity:.5;pointer-events:none}
+@media(max-width:600px){.bar i.dots,.ed .bar #fname{display:none}.ed .bar select{margin-right:auto}.ic{height:34px;min-width:34px;padding:0 8px}.ic .lbl{display:none}.ed .bar{padding:0 8px;gap:6px}}
+.main.free{grid-template-columns:1fr}.main.free .left{display:none}
+.editor{position:relative;display:flex;height:clamp(230px,40vh,400px)}
+@media(min-width:1000px){.editor{height:auto;flex:1;min-height:220px}}
+.gut{white-space:pre;flex:none;width:44px;padding:12px 8px 12px 0;text-align:right;color:#858585;font:500 13.5px/1.65 var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
+.codewrap{position:relative;flex:1;min-width:0}
+.codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 14px;font:500 14px/1.65 var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
+.codewrap pre{color:#d4d4d4;pointer-events:none;overflow:hidden}
+.codewrap textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none;-webkit-text-fill-color:transparent}
+.codewrap textarea::selection{background:rgba(38,79,120,.8);-webkit-text-fill-color:transparent}
+.kw{color:#569cd6}.st{color:#ce9178}.nu{color:#b5cea8}.cm{color:#6a9955;font-style:italic}.fn{color:#dcdcaa}
+.sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line)}
+.sym::-webkit-scrollbar{display:none}
+.sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:38px;border-radius:6px;background:var(--panel2);color:var(--text);font:700 16px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sym button:active{background:var(--blue)}
+.sym button.tabk{font-size:12px;color:var(--muted)}
+@media(min-width:1000px){.sym{display:none}}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.run{background:var(--green);color:#fff;font-size:15px;padding:10px 18px}
+.btn.run:hover,.ic.run:hover,.ic.chk:hover{filter:brightness(1.1)}
+.btn.chk{background:var(--blue);color:#fff;font-size:15px;padding:10px 16px}
+.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
+.ghost:hover{background:#37373d}
+.btn[disabled]{opacity:.5;pointer-events:none}
+select{font:600 13px Inter,system-ui,sans-serif;padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
+.con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column}
+@media(min-width:1000px){.con{height:34%;min-height:170px}}
+.con .bar{height:32px}
+.con .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.con .bar button{margin-left:auto}
+.out{padding:10px 14px;min-height:150px;max-height:300px;overflow:auto;font:500 13.5px/1.6 var(--mono);color:#cccccc;white-space:pre-wrap;word-break:break-word;flex:1}
+@media(min-width:1000px){.out{max-height:none}}
+.out .l{display:block}.out .e{color:var(--red)}.out .i{color:var(--muted)}
+.out .hint{display:block;margin-top:8px;padding:9px 12px;border-radius:6px;background:rgba(220,220,170,.08);border-left:3px solid var(--yellow);color:var(--yellow);font:500 13.5px Inter,system-ui,sans-serif}
+.out .hint code{color:var(--orange)}
+.checks{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.checks div{font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:6px;background:var(--panel2);color:var(--text)}
+.checks .ok{background:rgba(78,201,176,.12);color:var(--teal)}.checks .no{background:rgba(244,135,113,.12);color:var(--red)}
+.win{background:var(--green);color:#fff;border-radius:6px;padding:10px 12px;font-weight:700;font-size:14px;margin-top:10px}
+.sol{margin-top:10px}
+.sol pre{background:var(--bg);color:#d4d4d4;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font:500 13px/1.6 var(--mono);overflow:auto;margin-top:8px;white-space:pre}
+dialog{border:1px solid var(--line);border-radius:12px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog img{width:100%;border-radius:8px;border:1px solid var(--line);margin:10px 0}
+dialog p{font-size:14px;line-height:1.5;color:#cccccc}
+dialog b{color:#fff}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+</style>
+<style>/* Видео-режим IDE (1280×720 css → 1920×1080) + слайды «VS Code Dark + бунафш» (brand/STYLE.md). Бе субтитр ва бе хати пешрафт: онро худи YouTube мекунад. */
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#fff;
+  --kw:#569CD6;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--teal:#4EC9B0;--cyan:#4FC1FF;--err:#F48771;
+  --purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--box1:#E2B070;--box2:#C8975A}
+*{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+html,body{overflow:hidden;width:1280px;height:720px;background:#1E1E1E}
+#stagewrap{position:fixed;left:0;top:0;width:1280px;height:720px;overflow:hidden;background:#1e1e1e}
+.app{width:1280px;height:720px;min-height:0!important;transform-origin:0 0}
+.main{height:671px!important}
+.tab{font-size:14px!important}
+.codewrap pre,.codewrap textarea{font:500 22px/1.6 var(--mono)!important;padding:14px 18px!important}
+.gut{font:500 22px/1.6 var(--mono)!important;padding:14px 10px 14px 0!important;width:58px!important}
+.out{font:500 20px/1.55 var(--mono)!important;padding:12px 18px!important}
+.out .hint{font:500 17px/1.45 Inter,sans-serif!important}
+.con{height:34%!important}
+.card p,.card li{font-size:15px!important}
+.checks div{font-size:15px!important}
+.win{font-size:15px!important}
+#side button[data-i][style*="1F3F44"]{background:#BD93F9!important;color:#1E1E1E!important;border-color:#BD93F9!important}
+textarea{caret-color:transparent!important}
+canvas#fx{z-index:60}
+
+/* оверлей поверх IDE */
+#ovl{position:fixed;inset:0;pointer-events:none;z-index:70}
+.mk{position:absolute;border:3px solid #BD93F9;border-radius:7px;box-shadow:0 0 0 4px rgba(189,147,249,.18),0 0 24px rgba(189,147,249,.35)}
+.mk.g{border-color:#4ec9b0;box-shadow:0 0 0 4px rgba(78,201,176,.18),0 0 24px rgba(78,201,176,.35)}
+.mk.r{border-color:#f48771;box-shadow:0 0 0 4px rgba(244,135,113,.18),0 0 24px rgba(244,135,113,.35)}
+.mk.c{border-color:#4fc1ff;box-shadow:0 0 0 4px rgba(79,193,255,.18),0 0 24px rgba(79,193,255,.35)}
+.rg{position:absolute;border:3px solid #BD93F9;border-radius:10px;box-shadow:0 0 0 5px rgba(189,147,249,.2),0 0 30px rgba(189,147,249,.4)}
+.rg.g{border-color:#4ec9b0;box-shadow:0 0 0 5px rgba(78,201,176,.2),0 0 30px rgba(78,201,176,.4)}
+.rg.r{border-color:#f48771;box-shadow:0 0 0 5px rgba(244,135,113,.2),0 0 30px rgba(244,135,113,.4)}
+.rg.c{border-color:#4fc1ff;box-shadow:0 0 0 5px rgba(79,193,255,.2),0 0 30px rgba(79,193,255,.4)}
+.mk b,.rg b{position:absolute;display:block;white-space:nowrap;font:800 19px Inter,sans-serif;color:#1e1e1e}
+.mk b{left:50%;bottom:calc(100% + 12px);margin-left:-300px;width:600px;text-align:center;transform-origin:50% 100%}
+.mk.below b{bottom:auto;top:calc(100% + 12px);transform-origin:50% 0}
+.rg b{right:0;bottom:calc(100% + 10px)}
+.rg.below b{bottom:auto;top:calc(100% + 10px)}
+.mk b>i,.rg b>i{font-style:normal;display:inline-block;padding:7px 14px;border-radius:999px;background:linear-gradient(90deg,#BD93F9,#FF79C6);box-shadow:0 6px 18px rgba(0,0,0,.55)}
+.mk.g b>i,.rg.g b>i{background:#4ec9b0}.mk.r b>i,.rg.r b>i{background:#f48771}.mk.c b>i,.rg.c b>i{background:#4fc1ff}
+.caret{position:absolute;width:3px;background:#fff;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6)}
+.chip{position:absolute;left:640px;top:360px;align-items:center;gap:14px;padding:22px 34px;border-radius:18px;background:rgba(37,37,38,.97);border:2px solid #3c3c3c;color:#fff;font:800 34px Inter,sans-serif;box-shadow:0 30px 80px rgba(0,0,0,.65);white-space:nowrap}
+.chip small{display:block;font:600 18px Inter,sans-serif;color:#8b949e;margin-top:6px}
+.chip.card{flex-direction:column;align-items:flex-start;gap:0;border-color:#BD93F9;box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 40px rgba(189,147,249,.25)}
+.chip.side{font-size:24px;padding:14px 22px;border-radius:14px}
+.chip.yel{background:linear-gradient(90deg,#BD93F9,#FF79C6);color:#1e1e1e;border-color:transparent}
+.chip.red{background:#f48771;color:#1e1e1e;border-color:#f48771}
+.chip.grn{background:#4ec9b0;color:#1e1e1e;border-color:#4ec9b0}
+.chip .big{font-size:90px;font-family:var(--mono);color:#BD93F9;line-height:1}
+#ptr{position:absolute;width:30px;height:30px;margin:-3px 0 0 -4px;z-index:5;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+#rip{position:absolute;width:70px;height:70px;border-radius:50%;border:4px solid #fff;z-index:4}
+
+/* ---------- слайды ---------- */
+.scene{position:fixed;left:0;top:0;width:1280px;height:720px;background:#1E1E1E;z-index:50;visibility:hidden;overflow:hidden;color:var(--text);font-family:Inter,sans-serif;transform-origin:50% 50%}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 22%,rgba(189,147,249,.16),transparent 42%),radial-gradient(circle at 12% 88%,rgba(255,121,198,.07),transparent 45%)}
+.scene>*{position:absolute}
+.kicker{left:60px;top:40px;font:800 14px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase}
+.kicker b{background:var(--panel2);color:var(--white);border:1px solid var(--line);border-radius:6px;padding:4px 9px;margin-right:10px}
+.h1{font-weight:900;font-size:96px;letter-spacing:-2px;line-height:1;color:var(--white)}
+.h2{font-weight:900;font-size:46px;letter-spacing:-.5px;line-height:1.05;color:var(--white)}
+.sub{font-weight:600;font-size:26px;color:var(--muted)}
+.acc{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:12px 22px;font:700 22px Inter,sans-serif;white-space:nowrap}
+.pill.accent{background:var(--accent);color:#1E1E1E;border:0}
+.pill.ok{background:rgba(78,201,176,.15);color:var(--teal);border-color:rgba(78,201,176,.4)}
+.pill.err{background:rgba(244,135,113,.15);color:var(--err);border-color:rgba(244,135,113,.4)}
+.codechip{font:700 26px var(--mono);font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 20px;white-space:nowrap}
+.codechip .k{color:var(--kw)}.codechip .s{color:var(--str)}.codechip .n{color:var(--num)}.codechip .f{color:var(--fn)}.codechip .c{color:var(--cm)}.codechip .t{color:var(--teal)}.codechip .e{color:var(--err)}
+.card3{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card3 .emo{font-size:44px}
+.card3 .t{font:800 26px Inter,sans-serif;color:var(--white)}
+.card3 .u{font:600 19px Inter,sans-serif;color:var(--muted);line-height:1.4}
+.card3.hl{border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 30px rgba(189,147,249,.25)}
+.typing::after{content:"|";color:var(--purple);margin-left:2px}
+.t-ok{color:var(--teal)}.t-err{color:var(--err)}
+/* қуттии картонии силсила */
+.box{width:260px;height:270px}
+.box .back{position:absolute;left:0;top:70px;width:260px;height:190px;border-radius:14px;background:#C8975A}
+.box .front{position:absolute;left:0;top:130px;width:260px;height:130px;border-radius:6px 6px 18px 18px;background:linear-gradient(#E2B070,#C8975A);z-index:3;display:flex;align-items:center;justify-content:center}
+.box .tag{background:#fff;border-radius:10px;padding:8px 22px;font:800 34px var(--mono);box-shadow:0 4px 10px rgba(0,0,0,.25);color:#1E1E1E}
+.box .num{position:absolute;left:65px;top:56px;width:130px;height:90px;border-radius:20px;background:var(--panel2);border:2px solid var(--purple);color:#fff;font:900 52px var(--mono);display:flex;align-items:center;justify-content:center;z-index:2}
+/* дарахти қарор */
+.node{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 24px;font:800 30px Inter,sans-serif;color:var(--white);text-align:center}
+.node small{display:block;font:600 18px Inter,sans-serif;color:var(--muted);margin-top:4px}
+.node.yes{border-color:rgba(78,201,176,.6);box-shadow:0 0 30px rgba(78,201,176,.15)}
+.node.no{border-color:rgba(244,135,113,.6);box-shadow:0 0 30px rgba(244,135,113,.15)}
+.node .big{font-size:64px;display:block;line-height:1.1}
+.row{display:flex;align-items:center;gap:22px;height:68px;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 22px}
+.row .op{font:800 34px var(--mono);color:var(--white);min-width:96px;text-align:center;background:var(--panel2);border-radius:10px;padding:6px 10px;font-variant-ligatures:none}
+.row .mean{font:700 24px Inter,sans-serif;color:var(--text);flex:1}
+.row .res{font:800 24px var(--mono);min-width:230px;text-align:right}
+.row.hit{padding:0;border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 26px rgba(189,147,249,.25)}
+body.noide canvas#fx{display:none}
+.rg.rt b{left:auto;right:0}.rg b{left:0;right:auto}
+
+.rg.in b{right:14px;left:auto;bottom:auto;top:10px}
+
+.codewrap pre,.codewrap textarea,.gut,.out,.out .l{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+</style></head>
+<body>
+<canvas id="fx"></canvas>
+<dialog id="dlg"><h2 style="font-size:20px;font-weight:800;color:#fff">🎓 Шаҳодатнома</h2><p id="dp"></p><img id="dimg" alt="Шаҳодатнома"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn run" id="dl" download="shahodatnoma.png" style="text-decoration:none">⬇ Зеркашӣ</a><button class="btn ghost" id="dclose">Пӯшидан</button></div></dialog>
+<div id="ovl"><svg id="ptr" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.6L21 11z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg><div id="rip"></div></div><section class="scene" id="s-hook">
+<div class="kicker" data-a="down;0.2"><b>ДАРСИ 2</b>БАРНОМАСОЗӢ АЗ СИФР · JAVASCRIPT</div>
+<div class="h1" style="left:60px;top:110px;font-size:150px" data-a="stamp;0.6">ШАРТ</div>
+<div class="mono acc" style="left:66px;top:290px;font-size:60px;font-weight:800" data-a="up;2.52">if / else</div>
+<div class="sub" style="left:68px;top:370px" data-a="up;3.12">чӣ тавр компютер қарор қабул мекунад</div>
+<div style="left:68px;top:440px" data-a="left;4.4"><span class="pill">☔ борон борад → чатр мегирем</span></div>
+<div style="left:68px;top:508px" data-a="left;6.48"><span class="pill">🏷️ нарх қимат бошад → намехарем</span></div>
+<div style="left:68px;top:576px" data-a="left;8.8"><span class="pill">🤖 барнома ҳам ҳамин тавр кор мекунад</span></div>
+<div style="left:880px;top:130px"><div class="box" style="position:relative;zoom:1.25" data-a="pop;0.4"><div class="back"></div><div class="num" data-a="drop;1.0">15</div><div class="front"><div class="tag" data-a="stamp;0.6">age</div></div></div></div>
+<div class="node" style="left:860px;top:520px;width:340px" data-a="pop;11.36">Хуш омадед?<small>ҳа ✓ &nbsp;·&nbsp; не ✗</small></div>
+<div style="left:850px;top:640px" data-a="pop;17.16"><span class="pill accent">🎯 Дар охир: санҷиши ҷиддӣ</span></div>
+</section><section class="scene" id="s-morn">
+<div class="kicker" data-a="down;21.72"><b>01</b>ШАРТ ЧИСТ?</div>
+<div class="node" style="left:420px;top:90px;width:440px" data-a="up;22.02"><span style="font-size:44px">🚪</span> Аз хона мебароед</div>
+<div class="node" style="left:420px;top:230px;width:440px;border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 30px rgba(189,147,249,.25)" data-a="pop;23.02">❓ Борон меборад?</div>
+<svg style="left:0;top:0;width:1280px;height:720px" viewBox="0 0 1280 720" fill="none">
+ <path d="M640 312 C640 380 330 360 330 424" stroke="#4EC9B0" stroke-width="4" stroke-linecap="round" data-a="fade;23.52"/>
+ <path d="M640 312 C640 380 950 360 950 424" stroke="#F48771" stroke-width="4" stroke-linecap="round" data-a="fade;25.48"/>
+</svg>
+<div style="left:395px;top:343px" data-a="pop;34.52"><span class="pill ok">ҳа ✓</span></div>
+<div style="left:870px;top:343px" data-a="pop;35.02"><span class="pill err">не ✗</span></div>
+<div class="node yes" style="left:130px;top:430px;width:400px" data-a="up;23.62"><span class="big">🌧️ → ☂️</span>Чатр мегирам</div>
+<div class="node no" style="left:750px;top:430px;width:400px" data-a="up;25.68"><span class="big">☀️ → 🕶️</span>Айнаки офтобӣ</div>
+<div style="left:130px;top:600px" data-a="pop;40.84"><span class="codechip"><span class="k">if</span> = агар</span></div>
+<div style="left:750px;top:600px" data-a="pop;42.48"><span class="codechip"><span class="k">else</span> = вагарна</span></div>
+<div style="left:410px;top:640px" data-a="pop;29.68"><span class="pill accent" style="font-size:24px">Шарт = савол + ду роҳ</span></div>
+</section><section class="scene" id="s-ops">
+<div class="kicker" data-a="down;110.83"><b>03</b>АЛОМАТҲОИ МУҚОИСА</div>
+<div class="h2" style="left:60px;top:70px;font-size:40px" data-a="up;110.92999999999999">Панҷ аломат барои савол</div>
+<div style="left:930px;top:62px" data-a="pop;132.55"><span class="pill accent">age = 18</span></div>
+<div class="row" style="left:100px;top:150px;width:1080px" data-a="up;62.95"><span class="op">&gt;</span><span class="mean">аз 18 калон</span><span class="res" data-a="pop;135.11"><span style="color:var(--muted)">age &gt; 18 →</span> <span class="t-err">false</span></span></div><div class="row hit" style="left:100px;top:150px;width:1080px;background:transparent" data-a="fade;135.21" data-o="145.47" data-ok="fade"></div><div class="row" style="left:100px;top:234px;width:1080px" data-a="up;117.83"><span class="op">&lt;</span><span class="mean">аз 18 хурд</span><span class="res" data-a="pop;141.91"><span style="color:var(--muted)">age &lt; 18 →</span> <span class="t-err">false</span></span></div><div class="row" style="left:100px;top:318px;width:1080px" data-a="up;120.39"><span class="op">&gt;=</span><span class="mean">калон ё баробар</span><span class="res" data-a="pop;139.35"><span style="color:var(--muted)">age &gt;= 18 →</span> <span class="t-ok">true</span></span></div><div class="row hit" style="left:100px;top:318px;width:1080px;background:transparent" data-a="fade;139.45" data-o="145.47" data-ok="fade"></div><div class="row" style="left:100px;top:402px;width:1080px" data-a="up;123.83"><span class="op">&lt;=</span><span class="mean">хурд ё баробар</span><span class="res" data-a="pop;142.41"><span style="color:var(--muted)">age &lt;= 18 →</span> <span class="t-ok">true</span></span></div><div class="row" style="left:100px;top:486px;width:1080px" data-a="up;125.59"><span class="op">===</span><span class="mean">айнан баробар</span><span class="res" data-a="pop;142.91"><span style="color:var(--muted)">age === 18 →</span> <span class="t-ok">true</span></span></div>
+<div style="left:100px;top:600px" data-a="pop;145.67"><span class="pill">ҷавоб ҳамеша: <span class="t-ok mono">true</span> / <span class="t-err mono">false</span></span></div>
+<div style="left:640px;top:600px" data-a="pop;151.51"><span class="pill accent">→ ҳамин ҷавоб қарорро муайян мекунад</span></div>
+</section><section class="scene" id="s-life">
+<div class="kicker" data-a="down;154.63"><b>04</b>ШАРТ ДАР ҲАЁТ</div>
+<div class="card3" style="left:70px;top:110px;width:540px;height:400px" data-a="up;154.93">
+ <div class="emo">🚦</div><div class="t">Светофор</div>
+ <div class="node yes" style="margin-top:14px;text-align:left" data-a="left;156.95000000000002">🟢 сабз бошад<small>→ мегузарем</small></div>
+ <div class="node no" style="margin-top:6px;text-align:left" data-a="left;48.510000000000005">🔴 вагарна<small>→ меистем</small></div>
+</div>
+<div class="card3" style="left:670px;top:110px;width:540px;height:400px" data-a="up;160.26999999999998">
+ <div class="emo">🔐</div><div class="t">Парол</div>
+ <div class="node yes" style="margin-top:14px;text-align:left" data-a="left;161.07">✓ дуруст бошад<small>→ ворид мешавед</small></div>
+ <div class="node no" style="margin-top:6px;text-align:left" data-a="left;163.23">✗ нодуруст бошад<small>→ хато</small></div>
+</div>
+<div style="left:670px;top:610px" data-a="pop;168.51"><span class="codechip" style="font-size:28px"><span class="k">if</span> (pass <span class="e">===</span> <span class="s">"1234"</span>) { … }</span></div>
+</section><section class="scene" id="s-sum">
+<div class="kicker" data-a="down;298.39"><b>08</b>ХУЛОСА</div>
+<div class="card3" style="left:60px;top:110px;width:360px;height:340px" data-a="up;299.55"><div class="emo">🔀</div><div class="t">Шарт</div><div class="u">савол + ду роҳ</div>
+ <div class="codechip" style="font-size:20px;line-height:1.5"><span class="k">if</span> (<span class="n">…</span>) { … }<br><span class="k">else</span> { … }</div></div>
+<div class="card3" style="left:460px;top:110px;width:360px;height:340px" data-a="up;40.84"><div class="emo">🔗</div><div class="t">if · else if · else</div><div class="u">агар · вагарна агар · вагарна<br>роҳҳо аз боло ба поён</div>
+ <div class="codechip" style="font-size:20px;line-height:1.5"><span class="k">if</span> … <span class="k">else if</span> … <span class="k">else</span> …</div></div>
+<div class="card3" style="left:860px;top:110px;width:360px;height:340px" data-a="up;308.35"><div class="emo">⚖️</div><div class="t">Муқоиса</div><div class="u">&gt; &lt; &gt;= &lt;= ===<br>баробарӣ — се баробарӣ</div>
+ <div class="codechip" style="font-size:20px;line-height:1.7"><span class="t-ok">age === 18</span> ✓<br><span class="e">age = 18</span> ✗</div></div>
+<div style="left:60px;top:560px" data-a="up;314.537"><span class="pill accent">📘 Шпаргалкаи бепул (PDF) — дар тавсифи видео</span></div>
+</section><section class="scene" id="s-next">
+<div class="kicker" data-a="down;318.37"><b>ДАРСИ 3</b>НАВБАТӢ</div>
+<div class="h1" style="left:60px;top:130px;font-size:140px" data-a="stamp;318.57">ДАВР</div>
+<div class="mono acc" style="left:66px;top:300px;font-size:56px;font-weight:800" data-a="up;319.07">loop</div>
+<div class="sub" style="left:68px;top:380px" data-a="up;319.46999999999997">як корро сад маротиба — бе такрор навиштан</div>
+<div class="codechip" style="left:68px;top:460px;font-size:28px;line-height:1.5" data-a="up;320.87"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">1</span>; i &lt;= <span class="n">100</span>; i++) {<br>&nbsp;&nbsp;<span class="f">console.log</span>(i);<br>}</div>
+<div style="left:820px;top:170px" data-a="pop;325.417"><span class="pill accent" style="font-size:34px;padding:20px 40px">🔔 Обуна шавед</span></div>
+<div style="left:820px;top:270px" data-a="pop;325.917"><span class="pill" style="font-size:26px;padding:16px 30px">@shahriyor_yunusov</span></div>
+</section><div id="stagewrap"><div class="app">
+  <header class="top">
+    <span class="logo">&lt;/&gt; <b>JS</b></span>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="progress"><span class="pt" id="pt"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
+  </header>
+  <div class="main">
+    <aside class="left">
+      <div class="card" id="side"></div>
+      <div class="card" id="task" style="display:none"></div>
+    </aside>
+    <section class="work">
+      <div class="ed">
+        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span>
+          <div class="acts"><button class="ic run" id="run" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро">▶</button><button class="ic chk" id="check" title="Санҷиш" aria-label="Санҷиш" style="display:none">✓ <span class="lbl">Санҷиш</span></button><button class="ic" id="reset" title="Аз нав" aria-label="Аз нав">↺</button><button class="ic" id="copy" title="Нусха" aria-label="Нусха">📋</button><button class="ic" id="share" title="Пайванд" aria-label="Пайванд">🔗</button></div></div>
+        <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
+      </div>
+      <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
+      <div class="con"><div class="bar"><span>НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
+    </section>
+  </div>
+</div>
+
+</div>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = "mini-ide-v1";
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(STORE + k); localStorage.setItem(STORE + k, v); } catch (e) { return null; } }
+
+  /* ---------- мисолҳо ва вазифаҳо ---------- */
+  var EXAMPLES = [
+    ["Мисолҳо ▾", ""],
+    ["Салом, ҷаҳон", 'console.log("Салом, ҷаҳон!");\n'],
+    ["Тағйирёбанда", 'let age = 25;\nconsole.log(age);\nage = 26;\nconsole.log(age);\n\nconst name = "Шаҳриёр";\nconsole.log("Салом, " + name + "!");\n'],
+    ["Шарт (if / else)", 'let age = 15;\n\nif (age >= 18) {\n  console.log("Хуш омадед!");\n} else {\n  console.log("Ҳанӯз барвақт");\n}\n'],
+    ["else if (баҳо)", 'let score = 75;\n\nif (score >= 90) {\n  console.log("Аъло");\n} else if (score >= 70) {\n  console.log("Хуб");\n} else {\n  console.log("Боз кӯшиш кунед");\n}\n'],
+    ["Давр: 1 то 10", 'for (let i = 1; i <= 10; i++) {\n  console.log("Нишаст-хез " + i);\n}\n'],
+    ["Ҷамъи 1 то 100", 'let sum = 0;\nfor (let i = 1; i <= 100; i++) {\n  sum = sum + i;\n}\nconsole.log(sum);\n'],
+    ["Ҷадвали зарб", 'for (let i = 1; i <= 10; i++) {\n  console.log("7 × " + i + " = " + 7 * i);\n}\n'],
+    ["Ҷуфт ё тоқ", 'for (let i = 1; i <= 6; i++) {\n  if (i % 2 === 0) {\n    console.log(i + " — ҷуфт");\n  } else {\n    console.log(i + " — тоқ");\n  }\n}\n']
+  ];
+  var LESSONS = [
+    { id: "free", tab: "✏️ Озод", free: true },
+    { id: "l1", tab: "1 · Тағйирёбанда", tag: "ДАРСИ 1",
+      theory: "Тағйирёбанда — қуттӣ бо <b>ном</b>, ки <b>қимат</b> нигоҳ медорад: <code>let age = 25;</code>. Қиматро иваз кардан мумкин: <code>age = 26;</code>.",
+      tasks: [
+        { title: "Вазифаи 1: қимати нав", text: "Тағйирёбандаи <code>age</code>-ро бо қимати <b>25</b> созед, баъд ба <b>26</b> иваз кунед ва онро бо <code>console.log</code> нишон диҳед.",
+          starter: "// Тағйирёбандаи age-ро созед ва ба 26 иваз кунед\n", hint: "let age = 25; баъд age = 26; ва console.log(age);",
+          solution: "let age = 25;\nage = 26;\nconsole.log(age);\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [
+            ["Тағйирёбандаи age сохта шуд (let ё const)", /\b(let|var|const)\s+age\b/.test(c)],
+            ["Қиматро иваз кардед (age = 26)", /\bage\s*=\s*26\b/.test(c)],
+            ["Дар натиҷа ҳамагӣ 26 нишон дода шуд", !r.err && r.out[r.out.length - 1] === "26"]]; }); } },
+        { title: "Вазифаи 2: салом бо ном", text: "Тағйирёбандаи <code>name</code>-ро бо номи худ созед ва «<b>Салом, &lt;ном&gt;!</b>» нависед. Масалан: <code>Салом, Нигина!</code>",
+          starter: "// Тағйирёбандаи name-ро созед\n", hint: 'let name = "Нигина"; console.log("Салом, " + name + "!");',
+          solution: 'let name = "Нигина";\nconsole.log("Салом, " + name + "!");\n',
+          check: function (c, R) { return R.run(c).then(function (r) { var o = r.out[r.out.length - 1] || ""; return [
+            ["Тағйирёбандаи name сохта шуд", /\b(let|var|const)\s+name\b/.test(c)],
+            ["Матн бо «Салом, » оғоз мешавад", /^Салом, /.test(o)],
+            ["Матн бо «!» тамом мешавад ва ном дорад", /^Салом, .+!$/.test(o) && o.length > 9]]; }); } }
+      ] },
+    { id: "l2", tab: "2 · Шарт", tag: "ДАРСИ 2",
+      theory: "<code>if</code> — агар, <code>else</code> — вагарна. Шарт = <b>савол + ду роҳ</b>. Муқоиса: <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code> <code>===</code>.",
+      tasks: [
+        { title: "Вазифаи 1: гарм ё хунук", text: "Агар <code>temperature &gt; 30</code> бошад — нависед «<b>Гарм аст</b>», вагарна — «<b>Хунук аст</b>». Тағйирёбандаи <code>temperature</code>-ро нигоҳ доред: санҷиш онро бо қиматҳои гуногун месанҷад.",
+          starter: "let temperature = 34;\n\n// if / else нависед\n", hint: 'if (temperature > 30) { console.log("Гарм аст"); } else { console.log("Хунук аст"); }',
+          solution: 'let temperature = 34;\n\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n}\n',
+          check: function (c, R) { return Promise.all([34, 31, 30, 10].map(function (v) { return R.run(R.setVar(c, "temperature", v)); })).then(function (rs) { var o = function (i) { return rs[i].out.join("|"); }; return [
+            ["temperature = 34 → «Гарм аст»", o(0) === "Гарм аст"], ["temperature = 31 → «Гарм аст»", o(1) === "Гарм аст"],
+            ["temperature = 30 → «Хунук аст»", o(2) === "Хунук аст"], ["temperature = 10 → «Хунук аст»", o(3) === "Хунук аст"]]; }); } },
+        { title: "Вазифаи 2: даромадан иҷозат аст?", text: "Агар <code>age</code> аз <b>18</b> зиёд ё баробар бошад — «<b>Хуш омадед!</b>», вагарна — «<b>Ҳанӯз барвақт</b>». Ёдовар: барои «зиёд ё баробар» <code>&gt;=</code> лозим аст.",
+          starter: "let age = 15;\n\n// if / else нависед\n", hint: 'if (age >= 18) { console.log("Хуш омадед!"); } else { console.log("Ҳанӯз барвақт"); }',
+          solution: 'let age = 15;\n\nif (age >= 18) {\n  console.log("Хуш омадед!");\n} else {\n  console.log("Ҳанӯз барвақт");\n}\n',
+          check: function (c, R) { return Promise.all([25, 18, 17, 5].map(function (v) { return R.run(R.setVar(c, "age", v)); })).then(function (rs) { var o = function (i) { return rs[i].out.join("|"); }; return [
+            ["age = 25 → «Хуш омадед!»", o(0) === "Хуш омадед!"], ["age = 18 → «Хуш омадед!» (18 ҳам дохил аст)", o(1) === "Хуш омадед!"],
+            ["age = 17 → «Ҳанӯз барвақт»", o(2) === "Ҳанӯз барвақт"], ["age = 5 → «Ҳанӯз барвақт»", o(3) === "Ҳанӯз барвақт"]]; }); } }
+      ] },
+    { id: "l3", tab: "3 · Давр", tag: "ДАРСИ 3",
+      theory: "<code>for (let i = 1; i &lt;= 10; i++)</code> — се қисм: <b>оғоз</b> (<code>i = 1</code>), <b>шарт</b> (<code>i &lt;= 10</code>), <b>қадам</b> (<code>i++</code>). Давр = оғоз + шарт + қадам.",
+      tasks: [
+        { title: "Вазифаи 1: аз 1 то 5", text: "Бо давр рақамҳои <b>1, 2, 3, 4, 5</b>-ро нависед (ҳар як дар сатри алоҳида).",
+          starter: "// давр нависед\n", hint: "for (let i = 1; i <= 5; i++) { console.log(i); }",
+          solution: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [
+            ["Давр (for ё while) истифода шуд", /\b(for|while)\b/.test(c)],
+            ["Дар натиҷа 1, 2, 3, 4, 5 аст", !r.err && r.out.join(",") === "1,2,3,4,5"]]; }); } },
+        { title: "Вазифаи 2: ҷамъи 1 то 100", text: "Бо давр ҷамъи ҳамаи рақамҳои <b>1 то 100</b>-ро ҳисоб кунед ва нависед. Ҷавоб: <b>5050</b>. Ёдовар: тағйирёбандаи <code>sum</code> созед ва дар давр ба он илова кунед.",
+          starter: "let sum = 0;\n\n// давр нависед\n\nconsole.log(sum);\n", hint: "for (let i = 1; i <= 100; i++) { sum = sum + i; }",
+          solution: "let sum = 0;\nfor (let i = 1; i <= 100; i++) {\n  sum = sum + i;\n}\nconsole.log(sum);\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [
+            ["Давр истифода шуд", /\b(for|while)\b/.test(c)],
+            ["Ҷавоб 5050 аст", !r.err && r.out[r.out.length - 1] === "5050"]]; }); } },
+        { title: "Вазифаи 3: ҳисоби баръакс", text: "Рақамҳоро аз <b>10 то 1</b> баръакс нависед: 10, 9, 8 … 1. Ёдовар: <code>i--</code> ҳар бор як кам мекунад.",
+          starter: "// ҳисоби баръакс\n", hint: "for (let i = 10; i >= 1; i--) { console.log(i); }",
+          solution: "for (let i = 10; i >= 1; i--) {\n  console.log(i);\n}\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [
+            ["Давр истифода шуд", /\b(for|while)\b/.test(c)],
+            ["Дар натиҷа 10, 9, … 1 аст", !r.err && r.out.join(",") === "10,9,8,7,6,5,4,3,2,1"]]; }); } }
+      ] },
+    { id: "l4", tab: "4 · Рӯйхат", tag: "ДАРСИ 4",
+      theory: "Рӯйхат (array) — тағйирёбанда бо <b>якчанд қимат</b>: <code>let fruits = [\"себ\", \"нок\", \"ангур\"];</code>. Ҳар қимат шумора дорад, ва шумора аз <b>0</b> оғоз мешавад: <code>fruits[0]</code> — себ. <code>fruits.length</code> — чанд қимат; <code>fruits.push(x)</code> — ба охир илова мекунад.",
+      tasks: [
+        { title: "Вазифаи 1: рӯйхати хӯрок", text: "Рӯйхати 3 хӯроки дӯстдоштаатонро бо номи <code>foods</code> созед ва қимати <b>дуюм</b>-ро нишон диҳед (бо шумора!).",
+          starter: "// let foods = [ ... ];\n", hint: 'let foods = ["палав", "самбуса", "ошташ"]; console.log(foods[1]); — шумораи дуюм 1 аст!',
+          solution: 'let foods = ["палав", "самбуса", "ошташ"];\nconsole.log(foods[1]);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { var m = /\bfoods\s*=\s*\[([^\]]*)\]/.exec(c), it = m ? m[1].split(",").map(function (x) { return x.trim().replace(/^["'`]|["'`]$/g, ""); }) : [];
+            return [["Рӯйхати foods созед (3 қимат)", it.length === 3 && it.every(function (x) { return x; })], ["Қимати дуюм бо foods[1] гирифта шуд", /foods\s*\[\s*1\s*\]/.test(c)], ["Дар натиҷа қимати дуюм аст", !r.err && it.length === 3 && r.out[r.out.length - 1] === it[1]]]; }); } },
+        { title: "Вазифаи 2: илова кардан", text: "Бо <code>push</code> «<b>анор</b>»-ро ба рӯйхат илова кунед ва шумораи қиматҳоро (<code>length</code>) нишон диҳед. Бояд <b>4</b> шавад.",
+          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// push ва length\n', hint: 'fruits.push("анор"); console.log(fruits.length);',
+          solution: 'let fruits = ["себ", "нок", "ангур"];\nfruits.push("анор");\nconsole.log(fruits.length);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["push истифода шуд", /fruits\.push\(/.test(c)], ["Шумораи қиматҳо 4 аст", !r.err && r.out[r.out.length - 1] === "4"]]; }); } },
+        { title: "Вазифаи 3: рӯйхат ва давр", text: "Бо давр ҳар як қимати рӯйхатро як-як нависед: себ, нок, ангур. Ёдовар: <code>i &lt; fruits.length</code>.",
+          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// давр нависед\n', hint: "for (let i = 0; i < fruits.length; i++) { console.log(fruits[i]); }",
+          solution: 'let fruits = ["себ", "нок", "ангур"];\nfor (let i = 0; i < fruits.length; i++) {\n  console.log(fruits[i]);\n}\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Давр истифода шуд", /\b(for|while)\b/.test(c)], ["Дар натиҷа: себ, нок, ангур", !r.err && r.out.join(",") === "себ,нок,ангур"]]; }); } }
+      ] },
+    { id: "l5", tab: "5 · Функсия", tag: "ДАРСИ 5",
+      theory: "Функсия — «рецепти» барнома: як маротиба менависем, бисёр бор истифода мебарем. <code>function double(x) { return x * 2; }</code> — қабул мекунад <code>x</code> ва <code>return</code> ҷавоб бармегардонад. Даъват: <code>double(5)</code> → 10.",
+      tasks: [
+        { title: "Вазифаи 1: ду баробар", text: "Функсияи <code>double(x)</code> нависед, ки рақамро <b>ду баробар</b> кунад ва баргардонад (<code>return</code>).",
+          starter: "function double(x) {\n  // return ...\n}\n", hint: "return x * 2;", solution: "function double(x) {\n  return x * 2;\n}\n",
+          check: function (c, R) { return R.run(c + "\nconsole.log(double(4), double(0), double(-3));").then(function (r) { return [["double(4) → 8, double(0) → 0, double(-3) → -6", !r.err && r.out[r.out.length - 1] === "8 0 -6"], ["return истифода шуд", /\breturn\b/.test(c)]]; }); } },
+        { title: "Вазифаи 2: калон аст?", text: "Функсияи <code>isAdult(age)</code> нависед: агар <code>age &gt;= 18</code> бошад — <code>true</code>, вагарна — <code>false</code> баргардонад.",
+          starter: "function isAdult(age) {\n  // ...\n}\n", hint: "return age >= 18;", solution: "function isAdult(age) {\n  return age >= 18;\n}\n",
+          check: function (c, R) { return R.run(c + "\nconsole.log(isAdult(20), isAdult(18), isAdult(17));").then(function (r) { return [["isAdult(20) → true", !r.err && r.out[r.out.length - 1].split(" ")[0] === "true"], ["isAdult(18) → true, isAdult(17) → false", !r.err && r.out[r.out.length - 1] === "true true false"]]; }); } },
+        { title: "Вазифаи 3: салом", text: "Функсияи <code>greet(name)</code> нависед: <b>«Салом, &lt;ном&gt;!»</b> баргардонад. Масалан <code>greet(\"Нигина\")</code> → <code>Салом, Нигина!</code>",
+          starter: "function greet(name) {\n  // ...\n}\n", hint: 'return "Салом, " + name + "!";', solution: 'function greet(name) {\n  return "Салом, " + name + "!";\n}\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(greet("Нигина")); console.log(greet("Фарҳод"));').then(function (r) { return [["greet(\"Нигина\") → Салом, Нигина!", !r.err && r.out[0] === "Салом, Нигина!"], ["greet(\"Фарҳод\") → Салом, Фарҳод!", !r.err && r.out[1] === "Салом, Фарҳод!"]]; }); } }
+      ] },
+    { id: "l6", tab: "6 · Объект", tag: "ДАРСИ 6",
+      theory: "Объект — «корти» чизе бо якчанд хусусият: <code>let person = { name: \"Нигина\", age: 20 };</code>. Хусусиятро бо нуқта мегиранд: <code>person.name</code>, иваз мекунанд: <code>person.age = 21</code>.",
+      tasks: [
+        { title: "Вазифаи 1: корт", text: "Объекти <code>person</code> созед: <code>name</code> — «<b>Нигина</b>», <code>age</code> — <b>20</b>.",
+          starter: "let person = {\n  \n};\n", hint: 'let person = { name: "Нигина", age: 20 };', solution: 'let person = {\n  name: "Нигина",\n  age: 20\n};\n',
+          check: function (c, R) { return R.run(c + "\nconsole.log(typeof person, person.name, person.age);").then(function (r) { return [["person объект аст", !r.err && /^object /.test(r.out[r.out.length - 1] || "")], ["name = Нигина ва age = 20", !r.err && r.out[r.out.length - 1] === "object Нигина 20"]]; }); } },
+        { title: "Вазифаи 2: иваз кардан", text: "Бо <code>person.age = ...</code> синну солро <b>1 зиёд</b> кунед (бояд 21 шавад) ва нишон диҳед.",
+          starter: 'let person = { name: "Нигина", age: 20 };\n\n// синну солро 1 зиёд кунед ва нишон диҳед\n', hint: "person.age = person.age + 1; console.log(person.age);",
+          solution: 'let person = { name: "Нигина", age: 20 };\nperson.age = person.age + 1;\nconsole.log(person.age);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Синну сол иваз шуд (person.age = …)", /person\.age\s*=/.test(c)], ["Дар натиҷа 21 аст", !r.err && r.out[r.out.length - 1] === "21"]]; }); } },
+        { title: "Вазифаи 3: хусусияти нав", text: "Ба объект хусусияти <code>city</code>-ро бо қимати «<b>Душанбе</b>» илова кунед ва онро нишон диҳед.",
+          starter: 'let person = { name: "Нигина", age: 20 };\n\n// city илова кунед\n', hint: 'person.city = "Душанбе"; console.log(person.city);',
+          solution: 'let person = { name: "Нигина", age: 20 };\nperson.city = "Душанбе";\nconsole.log(person.city);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["city дар код ҳаст", /\bcity\b/.test(c)], ["Дар натиҷа «Душанбе» аст", !r.err && r.out[r.out.length - 1] === "Душанбе"]]; }); } }
+      ] },
+    { id: "l7", tab: "7 · Хатогиро ёб", tag: "ДАРСИ 7",
+      theory: "Дебаг — ёфтан ва ислоҳи хато. Хатогӣ — муқаррарӣ аст! <b>Қадамҳо:</b> 1) хатои сурхро бихонед, 2) сатри нишондодашударо бубинед, 3) ишораи 💡-ро истифода баред. Дар ин ҷо коди хатодор ҳаст — ислоҳ кунед!",
+      tasks: [
+        { title: "Хатои 1: қавси гумшуда", text: "Барнома хато медиҳад. Чӣ гум шудааст? Ислоҳ кунед, то «<b>Гарм аст</b>» нишон дода шавад.",
+          starter: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n', hint: "Дар охир қавси } намерасад — онро илова кунед.",
+          solution: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n}\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «Гарм аст»", !r.err && r.out.join("|") === "Гарм аст"]]; }); } },
+        { title: "Хатои 2: давре, ки хотима намеёбад", text: "Давр бояд 1, 2, 3-ро нависад, вале «овезон» мешавад (♾️). Ислоҳ кунед.",
+          starter: "for (let i = 1; i <= 3; ) {\n  console.log(i);\n}\n", hint: "Қадам (i++) фаромӯш шудааст.", solution: "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Барнома қатъ мешавад (бе ♾️)", !r.timeout], ["Натиҷа: 1, 2, 3", !r.timeout && !r.err && r.out.join(",") === "1,2,3"]]; }); } },
+        { title: "Хатои 3: const-ро иваз кардан", text: "Барнома бояд ҷамъи 1 то 5-ро нависад (<b>15</b>), вале хато медиҳад. Ислоҳ кунед.",
+          starter: "const total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n", hint: "const-ро иваз кардан мумкин нест. Ба ҷои он let нависед.", solution: "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n",
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: 15", !r.err && r.out[r.out.length - 1] === "15"]]; }); } },
+        { title: "Хатои 4: шумораи нодуруст", text: "Барнома бояд «<b>тухм</b>»-ро нишон диҳад, вале <code>undefined</code> менависад. Шумора аз 0 оғоз мешавад! Ислоҳ кунед.",
+          starter: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[3]);\n', hint: "«тухм» сеюм аст, шумораи он 2 аст.", solution: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[2]);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «тухм»", !r.err && r.out.join("|") === "тухм"]]; }); } }
+      ] }
+  ];
+
+  /* ---------- иҷрои код дар Worker ---------- */
+  var WSRC = "var __f=function(v){if(typeof v==='string')return v;if(v===undefined)return 'undefined';if(v===null)return 'null';if(typeof v==='object'){try{return JSON.stringify(v)}catch(e){return String(v)}}return String(v)};" +
+    "var __n=0;function __p(t,a){if(__n++<1000)postMessage({t:t,v:Array.prototype.map.call(a,__f).join(' ')})}" +
+    "console.log=function(){__p('log',arguments)};console.info=console.log;console.warn=function(){__p('warn',arguments)};console.error=function(){__p('err',arguments)};self.alert=console.log;" +
+    "self.onmessage=function(e){try{(new Function(e.data))()}catch(x){var m=(x&&x.stack||'').match(/<anonymous>:(\\d+):(\\d+)/);postMessage({t:'error',name:x&&x.name,msg:String(x&&x.message||x),line:m?Math.max(1,+m[1]-2):null})}postMessage({t:'done'})};";
+  var blobURL = null;
+  function runCode(code, live) {
+    return new Promise(function (resolve) {
+      var res = { out: [], err: null, timeout: false }, w, done = false;
+      try { blobURL = blobURL || URL.createObjectURL(new Blob([WSRC], { type: "text/javascript" })); w = new Worker(blobURL); }
+      catch (e) { res.err = { name: "Хато", msg: "Браузер иҷрои кодро намедиҳад" }; return resolve(res); }
+      function fin() { if (done) return; done = true; clearTimeout(tm); w.terminate(); resolve(res); }
+      var tm = setTimeout(function () { res.timeout = true; if (live) live({ t: "timeout" }); fin(); }, 2500);
+      w.onmessage = function (e) { var m = e.data; if (m.t === "done") return fin(); if (m.t === "error") res.err = m; else res.out.push(m.v); if (live) live(m); };
+      w.onerror = function (e) { res.err = { name: "Error", msg: e.message || "Хато", line: e.lineno ? Math.max(1, e.lineno - 2) : null }; if (live) live({ t: "error", name: "Error", msg: res.err.msg, line: res.err.line }); fin(); };
+      w.postMessage(code);
+    });
+  }
+  function setVar(code, name, val) { var re = new RegExp("\\b(let|const|var)\\s+" + name + "\\s*=\\s*[^;\\n]+"); return re.test(code) ? code.replace(re, "$1 " + name + " = " + val) : "let " + name + " = " + val + ";\n" + code; }
+  var R = { run: function (c) { return runCode(c); }, setVar: setVar };
+
+  function hintFor(name, msg) {
+    var m;
+    if (name === "ReferenceError" && (m = /(\w+) is not defined/.exec(msg))) return "Тағйирёбандаи «" + m[1] + "» муайян нашудааст. Оё <code>let " + m[1] + " = …</code> навишта будед? Имлоро низ санҷед (ҳарфи калон ва хурд фарқ мекунад).";
+    if (/already been declared/.test(msg)) return "Ин ном аллакай ҳаст. Дубора <code>let</code> нанависед: ба ҷои <code>let x = 5</code> фақат <code>x = 5</code> нависед.";
+    if (name === "SyntaxError") return "Хатои навиштан. Қавсҳо <code>( )</code> <code>{ }</code>, нуқтавергул <code>;</code> ва нохунакҳо <code>\"</code>-ро санҷед.";
+    if (name === "TypeError" && /constant/.test(msg)) return "Қимати <code>const</code>-ро иваз кардан мумкин нест. Ба ҷои он <code>let</code> нависед.";
+    return "";
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  /* ---------- редактор ---------- */
+  var ta = $("ta"), hl = $("hl"), gut = $("gut");
+  var KW = /^(let|const|var|if|else|for|while|do|function|return|true|false|null|undefined|break|continue|switch|case|new|typeof)$/;
+  function highlight(src) {
+    var out = "", re = /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?|`(?:[^`\\]|\\.)*`?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += '<span class="cm">' + esc(m[1]) + "</span>";
+      else if (m[2]) out += '<span class="st">' + esc(m[2]) + "</span>";
+      else if (m[3]) out += '<span class="nu">' + m[3] + "</span>";
+      else if (m[4]) out += KW.test(m[4]) ? '<span class="kw">' + m[4] + "</span>" : (m[4] === "console" || m[4] === "log" ? '<span class="fn">' + m[4] + "</span>" : esc(m[4]));
+      else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function paint() {
+    hl.innerHTML = highlight(ta.value);
+    var n = ta.value.split("\n").length, g = ""; for (var i = 1; i <= n; i++) g += i + "\n"; gut.textContent = g;
+    sync();
+  }
+  function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; }
+  ta.addEventListener("scroll", sync);
+  ta.addEventListener("input", function () { paint(); saveCode(); });
+  ta.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); doRun(); return; }
+    var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+    if (e.key === "Tab") { e.preventDefault(); ta.value = v.slice(0, s) + "  " + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 2; paint(); saveCode(); }
+    else if (e.key === "Enter") {
+      var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s), ind = /^\s*/.exec(line)[0];
+      if (/[{(\[]\s*$/.test(line)) ind += "  ";
+      e.preventDefault(); ta.value = v.slice(0, s) + "\n" + ind + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 1 + ind.length; paint(); saveCode();
+    }
+  });
+
+  /* ---------- ҳолат ---------- */
+  var cur = ls("tab") || "free", ti = 0, done = {};
+  try { done = JSON.parse(ls("done") || "{}"); } catch (e) { done = {}; }
+  function lesson() { return LESSONS.filter(function (l) { return l.id === cur; })[0] || LESSONS[0]; }
+  function key() { var L = lesson(); return L.free ? "code-free" : "code-" + L.id + "-" + ti; }
+  function saveCode() { ls(key(), ta.value); }
+  function task() { var L = lesson(); return L.free ? null : L.tasks[ti]; }
+
+  function drawTabs() {
+    $("tabs").innerHTML = "";
+    LESSONS.forEach(function (L) {
+      var b = document.createElement("button"); b.className = "tab" + (L.id === cur ? " on" : "") + (!L.free && L.tasks.every(function (_, i) { return done[L.id + "-" + i]; }) ? " ok" : ""); b.textContent = L.tab;
+      b.onclick = function () { cur = L.id; ti = 0; ls("tab", cur); load(); }; $("tabs").appendChild(b);
+    });
+  }
+  function drawSide() {
+    var L = lesson(), t = task(), s = $("side");
+    if (L.free) { s.innerHTML = '<span class="tag">ОЗОД</span><h2>Ҳар чизро санҷед</h2><p>Дар ин ҷо ҳар кодро бе маҳдудият менависед. Мисолҳо дар рӯйхати поёни редактор ҳастанд. Барои вазифаҳо ба ҷадвалҳои «1», «2», «3» гузаред.</p>'; return; }
+    var h = '<span class="tag">' + L.tag + '</span><h2>Назария</h2><p>' + L.theory + "</p>";
+    h += '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + L.tasks.map(function (_, i) { return '<button class="btn ghost" data-i="' + i + '" style="padding:6px 12px;' + (i === ti ? "background:#1F3F44;color:#fff;border-color:#1F3F44" : "") + '">' + (done[L.id + "-" + i] ? "✓ " : "") + (i + 1) + "</button>"; }).join("") + "</div>";
+    s.innerHTML = h;
+    Array.prototype.forEach.call(s.querySelectorAll("button[data-i]"), function (b) { b.onclick = function () { ti = +b.dataset.i; load(); }; });
+    var tk = $("task"); tk.style.display = "block";
+    tk.innerHTML = "<h2>" + t.title + "</h2><p>" + t.text + '</p><div class="checks" id="checks"></div><div id="winbox"></div><div class="sol"><button class="btn ghost" id="hintb" style="padding:6px 12px">💡 Кӯмак</button> <button class="btn ghost" id="solb" style="padding:6px 12px">🔓 Ҳал</button><div id="solbox"></div></div>';
+    $("hintb").onclick = function () { $("solbox").innerHTML = '<p style="margin-top:6px">💡 ' + esc(t.hint) + "</p>"; };
+    $("solb").onclick = function () { $("solbox").innerHTML = "<pre>" + esc(t.solution) + "</pre>"; };
+  }
+  function load() {
+    var L = lesson(), t = task();
+    $("task").style.display = L.free ? "none" : "block"; $("check").style.display = L.free ? "none" : "inline-flex"; $("ex").style.display = L.free ? "" : "none"; document.querySelector(".main").classList.toggle("free", !!L.free);
+    $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
+    ta.value = ls(key()) != null ? ls(key()) : (t ? t.starter : 'console.log("Салом, ҷаҳон!");\n');
+    $("out").innerHTML = '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
+    drawTabs(); drawSide(); paint(); drawProgress(); setHash();
+  }
+
+  /* ---------- иҷро ---------- */
+  function line(cls, html) { var d = document.createElement("span"); d.className = "l " + cls; d.innerHTML = html; $("out").appendChild(d); $("out").scrollTop = 1e9; }
+  function doRun() {
+    $("out").innerHTML = ""; $("run").disabled = true; var any = false;
+    runCode(ta.value, function (m) {
+      any = true;
+      if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
+      else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
+      else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
+    }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
+  }
+  $("run").onclick = doRun;
+  $("clr").onclick = function () { $("out").innerHTML = ""; };
+  $("reset").onclick = function () { var t = task(); if (confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) { ta.value = t ? t.starter : 'console.log("Салом, ҷаҳон!");\n'; paint(); saveCode(); } };
+  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋"; }, 1500); }); };
+  $("ex").innerHTML = EXAMPLES.map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
+  $("ex").onchange = function () { var e = EXAMPLES[+this.value]; if (e && e[1]) { ta.value = e[1]; paint(); saveCode(); } this.value = 0; };
+
+  $("check").onclick = function () {
+    var t = task(), L = lesson(); if (!t) return; $("check").disabled = true;
+    t.check(ta.value, R).then(function (rs) {
+      var all = rs.every(function (r) { return r[1]; });
+      $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + r[0] + "</div>"; }).join("");
+      if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); drawProgress(); }
+      else $("winbox").innerHTML = "";
+      $("check").disabled = false;
+    });
+  };
+
+  /* ---------- конфетти ---------- */
+  var cv = $("fx"), cx = cv.getContext("2d"), parts = [], on = false;
+  function fit() { cv.width = innerWidth; cv.height = innerHeight; } addEventListener("resize", fit); fit();
+  function confetti() { return; var c = ["#BD93F9", "#FF79C6", "#4EC9B0", "#DCDCAA"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
+  function tick() { cx.clearRect(0, 0, cv.width, cv.height); parts = parts.filter(function (p) { return p.y < cv.height + 20; }); parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); }); if (parts.length) requestAnimationFrame(tick); else { on = false; cx.clearRect(0, 0, cv.width, cv.height); } }
+
+
+  /* ---------- пешравӣ ва шаҳодатнома ---------- */
+  function totals() { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
+  function drawProgress() {
+    var t = totals(); $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = Math.round(100 * t[0] / t[1]) + "%";
+    $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
+    $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома" : "🎓 Шаҳодатнома гиред!";
+  }
+  function makeCert(name) {
+    var cv2 = document.createElement("canvas"); cv2.width = 1600; cv2.height = 1130; var x = cv2.getContext("2d");
+    x.fillStyle = "#F4EFE6"; x.fillRect(0, 0, 1600, 1130);
+    x.strokeStyle = "#B4472E"; x.lineWidth = 10; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#1F3F44"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
+    x.textAlign = "center"; var F = "Inter, 'DejaVu Sans', Arial, sans-serif";
+    x.fillStyle = "#B4472E"; x.font = "700 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
+    x.fillStyle = "#1F3F44"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
+    x.font = "600 38px " + F; x.fillStyle = "#5C616B"; x.fillText("Ин шаҳодатнома ба", 800, 450);
+    x.fillStyle = "#B4472E"; x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillText(nm, 800, 580);
+    x.fillStyle = "#1F3F44"; x.fillRect(420, 615, 760, 4);
+    x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
+    x.font = "800 36px " + F; x.fillStyle = "#3E7C59"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
+    x.fillStyle = "#857D70"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
+    x.fillStyle = "#1F3F44"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
+    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = "#E9B949"; x.fill(); x.fillStyle = "#1F3F44"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
+    return cv2.toDataURL("image/png");
+  }
+  $("cert").onclick = function () {
+    var nm = ls("name") || ""; var v = prompt("Номи худро нависед (барои шаҳодатнома):", nm); if (v === null) return; v = v.trim(); ls("name", v);
+    var url = makeCert(v); $("dimg").src = url; $("dl").href = url;
+    $("dp").innerHTML = "Офарин! 🎉 Шаҳодатномаро зеркашӣ кунед ва ба <b>сторис</b> гузоред: <b>@shahriyor_yunusov</b>-ро қайд кунед!"; $("dlg").showModal(); confetti();
+  };
+  $("dclose").onclick = function () { $("dlg").close(); };
+
+  /* ---------- пайвандҳо ба дарс ва нусхаи код ---------- */
+  function setHash() {
+    var L = lesson(), h = L.free ? "#free" : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
+    try { history.replaceState(null, "", h); } catch (e) {}
+  }
+  function b64u(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64u(b) { b = b.replace(/-/g, "+").replace(/_/g, "/"); while (b.length % 4) b += "="; return decodeURIComponent(escape(atob(b))); }
+  function parseHash() {
+    var h = location.hash || "", m;
+    if ((m = /^#code=(.+)$/.exec(h))) { try { cur = "free"; ls("code-free", unb64u(m[1])); return; } catch (e) {} }
+    if ((m = /^#dars-(\d+)(?:-(\d+))?$/.exec(h))) { var id = "l" + m[1]; if (LESSONS.some(function (L) { return L.id === id; })) { cur = id; ti = Math.max(0, (+m[2] || 1) - 1); var L = lesson(); if (ti >= L.tasks.length) ti = 0; ls("tab", cur); return; } }
+    if (h === "#free") cur = "free";
+  }
+  $("share").onclick = function () {
+    var b = this, u = location.href.split("#")[0] + "#code=" + b64u(ta.value);
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗"; }, 1800); });
+  };
+
+  /* ---------- аломатҳои зуд (барои телефон) ---------- */
+  var SYMS = [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]];
+  SYMS.forEach(function (sy) {
+    var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
+    b.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
+      ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
+      var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
+      ta.focus(); ta.selectionStart = ta.selectionEnd = pos; paint(); saveCode();
+    });
+    $("sym").appendChild(b);
+  });
+
+  window.__ide = { lessons: LESSONS, setCode: function (c) { ta.value = c; paint(); }, goto: function (id, i) { cur = id; ti = i || 0; load(); } };
+  parseHash(); load();
+  addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
+})();
+</script>
+<script>window.TL={"end": 330.42, "scenes": [{"id": "s-hook", "t0": 0, "t1": 21.72}, {"id": "s-morn", "t0": 21.72, "t1": 47.55}, {"id": "ide", "t0": 47.55, "t1": 110.63}, {"id": "s-ops", "t0": 110.63, "t1": 154.43}, {"id": "s-life", "t0": 154.43, "t1": 172.83}, {"id": "ide", "t0": 172.83, "t1": 298.19}, {"id": "s-sum", "t0": 298.19, "t1": 318.27}, {"id": "s-next", "t0": 318.27, "t1": 331.42}], "ide": [{"t": 47.55, "op": "set", "code": ""}, {"t": 47.55, "op": "clear"}, {"t": 56.99, "op": "type", "dur": 2.0, "from": "", "to": "let age = 25;"}, {"t": 60.89, "op": "type", "dur": 2.4, "from": "let age = 25;", "to": "let age = 25;\n\nif (age >= 18) {\n}"}, {"t": 70.91, "op": "type", "dur": 2.0, "from": "let age = 25;\n\nif (age >= 18) {\n}", "to": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n}"}, {"t": 73.23, "op": "type", "dur": 1.2, "from": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n}", "to": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n}"}, {"t": 76.03, "op": "type", "dur": 2.2, "from": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n}", "to": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}"}, {"t": 79.13000000000001, "op": "run", "sel": "#run"}, {"t": 88.31, "op": "type", "dur": 1.3, "from": "let age = 25;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}", "to": "let age = 15;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}"}, {"t": 90.97, "op": "run", "sel": "#run"}, {"t": 172.83, "op": "set", "code": ""}, {"t": 172.83, "op": "clear"}, {"t": 174.903, "op": "type", "dur": 1.8, "from": "", "to": "let temperature = 20;"}, {"t": 176.23000000000002, "op": "type", "dur": 2.2, "from": "let temperature = 20;", "to": "let temperature = 20;\n\nif (temperature > 30) {\n  console.log(\"Гарм\");\n}"}, {"t": 178.83, "op": "type", "dur": 2.4, "from": "let temperature = 20;\n\nif (temperature > 30) {\n  console.log(\"Гарм\");\n}", "to": "let temperature = 20;\n\nif (temperature > 30) {\n  console.log(\"Гарм\");\n} else if (temperature > 15) {\n  console.log(\"Мӯътадил\");\n}"}, {"t": 182.67000000000002, "op": "type", "dur": 1.8, "from": "let temperature = 20;\n\nif (temperature > 30) {\n  console.log(\"Гарм\");\n} else if (temperature > 15) {\n  console.log(\"Мӯътадил\");\n}", "to": "let temperature = 20;\n\nif (temperature > 30) {\n  console.log(\"Гарм\");\n} else if (temperature > 15) {\n  console.log(\"Мӯътадил\");\n} else {\n  console.log(\"Хунук\");\n}"}, {"t": 190.75, "op": "run", "sel": "#run"}, {"t": 198.07, "op": "set", "code": ""}, {"t": 198.07, "op": "clear"}, {"t": 203.51, "op": "type", "dur": 4.2, "from": "", "to": "let age = 15;\nif (age = 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}"}, {"t": 210.983, "op": "run", "sel": "#run"}, {"t": 216.003, "op": "type", "dur": 0.9, "from": "let age = 15;\nif (age = 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}", "to": "let age = 15;\nif (age === 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}"}, {"t": 217.95000000000002, "op": "run", "sel": "#run"}, {"t": 222.01000000000002, "op": "type", "dur": 2.2, "from": "let age = 15;\nif (age === 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}", "to": "console.log(5 === \"5\");"}, {"t": 227.79000000000002, "op": "run", "sel": "#run"}, {"t": 236.43, "op": "type", "dur": 3.0, "from": "console.log(5 === \"5\");", "to": "let age = 15;\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n"}, {"t": 239.25, "op": "run", "sel": "#run"}, {"t": 245.32999999999998, "op": "type", "dur": 0.6, "from": "let age = 15;\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n", "to": "let age = 15;\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n}"}, {"t": 251.07000000000002, "op": "click", "sel": "#tabs .tab:nth-child(3)"}, {"t": 251.09, "op": "set", "code": "let temperature = 34;\n\n// if / else нависед\n"}, {"t": 256.59, "op": "type", "dur": 5.0, "from": "let temperature = 34;\n\n// if / else нависед\n", "to": "let temperature = 34;\n\nif (temperature > 30) {\n  console.log(\"Гарм аст\");\n} else {\n  console.log(\"Хунук аст\");\n}\n"}, {"t": 262.65000000000003, "op": "click", "sel": "#side button[data-i=\"1\"]"}, {"t": 262.67, "op": "set", "code": "let age = 15;\n\n// if / else нависед\n"}, {"t": 264.45000000000005, "op": "type", "dur": 5.5, "from": "let age = 15;\n\n// if / else нависед\n", "to": "let age = 15;\n\nif (age >= 18) {\n  console.log(\"Хуш омадед!\");\n} else {\n  console.log(\"Ҳанӯз барвақт\");\n}\n"}, {"t": 271.49, "op": "check", "sel": "#check"}, {"t": 289.17, "op": "run", "sel": "#run"}], "marks": [{"t0": 57.29, "t1": 59.59, "line": 0, "c0": 0, "c1": 13, "text": "📦 қуттии age (аз дарси 1)", "color": "c", "pos": "above"}, {"t0": 62.95, "t1": 66.83, "line": 2, "c0": 3, "c1": 14, "text": "❓ савол", "color": "y", "pos": "above"}, {"t0": 83.79, "t1": 86.93, "line": 2, "c0": 3, "c1": 14, "text": "25 >= 18 → ҳа ✓", "color": "g", "pos": "below"}, {"t0": 94.59, "t1": 97.79, "line": 4, "c0": 2, "c1": 6, "text": "→ роҳи else", "color": "c", "pos": "below"}, {"t0": 103.55, "t1": 105.95, "line": 2, "c0": 3, "c1": 14, "text": "❓ дар қавс — савол", "color": "y", "pos": "above"}, {"t0": 105.15, "t1": 110.33, "line": 3, "c0": 2, "c1": 29, "text": "▶ дар { } — кор", "color": "g", "pos": "below"}, {"t0": 185.95, "t1": 187.45, "line": 2, "c0": 0, "c1": 2, "text": "1 · if", "color": "y", "pos": "above"}, {"t0": 187.15, "t1": 188.85, "line": 4, "c0": 2, "c1": 9, "text": "2 · else if", "color": "c", "pos": "above"}, {"t0": 188.67, "t1": 190.17, "line": 6, "c0": 2, "c1": 6, "text": "3 · else", "color": "g", "pos": "above"}, {"t0": 207.67, "t1": 210.31, "line": 1, "c0": 8, "c1": 9, "text": "⚠️ як баробарӣ = «гузор»", "color": "r", "pos": "above"}, {"t0": 216.903, "t1": 218.803, "line": 1, "c0": 8, "c1": 11, "text": "✅ се баробарӣ ===", "color": "g", "pos": "above"}, {"t0": 224.47, "t1": 225.47, "line": 0, "c0": 12, "c1": 13, "text": "🔢 рақам", "color": "c", "pos": "above"}, {"t0": 225.31, "t1": 227.79000000000002, "line": 0, "c0": 18, "c1": 21, "text": "🔤 матн", "color": "r", "pos": "above"}, {"t0": 233.07, "t1": 235.45, "line": 0, "c0": 18, "c1": 21, "text": "нохунак — навъро иваз мекунад", "color": "y", "pos": "below"}, {"t0": 277.55, "t1": 279.79, "line": 0, "c0": 4, "c1": 12, "text": "age = 15", "color": "y", "pos": "above"}, {"t0": 291.99, "t1": 295.89, "line": 2, "c0": 4, "c1": 14, "text": "15 >= 18 → не ✗", "color": "r", "pos": "below"}, {"t0": 295.99, "t1": 298.59000000000003, "line": 4, "c0": 2, "c1": 6, "text": "→ else", "color": "c", "pos": "below"}], "rings": [{"t0": 79.723, "t1": 81.637, "sel": "#out", "text": "✅ Хуш омадед!", "color": "g", "pad": 2}, {"t0": 91.57, "t1": 93.29, "sel": "#out", "text": "🙅 Ҳанӯз барвақт", "color": "r", "pad": 2}, {"t0": 191.35, "t1": 197.87, "sel": "#out", "text": "20 > 30? не · 20 > 15? ҳа → Мӯътадил", "color": "g", "pad": 2}, {"t0": 211.683, "t1": 215.703, "sel": "#out", "text": "🤯 age = 15, аммо «Хуш омадед!»", "color": "r", "pad": 2}, {"t0": 218.55, "t1": 220.91000000000003, "sel": "#out", "text": "✅ 15 ≠ 18 → Ҳанӯз барвақт", "color": "g", "pad": 2}, {"t0": 228.49, "t1": 231.47, "sel": "#out", "text": "false: рақам ≠ матн", "color": "r", "pad": 2}, {"t0": 239.95, "t1": 242.75, "sel": "#out .hint", "text": "💡 шарҳ ба тоҷикӣ", "color": "y", "pad": 4}, {"t0": 242.55, "t1": 244.21, "sel": "#out .l.e", "text": "📍 рақами сатр", "color": "c", "pad": 4}, {"t0": 244.31, "t1": 246.92999999999998, "sel": "#out", "text": "📖 аввал хабарро хонед", "color": "c", "pad": 2}, {"t0": 251.57000000000002, "t1": 253.137, "sel": "#tabs .tab:nth-child(3)", "text": "", "color": "y", "pad": 4}, {"t0": 253.337, "t1": 254.47, "sel": "#side", "text": "📘 назария", "color": "c", "pad": 4}, {"t0": 254.67, "t1": 262.25, "sel": "#task", "text": "Вазифаи 1", "color": "y", "pad": 4}, {"t0": 263.15000000000003, "t1": 264.25, "sel": "#task", "text": "Вазифаи 2", "color": "y", "pad": 4}, {"t0": 270.69, "t1": 271.89, "sel": "#check", "text": "✓ Санҷиш", "color": "c", "pad": 6}, {"t0": 271.99, "t1": 275.27000000000004, "sel": "#checks", "text": "", "color": "g", "pad": 4}, {"t0": 290.40999999999997, "t1": 297.89, "sel": "#out", "text": "✅ Ҳанӯз барвақт", "color": "g", "pad": 2}], "ptr": [{"t": 79.13000000000001, "sel": "#run"}, {"t": 90.97, "sel": "#run"}, {"t": 190.75, "sel": "#run"}, {"t": 210.983, "sel": "#run"}, {"t": 217.95000000000002, "sel": "#run"}, {"t": 227.79000000000002, "sel": "#run"}, {"t": 239.25, "sel": "#run"}, {"t": 251.07000000000002, "sel": "#tabs .tab:nth-child(3)"}, {"t": 262.65000000000003, "sel": "#side button[data-i=\"1\"]"}, {"t": 271.49, "sel": "#check"}, {"t": 289.17, "sel": "#run"}], "chips": [{"t0": 47.65, "t1": 49.849999999999994, "html": "<span>💻</span><div>Аввалин шарт дар IDE<small>02 · ҳамроҳи ман нависед</small></div>", "cls": "card", "style": ""}, {"t0": 49.51, "t1": 53.309999999999995, "html": "🔗 yunusovshahriyor.github.io/yunusov.tj/ide", "cls": "side yel", "style": "top:90px"}, {"t0": 172.93, "t1": 174.53, "html": "<span>🌡️</span><div>Бисёр роҳ: else if<small>05 · ҳарорат</small></div>", "cls": "card", "style": ""}, {"t0": 198.17, "t1": 200.07, "html": "<span>🐞</span><div>Се хатои маъмул<small>06 · ҳама хато мекунанд — ин муқаррарӣ аст</small></div>", "cls": "card", "style": ""}, {"t0": 200.41, "t1": 202.61, "html": "Хатои 1 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 221.21, "t1": 223.41000000000003, "html": "Хатои 2 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 235.85, "t1": 238.05, "html": "Хатои 3 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 247.32999999999998, "t1": 249.32999999999998, "html": "<span>🎯</span><div>Вазифаҳо барои шумо<small>07 · дар IDE, ҷадвали «2 · Шарт»</small></div>", "cls": "card", "style": ""}, {"t0": 279.79, "t1": 283.62, "html": "<span class=\"big\">❓</span><div>Барнома чӣ мегӯяд?<small>age = 15 · видеоро пауза кунед ✍️</small></div>", "cls": "card", "style": ""}, {"t0": 283.94, "t1": 284.54, "html": "<span class=\"big\">5</span><div>Барнома чӣ мегӯяд?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 284.94, "t1": 285.54, "html": "<span class=\"big\">4</span><div>Барнома чӣ мегӯяд?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 285.94, "t1": 286.54, "html": "<span class=\"big\">3</span><div>Барнома чӣ мегӯяд?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 286.94, "t1": 287.54, "html": "<span class=\"big\">2</span><div>Барнома чӣ мегӯяд?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 287.94, "t1": 288.54, "html": "<span class=\"big\">1</span><div>Барнома чӣ мегӯяд?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}], "zooms": [{"t0": 56.690000000000005, "t1": 78.13000000000001, "x": 330, "y": 250, "s": 1.4}, {"t0": 87.91, "t1": 90.77, "x": 330, "y": 250, "s": 1.4}, {"t0": 174.603, "t1": 189.75, "x": 330, "y": 270, "s": 1.3}, {"t0": 203.20999999999998, "t1": 210.883, "x": 330, "y": 250, "s": 1.35}, {"t0": 221.91000000000003, "t1": 227.79000000000002, "x": 330, "y": 250, "s": 1.35}], "caps": [], "chapters": [{"t": 0, "title": "Хук"}, {"t": 21.72, "title": "Шарт чист?"}, {"t": 47.55, "title": "Аввалин шарт дар IDE"}, {"t": 110.63, "title": "Аломатҳои муқоиса"}, {"t": 154.43, "title": "Шарт дар ҳаёт ва else if"}, {"t": 198.07, "title": "Хатогиҳои маъмул"}, {"t": 247.23, "title": "Вазифаҳо"}, {"t": 298.19, "title": "Хулоса"}], "cd": [283.92]};</script><script>// Детерминированный движок кадра: window.frame(t) приводит страницу (IDE + слайды + оверлеи) к моменту t.
+(function () {
+  "use strict";
+  var TL = window.TL, $ = function (s) { return document.querySelector(s); };
+  var clamp = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+  var easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  var easeIO = function (p) { return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  var back = function (p) { var c = 1.7, c3 = c + 1; return 1 + c3 * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+
+  /* ---------- слайды ---------- */
+  var animEls = [].slice.call(document.querySelectorAll("[data-a]")).map(function (el) {
+    var a = el.dataset.a.split(";"); return { el: el, k: a[0], t: +a[1], o: el.dataset.o != null ? +el.dataset.o : null, ok: el.dataset.ok || "fade" };
+  });
+  function animate(t) {
+    animEls.forEach(function (A) {
+      var p = clamp((t - A.t) / (A.k === "stamp" ? .35 : A.k === "drop" ? .6 : .5)), op = clamp(p * 2.5), tr = "";
+      if (A.k === "up") tr = "translateY(" + (1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "down") tr = "translateY(" + -(1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "left") tr = "translateX(" + -(1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "right") tr = "translateX(" + (1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "pop") tr = "scale(" + (p ? back(p) : 0) + ")";
+      else if (A.k === "stamp") { tr = "scale(" + (2.2 - 1.2 * easeOut(p)) + ") rotate(" + (-4 * (1 - p)) + "deg)"; op = clamp(p * 3); }
+      else if (A.k === "drop") { var d = p < .7 ? -260 * (1 - easeOut(p / .7)) : 14 * Math.sin((p - .7) / .3 * Math.PI) * (1 - p) * 3; tr = "translateY(" + d + "px)"; op = clamp(p * 6); }
+      if (A.o != null && t >= A.o) {
+        var q = clamp((t - A.o) / .45);
+        if (A.ok === "flyout") tr += " translateY(" + -easeIO(q) * 300 + "px) rotate(" + q * 25 + "deg)";
+        if (A.ok === "shrink") tr += " scale(" + (1 - q) + ")";
+        op *= 1 - q;
+      }
+      A.el.style.opacity = op; A.el.style.transform = tr;
+    });
+    document.querySelectorAll("[data-cnt]").forEach(function (el) {
+      var c = el.dataset.cnt.split(";"), a = +c[0], b = +c[1], p = easeIO(clamp((t - +c[2]) / +c[3]));
+      el.textContent = Math.round(a + (b - a) * p).toLocaleString("ru-RU");
+    });
+    document.querySelectorAll("[data-tw]").forEach(function (el) {
+      var c = el.dataset.tw.split(";"), s = el.dataset.text, n = Math.floor(s.length * clamp((t - +c[0]) / +c[1]));
+      el.textContent = s.slice(0, n); el.classList.toggle("typing", n > 0 && n < s.length);
+    });
+  }
+  function scenes(t) {
+    TL.scenes.forEach(function (S) {
+      var el = document.getElementById(S.id); if (!el) return;
+      var op = Math.min(clamp((t - S.t0) / .35), 1 - clamp((t - S.t1) / .35));
+      el.style.opacity = op; el.style.visibility = op > 0 ? "visible" : "hidden";
+      el.style.transform = "scale(" + (1 + .025 * clamp((t - S.t0) / (S.t1 - S.t0))) + ")";
+    });
+  }
+  function inIde(t) { return TL.scenes.some(function (S) { return S.id === "ide" && t >= S.t0 && t < S.t1; }); }
+
+  /* ---------- редактор ---------- */
+  var ta = document.getElementById("ta"), hl = document.getElementById("hl");
+  function codeAt(t) {
+    var c = null, op = null;
+    TL.ide.forEach(function (o) { if ((o.op === "set" || o.op === "type") && o.t <= t) op = o; });
+    if (!op) return { code: null };
+    if (op.op === "set") return { code: op.code, caret: null };
+    var A = op.from, B = op.to, pre = 0; while (pre < A.length && pre < B.length && A[pre] === B[pre]) pre++;
+    var suf = 0; while (suf < A.length - pre && suf < B.length - pre && A[A.length - 1 - suf] === B[B.length - 1 - suf]) suf++;
+    var mA = A.slice(pre, A.length - suf), mB = B.slice(pre, B.length - suf);
+    var p = clamp((t - op.t) / op.dur), del = mA.length ? Math.min(.35, mA.length * .06 / op.dur) : 0, mid;
+    if (p < del) mid = mA.slice(0, Math.ceil(mA.length * (1 - p / del)));
+    else mid = mB.slice(0, Math.floor(mB.length * clamp((p - del) / (1 - del))));
+    c = A.slice(0, pre) + mid + A.slice(A.length - suf);
+    return { code: c, caret: t < op.t + op.dur + 1.2 ? pre + mid.length : null };
+  }
+  function applyCode(t) {
+    var s = codeAt(t);
+    if (s.code != null && ta.value !== s.code) window.__ide.setCode(s.code);
+    return s;
+  }
+  // прямоугольник символов [c0, c1) строки line в подсвеченном коде
+  function charRect(line, c0, c1) {
+    var lines = ta.value.split("\n"), off = 0;
+    for (var i = 0; i < line; i++) off += lines[i].length + 1;
+    var a = off + c0, b = off + c1, w = document.createTreeWalker(hl, NodeFilter.SHOW_TEXT), n, pos = 0, r = document.createRange(), sa = 0, sb = 0;
+    while ((n = w.nextNode())) {
+      var L = n.nodeValue.length;
+      if (!sa && a <= pos + L) { r.setStart(n, a - pos); sa = 1; }
+      if (!sb && b <= pos + L) { r.setEnd(n, b - pos); sb = 1; break; }
+      pos += L;
+    }
+    if (!sa || !sb) return null;
+    var rs = r.getClientRects(); if (!rs.length) return null;
+    var R = { left: 1e9, top: 1e9, right: -1e9, bottom: -1e9 };
+    [].forEach.call(rs, function (q) { R.left = Math.min(R.left, q.left); R.top = Math.min(R.top, q.top); R.right = Math.max(R.right, q.right); R.bottom = Math.max(R.bottom, q.bottom); });
+    return R;
+  }
+  function caretRect(idx) {
+    var v = ta.value.slice(0, idx).split("\n"), line = v.length - 1, col = v[line].length;
+    var lr = charRect(line, 0, Math.max(col, 0));
+    var lh = parseFloat(getComputedStyle(hl).lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth;
+    if (lr && col > 0) return { x: lr.right, y: lr.top, h: lr.bottom - lr.top };
+    return { x: hr.left + 14 * z, y: hr.top + (12 + line * lh) * z, h: lh * z };
+  }
+
+  /* ---------- оверлеи ---------- */
+  var ov = document.getElementById("ovl");
+  function pool(cls, n) { var a = []; for (var i = 0; i < n; i++) { var d = document.createElement("div"); d.className = cls; ov.appendChild(d); a.push(d); } return a; }
+  var markEls = pool("mk", 6), ringEls = pool("rg", 4), chipEls = pool("chip", 3);
+  var caret = pool("caret", 1)[0], ptr = document.getElementById("ptr"), rip = document.getElementById("rip");
+  function elRect(sel) { var e = document.querySelector(sel); return e ? e.getBoundingClientRect() : null; }
+  function overlays(t, cs, ide) {
+    var mi = 0;
+    if (ide) TL.marks.forEach(function (m) {
+      if (t < m.t0 || t > m.t1 + .3 || mi >= markEls.length) return;
+      var r = charRect(m.line, m.c0, m.c1); if (!r) return;
+      var el = markEls[mi++], p = clamp((t - m.t0) / .4), q = clamp((t - m.t1) / .3);
+      el.className = "mk " + (m.color || "y") + (m.pos === "below" ? " below" : "");
+      el.innerHTML = m.text ? '<b style="transform:scale(' + (p ? back(p) : 0) + ')"><i>' + m.text + "</i></b>" : "";
+      el.style.cssText = "display:block;left:" + (r.left - 6) + "px;top:" + (r.top - 4) + "px;width:" + (r.right - r.left + 12) + "px;height:" + (r.bottom - r.top + 8) + "px;opacity:" + clamp(p * 2) * (1 - q);
+    });
+    for (; mi < markEls.length; mi++) markEls[mi].style.display = "none";
+    var ri = 0;
+    if (ide) TL.rings.forEach(function (g) {
+      if (t < g.t0 || t > g.t1 + .3 || ri >= ringEls.length) return;
+      var r = elRect(g.sel); if (!r || !r.width) return;
+      var el = ringEls[ri++], p = clamp((t - g.t0) / .35), q = clamp((t - g.t1) / .3), pad = g.pad != null ? g.pad : 6;
+      el.className = "rg " + (g.color || "y");
+      el.innerHTML = g.text ? "<b><i>" + g.text + "</i></b>" : "";
+      if (g.text && r.top < 150) el.classList.add("below");
+      if (r.left > 640) el.classList.add("rt"); if (r.width > 800 || g.sel === "#task" || g.sel === "#checks") el.classList.add("in");
+      el.style.cssText = "display:block;left:" + (r.left - pad) + "px;top:" + (r.top - pad) + "px;width:" + (r.width + 2 * pad) + "px;height:" + (r.height + 2 * pad) + "px;opacity:" + p * (1 - q) + ";transform:scale(" + (1.15 - .15 * easeOut(p)) + ")";
+    });
+    for (; ri < ringEls.length; ri++) ringEls[ri].style.display = "none";
+    var ci = 0;
+    TL.chips.forEach(function (c) {
+      if (t < c.t0 || t > c.t1 + .3 || ci >= chipEls.length) return;
+      var el = chipEls[ci++], p = clamp((t - c.t0) / .45), q = clamp((t - c.t1) / .3);
+      el.className = "chip " + (c.cls || ""); el.innerHTML = c.html;
+      el.style.cssText = "display:flex;opacity:" + clamp(p * 2) * (1 - q) + ";transform:translate(-50%,-50%) scale(" + (p ? back(p) : 0) * (1 - .1 * q) + ")" + (c.style ? ";" + c.style : "");
+    });
+    for (; ci < chipEls.length; ci++) chipEls[ci].style.display = "none";
+    // каретка
+    if (ide && cs.caret != null) { var cr = caretRect(cs.caret); caret.style.cssText = "display:block;left:" + cr.x + "px;top:" + cr.y + "px;height:" + cr.h + "px;opacity:" + (Math.floor(t * 2.2) % 2 && cs.typingDone ? 0 : 1); }
+    else caret.style.display = "none";
+    // указатель
+    var P = TL.ptr, k = -1; for (var i = 0; i < P.length; i++) if (P[i].t - .7 <= t) k = i;
+    if (!ide || k < 0 || !P[k].sel) { ptr.style.display = "none"; rip.style.display = "none"; return; }
+    function ctr(sel) { var r = elRect(sel); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : { x: 640, y: 360 }; }
+    var to = ctr(P[k].sel), pos = to;
+    if (t < P[k].t && k > 0 && P[k - 1].sel) { var fr = ctr(P[k - 1].sel), e = easeIO(clamp((t - (P[k].t - .7)) / .7)); pos = { x: fr.x + (to.x - fr.x) * e, y: fr.y + (to.y - fr.y) * e }; }
+    else if (t < P[k].t) { var e2 = easeOut(clamp((t - (P[k].t - .7)) / .7)); pos = { x: to.x + 120 * (1 - e2), y: to.y + 160 * (1 - e2) }; }
+    ptr.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px";
+    var cl = null; TL.ide.forEach(function (o) { if (o.sel && o.t <= t && t < o.t + .5) cl = o; });
+    if (cl) { var rp = clamp((t - cl.t) / .5); rip.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px;opacity:" + (1 - rp) + ";transform:translate(-50%,-50%) scale(" + (.3 + rp * 1.4) + ")"; }
+    else rip.style.display = "none";
+  }
+
+  /* ---------- камера (зум в IDE) ---------- */
+  var app = document.querySelector(".app");
+  function camera(t) {
+    var s = 1, x = 640, y = 360;
+    TL.zooms.forEach(function (z) {
+      if (t < z.t0 - .7 || t > z.t1 + .7) return;
+      var p = t < z.t0 ? easeIO(clamp((t - z.t0 + .7) / .7)) : t > z.t1 ? 1 - easeIO(clamp((t - z.t1) / .7)) : 1;
+      s = 1 + (z.s - 1) * p; x = 640 + (z.x - 640) * p; y = 360 + (z.y - 360) * p;
+    });
+    // фокус (x,y) переходит в центр кадра, края не выходят за экран
+    var tx = Math.min(0, Math.max(1280 - 1280 * s, 640 - x * s)), ty = Math.min(0, Math.max(720 - 720 * s, 360 - y * s));
+    app.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
+  }
+
+  /* ---------- реальные действия в IDE ---------- */
+  var done = 0, real = TL.ide.filter(function (o) { return o.op === "run" || o.op === "check" || o.op === "click" || o.op === "goto" || o.op === "clear"; });
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  window.frame = async function (t) {
+    while (done < real.length && real[done].t <= t) {
+      var o = real[done++]; applyCode(o.t);
+      if (o.op === "goto") window.__ide.goto(o.lesson, o.i || 0);
+      else if (o.op === "run") document.getElementById("run").click();
+      else if (o.op === "check") document.getElementById("check").click();
+      else if (o.op === "clear") document.getElementById("out").innerHTML = "";
+      else if (o.op === "click") document.querySelector(o.sel).click();
+      await sleep(o.op === "goto" ? 120 : 260);
+    }
+    var ide = inIde(t), cs = applyCode(t);
+    var last = null; TL.ide.forEach(function (o) { if (o.op === "type" && o.t <= t) last = o; });
+    cs.typingDone = !last || t > last.t + last.dur;
+    scenes(t); animate(t); camera(t); overlays(t, cs, ide);
+    document.body.classList.toggle("noide", !ide);
+  };
+})();
+</script></body>
+</html>
