@@ -1,95 +1,101 @@
 <!doctype html><html lang="tg"><head><meta charset="utf-8"><title>Барномасозӣ аз сифр — Шпаргалка</title><style>@page { size: 600px 900px; margin: 0; }
-:root { --paper:#F4EFE6; --ink:#1F3F44; --rust:#B4472E; --muted:#857D70; --card:#FFFDF8; --line:#E3D9C7; --gold:#E9B949; --green:#3E7C59; }
+:root { --bg:#1E1E1E; --panel:#252526; --panel2:#2D2D30; --line:#3C3C3C; --text:#D4D4D4; --muted:#8B949E; --white:#fff;
+--kw:#569CD6; --st:#CE9178; --nu:#B5CEA8; --cm:#6A9955; --fn:#DCDCAA; --par:#9CDCFE; --ctrl:#C586C0; --ok:#4EC9B0; --err:#F48771;
+--purple:#BD93F9; --pink:#FF79C6; --accent:linear-gradient(90deg,#BD93F9,#FF79C6); --box1:#E2B070; --box2:#C8975A; }
 * { box-sizing:border-box; margin:0; }
-body { font-family:Inter,"DejaVu Sans",sans-serif; color:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-.page { position:relative; isolation:isolate; width:600px; height:900px; overflow:hidden; padding:64px 36px 50px; background:var(--paper); page-break-after:always; display:flex; flex-direction:column; gap:12px; }
-.page::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 15% 8%, rgba(255,255,255,.6), transparent 45%), radial-gradient(circle at 95% 95%, rgba(180,71,46,.07), transparent 40%); pointer-events:none; z-index:-1; }
-.hdr { position:absolute; left:36px; right:36px; top:24px; display:flex; justify-content:space-between; font:600 10px "JetBrains Mono",monospace; letter-spacing:1.5px; padding-bottom:6px; border-bottom:1.5px solid var(--rust); }
+body { font-family:Inter,"DejaVu Sans",sans-serif; color:var(--text); -webkit-print-color-adjust:exact; print-color-adjust:exact; background:var(--bg); }
+.page { position:relative; isolation:isolate; width:600px; height:900px; overflow:hidden; padding:64px 36px 50px; background:var(--bg); page-break-after:always; display:flex; flex-direction:column; gap:12px; }
+.page::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 80% 8%, rgba(189,147,249,.16), transparent 42%), radial-gradient(circle at 10% 95%, rgba(255,121,198,.07), transparent 45%); pointer-events:none; z-index:-1; }
+.hdr { position:absolute; left:36px; right:36px; top:24px; display:flex; justify-content:space-between; font:700 10px "JetBrains Mono",monospace; letter-spacing:2px; color:var(--purple); padding-bottom:6px; border-bottom:1.5px solid; border-image:var(--accent) 1; }
 .foot { position:absolute; left:36px; right:36px; bottom:20px; display:flex; justify-content:space-between; font:600 10px "JetBrains Mono",monospace; color:var(--muted); }
-.chip { align-self:flex-start; background:var(--ink); color:var(--paper); font:700 11px "JetBrains Mono",monospace; letter-spacing:2.5px; padding:5px 10px; border-radius:5px; }
-h1.h { font-size:32px; font-weight:900; letter-spacing:-.5px; }
-h3 { font-size:16px; font-weight:900; margin-top:4px; }
+.chip { align-self:flex-start; border:1.5px solid var(--purple); color:var(--purple); font:800 11px "JetBrains Mono",monospace; letter-spacing:2.5px; padding:4px 11px; border-radius:999px; }
+h1.h { font-size:32px; font-weight:900; letter-spacing:-.5px; color:var(--white); }
+h3 { font-size:16px; font-weight:800; margin-top:4px; color:var(--white); }
 p { font-size:14px; line-height:1.45; font-weight:500; }
 .muted { color:var(--muted); font-size:12.5px; }
 .center { text-align:center; }
 .emo { font-family:"Noto Color Emoji"; }
 pre, code, kbd, .anat, .term pre, .out pre { font-variant-ligatures:none !important; font-feature-settings:'liga' 0, 'calt' 0 !important; }
-code, kbd { font-family:"JetBrains Mono",monospace; font-size:.92em; background:rgba(31,63,68,.08); padding:1px 5px; border-radius:4px; }
-kbd { border:1px solid var(--line); background:#fff; }
-.term { border-radius:12px; background:#1B2A2D; box-shadow:0 10px 22px rgba(31,63,68,.18); overflow:hidden; }
-.bar { height:20px; display:flex; align-items:center; gap:5px; padding:0 10px; background:rgba(255,255,255,.07); }
-.bar i { width:8px; height:8px; border-radius:50%; background:#E0675A; } .bar i:nth-child(2) { background:#E9B949; } .bar i:nth-child(3) { background:#6DBE7D; }
-.bar span { margin:0 auto; font:500 10px "JetBrains Mono",monospace; color:#9fb0b2; }
-.term pre { padding:9px 14px; font:500 12px/1.45 "JetBrains Mono",monospace; color:#EDE6D8; white-space:pre-wrap; }
-.kw { color:#E0675A; } .st { color:#7FD49A; } .nu { color:#E9B949; } .cm { color:#7d8f91; font-style:italic; } .fn { color:#8fb8ff; } .id { color:#EDE6D8; }
-.out { background:#10191B; border-top:1px solid rgba(255,255,255,.08); padding:8px 14px; }
-.out b { font:700 10px "JetBrains Mono",monospace; color:#9fb0b2; letter-spacing:1px; }
-.out pre { padding:4px 0 0; font:600 12.5px/1.45 "JetBrains Mono",monospace; color:#7FD49A; white-space:pre-wrap; }
-.def { background:var(--card); border-left:5px solid var(--rust); border-radius:10px; padding:10px 14px; font-size:14.5px; line-height:1.45; }
-.tip { background:#fff8e6; border:1.5px solid #f0dca4; border-radius:10px; padding:9px 13px; font-size:13px; line-height:1.45; }
-.tip.warn { background:#fbeee9; border-color:#ebc3b6; }
-.card { background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; font-size:13.5px; }
+code, kbd { font-family:"JetBrains Mono",monospace; font-size:.92em; background:rgba(189,147,249,.14); color:var(--fn); padding:1px 5px; border-radius:4px; }
+kbd { border:1px solid var(--line); background:var(--panel2); color:var(--text); }
+.term { border-radius:12px; background:#1E1E1E; border:1px solid var(--line); box-shadow:0 10px 24px rgba(0,0,0,.45); overflow:hidden; }
+.bar { height:22px; display:flex; align-items:center; gap:5px; padding:0 10px; background:var(--panel2); border-bottom:1px solid var(--line); }
+.bar i { width:8px; height:8px; border-radius:50%; background:#F48771; } .bar i:nth-child(2) { background:#DCDCAA; } .bar i:nth-child(3) { background:#4EC9B0; }
+.bar span { margin:0 auto; font:500 10px "JetBrains Mono",monospace; color:var(--muted); }
+.term pre { padding:9px 14px; font:500 12px/1.5 "JetBrains Mono",monospace; color:var(--text); white-space:pre-wrap; }
+.kw { color:var(--kw); } .ct { color:var(--ctrl); } .st { color:var(--st); } .nu { color:var(--nu); } .cm { color:var(--cm); font-style:italic; } .fn { color:var(--fn); } .id { color:var(--par); }
+.out { background:#181818; border-top:1px solid var(--line); padding:8px 14px; }
+.out b { font:700 10px "JetBrains Mono",monospace; color:var(--muted); letter-spacing:1px; }
+.out pre { padding:4px 0 0; font:600 12.5px/1.45 "JetBrains Mono",monospace; color:var(--ok); white-space:pre-wrap; }
+.def { background:var(--panel); border:1px solid var(--line); border-left:5px solid var(--purple); border-radius:10px; padding:10px 14px; font-size:14.5px; line-height:1.45; }
+.def b { color:var(--white); }
+.tip { background:rgba(78,201,176,.10); border:1.5px solid rgba(78,201,176,.4); border-radius:10px; padding:9px 13px; font-size:13px; line-height:1.45; }
+.tip.warn { background:rgba(244,135,113,.10); border-color:rgba(244,135,113,.45); }
+.card { background:var(--panel); border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; font-size:13.5px; }
 .two { display:flex; gap:10px; } .two > * { flex:1; }
-.kw2 { color:var(--rust); font-family:"JetBrains Mono",monospace; }
+.kw2 { color:var(--kw); font-family:"JetBrains Mono",monospace; }
 table { width:100%; border-collapse:separate; border-spacing:6px; font-size:13px; }
-td { background:var(--card); border:1.5px solid var(--line); border-radius:8px; padding:7px 9px; }
-td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
+td { background:var(--panel); border:1.5px solid var(--line); border-radius:8px; padding:7px 9px; }
+td.ok { border-color:rgba(78,201,176,.5); } td.no { border-color:rgba(244,135,113,.5); }
 .ops td { text-align:center; }
 .steps { display:flex; flex-direction:column; gap:7px; }
-.steps > div { display:flex; gap:10px; align-items:flex-start; background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font-size:13.5px; line-height:1.4; }
-.steps > div > b { flex:none; width:22px; height:22px; border-radius:50%; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
-.bricks { display:flex; gap:10px; margin-top:4px; }
-.bricks > div { flex:1; background:var(--card); border:1.5px solid var(--line); border-radius:12px; padding:12px 8px; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; }
-.bricks .emo { font-size:30px; } .bricks b { font-size:15px; } .bricks small { font-size:11.5px; color:var(--muted); }
-.anat { align-self:center; font:700 19px "JetBrains Mono",monospace; background:#1B2A2D; color:#EDE6D8; padding:10px 18px; border-radius:10px; }
+.steps > div { display:flex; gap:10px; align-items:flex-start; background:var(--panel); border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font-size:13.5px; line-height:1.4; }
+.steps > div > b { flex:none; width:22px; height:22px; border-radius:50%; background:var(--accent); color:#1E1E1E; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.bricks { display:flex; gap:8px; margin-top:4px; }
+.bricks > div { flex:1; background:var(--panel); border:1.5px solid var(--line); border-radius:12px; padding:12px 6px; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; }
+.bricks .emo { font-size:28px; } .bricks b { font-size:14px; color:var(--white); } .bricks small { font-size:11px; color:var(--muted); }
+.anat { align-self:center; font:700 19px "JetBrains Mono",monospace; background:#1E1E1E; border:1px solid var(--line); color:var(--text); padding:10px 18px; border-radius:10px; }
 .legend { display:flex; justify-content:center; gap:8px; font:700 12px Inter,sans-serif; }
-.legend span { padding:4px 10px; border-radius:8px; }
-.anat .a1, .legend .a1 { color:#7FD49A; } .anat .a2, .legend .a2 { color:#E9B949; } .anat .a3, .legend .a3 { color:#E0675A; }
-.legend span { background:#1B2A2D; }
-.tasks { padding-left:22px; font-size:14px; line-height:1.7; }
-.quiz { background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:9px 13px; font-size:13.5px; line-height:1.45; }
-.good { color:var(--green); }
+.legend span { padding:4px 10px; border-radius:8px; background:var(--panel); border:1px solid var(--line); }
+.anat .a1, .legend .a1 { color:var(--ok); } .anat .a2, .legend .a2 { color:var(--fn); } .anat .a3, .legend .a3 { color:var(--pink); }
+.tasks { padding-left:22px; font-size:13.5px; line-height:1.65; }
+.quiz { background:var(--panel); border:1.5px solid var(--line); border-radius:10px; padding:8px 13px; font-size:13px; line-height:1.4; }
+.good { color:var(--ok); }
 .road { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
-.road > div { background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:9px 10px; font-size:13px; font-weight:700; display:flex; flex-direction:column; gap:2px; }
-.road b { font:800 11px "JetBrains Mono",monospace; color:var(--rust); }
-.road .done { background:var(--ink); color:var(--paper); border-color:var(--ink); }
-.road .done b { color:var(--gold); }
+.road > div { background:var(--panel); border:1.5px solid var(--line); border-radius:10px; padding:9px 10px; font-size:13px; font-weight:700; display:flex; flex-direction:column; gap:2px; color:var(--text); }
+.road b { font:800 11px "JetBrains Mono",monospace; color:var(--muted); }
+.road .done { background:var(--accent); color:#1E1E1E; border-color:transparent; }
+.road .done b { color:#1E1E1E; }
 .cta { display:flex; flex-direction:column; gap:8px; margin-top:auto; }
-.cta > div { background:var(--ink); color:var(--paper); border-radius:12px; padding:11px 14px; font-size:14px; line-height:1.4; }
-.cta b { color:var(--gold); }
+.cta > div { background:var(--panel); border:1.5px solid var(--line); color:var(--text); border-radius:12px; padding:11px 14px; font-size:14px; line-height:1.4; }
+.cta b { color:var(--purple); }
 /* обложка */
 .cover-page { justify-content:center; }
 .cover { display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; }
 .cover .chip { align-self:center; }
-.cover h1 { font-size:54px; font-weight:900; letter-spacing:-1.5px; line-height:1.02; }
-.cover h2 { font-size:24px; font-weight:900; color:var(--rust); }
+.cover h1 { font-size:54px; font-weight:900; letter-spacing:-1.5px; line-height:1.02; color:var(--white); }
+.cover h2 { font-size:24px; font-weight:900; background:var(--accent); -webkit-background-clip:text; background-clip:text; color:transparent; }
 .toc { width:100%; display:flex; flex-direction:column; gap:7px; margin-top:6px; }
-.toc > div { background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:9px 14px; font-size:15px; font-weight:700; text-align:left; display:flex; gap:10px; align-items:center; }
-.toc b { font:800 13px "JetBrains Mono",monospace; color:var(--rust); width:24px; }
+.toc > div { background:var(--panel); border:1.5px solid var(--line); border-radius:10px; padding:9px 14px; font-size:15px; font-weight:700; text-align:left; display:flex; gap:10px; align-items:center; color:var(--white); }
+.toc b { font:800 13px "JetBrains Mono",monospace; color:var(--purple); width:24px; }
 .toc code { margin-left:auto; }
 .box { position:relative; width:260px; height:270px; scale:.62; margin:-55px 0 -60px; }
-.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:#C8975A; }
-.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(#E2B070,#C8975A); z-index:3; display:flex; align-items:center; justify-content:center; }
+.back { position:absolute; left:0; top:70px; width:260px; height:190px; border-radius:14px; background:var(--box2); }
+.front { position:absolute; left:0; top:130px; width:260px; height:130px; border-radius:6px 6px 18px 18px; background:linear-gradient(var(--box1),var(--box2)); z-index:3; display:flex; align-items:center; justify-content:center; }
 .flap { position:absolute; top:50px; width:136px; height:30px; background:#B5844A; border-radius:6px; } .flap.l { left:-6px; rotate:-8deg; } .flap.r { left:130px; rotate:8deg; }
-.tag { background:#fff; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
-.num { position:absolute; left:75px; top:44px; width:110px; height:84px; border-radius:20px; background:var(--ink); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; }
+.tag { background:#fff; color:#3a2a14; border-radius:10px; padding:8px 22px; font:800 34px "JetBrains Mono",monospace; box-shadow:0 4px 10px rgba(0,0,0,.18); }
+.num { position:absolute; left:75px; top:44px; width:110px; height:84px; border-radius:20px; background:var(--panel2); border:2px solid var(--purple); color:#fff; font-size:52px; font-weight:900; display:flex; align-items:center; justify-content:center; z-index:2; }
+.arr{display:flex;gap:6px;margin-top:8px}.arr div{flex:1;background:var(--box2);border-radius:10px;text-align:center;padding:16px 2px 8px;position:relative;font-weight:800;font-size:14px;color:#3a2a14;box-shadow:0 4px 10px rgba(0,0,0,.35)}.arr i{position:absolute;top:-9px;left:50%;translate:-50% 0;background:var(--panel2);border:1px solid var(--purple);color:var(--purple);font:900 13px ui-monospace,monospace;min-width:24px;border-radius:7px;font-style:normal;text-align:center}
 
-.arr{display:flex;gap:6px;margin-top:8px}.arr div{flex:1;background:#C8975A;border-radius:10px;text-align:center;padding:16px 2px 8px;position:relative;font-weight:800;font-size:14px;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.15)}.arr i{position:absolute;top:-9px;left:50%;translate:-50% 0;background:#E9B949;color:#1F3F44;font:900 13px ui-monospace,monospace;min-width:24px;border-radius:7px;font-style:normal;text-align:center}
+.tight { gap:8px; }
+.tight .quiz { padding:6px 12px; font-size:12.5px; line-height:1.35; }
+.small .term pre { font-size:10.5px; line-height:1.38; padding:7px 12px; }
 </style></head><body><section class="page cover-page"><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <div class="cover">
-  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–4</span>
+  <span class="chip">ШПАРГАЛКА · ДАРСҲОИ 1–5</span>
   <h1>Барномасозӣ<br>аз сифр</h1>
-  <h2>4 ғишти ҳар барнома</h2>
+  <h2>5 ғишти ҳар барнома</h2>
   <div class="box"><div class="flap l"></div><div class="flap r"></div><div class="back"></div><div class="num">25</div><div class="front"><div class="tag">age</div></div></div>
   <div class="toc">
     <div><b>01</b> Тағйирёбанда <code>let</code></div>
     <div><b>02</b> Шарт <code>if / else</code></div>
     <div><b>03</b> Давр <code>for</code></div>
     <div><b>04</b> Рӯйхат <code>array [ ]</code></div>
+    <div><b>05</b> Функсия <code>function</code></div>
     <div><b>+</b> Лоиҳаи хурд, вазифаҳо ва ҷавобҳо</div>
   </div>
   <p class="muted">Сабт кунед ва ҳар вақт ба он баргардед 📌</p>
-</div><div class="foot"><span>@shahriyor_yunusov</span><span>1 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+</div><div class="foot"><span>@shahriyor_yunusov</span><span>1 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҚАДАМИ 0</span>
 <h1 class="h">Кодро ҳозир санҷед</h1>
 <p>Барои оғоз ҳеҷ барнома насб кардан лозим нест. Браузер кифоя аст.</p>
@@ -105,8 +111,9 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
   <div><span class="emo">🔀</span><b>Шарт</b><small>қарор қабул мекунад</small></div>
   <div><span class="emo">🔁</span><b>Давр</b><small>такрор мекунад</small></div>
   <div><span class="emo">📋</span><b>Рӯйхат</b><small>якчанд қимат</small></div>
+  <div><span class="emo">⚙️</span><b>Функсия</b><small>код бо ном</small></div>
 </div>
-<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин ғиштҳо сохта шудааст.</p><div class="foot"><span>@shahriyor_yunusov</span><span>2 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<p class="muted center">Ҳар барнома — аз Instagram то бозӣ — аз ҳамин ғиштҳо сохта шудааст.</p><div class="foot"><span>@shahriyor_yunusov</span><span>2 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 1</span>
 <h1 class="h">📦 Тағйирёбанда</h1>
 <div class="def"><b>Тағйирёбанда</b> — қуттӣ бо <b>ном</b>, ки дар дохилаш <b>қимат</b> нигоҳ медорад. Қиматро иваз кардан мумкин аст.</div>
@@ -125,14 +132,14 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 <table>
 <tr><td class="ok">✓ <code>age</code>, <code>userName</code>, <code>score2</code></td><td class="no">✗ <code>2score</code>, <code>user name</code>, <code>let</code></td></tr>
 </table>
-<p class="muted">Номро бо ҳарф оғоз кунед, бе фосила. Калимаҳои дуюмро бо ҳарфи калон: <code>userName</code>.</p><div class="foot"><span>@shahriyor_yunusov</span><span>3 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<p class="muted">Номро бо ҳарф оғоз кунед, бе фосила. Калимаҳои дуюмро бо ҳарфи калон: <code>userName</code>.</p><div class="foot"><span>@shahriyor_yunusov</span><span>3 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 2</span>
 <h1 class="h">🔀 Шарт: if / else</h1>
 <div class="def"><b>if</b> — агар, <b>else</b> — вагарна. Шарт = <b>савол</b> + <b>ду роҳ</b>.</div>
 <div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="kw">let</span> <span class="id">age</span> = <span class="nu">15</span>;
-<span class="kw">if</span> (<span class="id">age</span> &gt;= <span class="nu">18</span>) {
+<span class="ct">if</span> (<span class="id">age</span> &gt;= <span class="nu">18</span>) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хуш омадед!&quot;</span>);
-} <span class="kw">else</span> {
+} <span class="ct">else</span> {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Ҳанӯз барвақт&quot;</span>);
 }</pre></div>
 <h3>Аломатҳои муқоиса</h3>
@@ -142,30 +149,30 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 </table>
 <h3>Зиёда аз ду роҳ: else if</h3>
 <div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="kw">let</span> <span class="id">score</span> = <span class="nu">75</span>;
-<span class="kw">if</span> (<span class="id">score</span> &gt;= <span class="nu">90</span>) {
+<span class="ct">if</span> (<span class="id">score</span> &gt;= <span class="nu">90</span>) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Аъло&quot;</span>);
-} <span class="kw">else</span> <span class="kw">if</span> (<span class="id">score</span> &gt;= <span class="nu">70</span>) {
+} <span class="ct">else</span> <span class="ct">if</span> (<span class="id">score</span> &gt;= <span class="nu">70</span>) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хуб&quot;</span>);
-} <span class="kw">else</span> {
+} <span class="ct">else</span> {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Боз кӯшиш кунед&quot;</span>);
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>Хуб</pre></div></div>
-<div class="tip warn"><b>⚠️ Хатои маъмул:</b> <code>=</code> қимат мегузорад, <code>===</code> муқоиса мекунад. Дар шарт ҳамеша <code>===</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>4 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> <code>=</code> қимат мегузорад, <code>===</code> муқоиса мекунад. Дар шарт ҳамеша <code>===</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>4 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 3</span>
 <h1 class="h">🔁 Давр: for</h1>
 <div class="def">Давр — такрори як амал чанд маротиба. <b>Давр = оғоз + шарт + қадам.</b></div>
 <div class="anat"><span class="a1">let i = 1</span>; <span class="a2">i &lt;= 10</span>; <span class="a3">i++</span></div>
 <div class="legend"><span class="a1">1 · оғоз</span><span class="a2">2 · шарт</span><span class="a3">3 · қадам</span></div>
-<div class="term"><div class="bar"><i></i><i></i><i></i><span>ҷамъи 1 то 100</span></div><pre><span class="kw">let</span> <span class="id">sum</span> = <span class="nu">0</span>;
-<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">100</span>; <span class="id">i</span>++) {
-  <span class="id">sum</span> = <span class="id">sum</span> + <span class="id">i</span>;
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>ҷамъи 1 то 100</span></div><pre><span class="kw">let</span> <span class="fn">sum</span> = <span class="nu">0</span>;
+<span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">100</span>; <span class="id">i</span>++) {
+  <span class="fn">sum</span> = <span class="fn">sum</span> + <span class="id">i</span>;
 }
-<span class="fn">console</span>.<span class="fn">log</span>(<span class="id">sum</span>);</pre><div class="out"><b>▶ Натиҷа</b><pre>5050</pre></div></div>
-<div class="term"><div class="bar"><i></i><i></i><i></i><span>ҷадвали зарб</span></div><pre><span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">3</span>; <span class="id">i</span>++) {
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">sum</span>);</pre><div class="out"><b>▶ Натиҷа</b><pre>5050</pre></div></div>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>ҷадвали зарб</span></div><pre><span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">3</span>; <span class="id">i</span>++) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;7 × &quot;</span> + <span class="id">i</span> + <span class="st">&quot; = &quot;</span> + <span class="nu">7</span> * <span class="id">i</span>);
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>7 × 1 = 7
 7 × 2 = 14
 7 × 3 = 21</pre></div></div>
-<div class="tip warn"><b>⚠️ Давре, ки хотима намеёбад:</b> агар қадамро (<code>i++</code>) фаромӯш кунед, шарт ҳамеша дуруст мемонад ва барнома «овезон» мешавад.</div><div class="foot"><span>@shahriyor_yunusov</span><span>5 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<div class="tip warn"><b>⚠️ Давре, ки хотима намеёбад:</b> агар қадамро (<code>i++</code>) фаромӯш кунед, шарт ҳамеша дуруст мемонад ва барнома «овезон» мешавад.</div><div class="foot"><span>@shahriyor_yunusov</span><span>5 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ДАРСИ 4</span>
 <h1 class="h">📋 Рӯйхат (array)</h1>
 <div class="def">Рӯйхат — <b>тағйирёбанда</b>, ки <b>якчанд қимат</b> нигоҳ медорад. Ҳар қимат <b>шумора</b> дорад, ва шумора аз <b>0</b> оғоз мешавад!</div>
@@ -173,27 +180,47 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 <div class="term"><div class="bar"><i></i><i></i><i></i><span>royhat.js</span></div><pre><span class="kw">let</span> <span class="id">shopping</span> = [<span class="st">&quot;нон&quot;</span>, <span class="st">&quot;шир&quot;</span>, <span class="st">&quot;тухм&quot;</span>, <span class="st">&quot;себ&quot;</span>, <span class="st">&quot;нок&quot;</span>];
 <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">shopping</span>[<span class="nu">2</span>]);      <span class="cm">// тухм</span>
 <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">shopping</span>.<span class="id">length</span>);  <span class="cm">// 5</span>
-<span class="id">shopping</span>.<span class="id">push</span>(<span class="st">&quot;анор&quot;</span>);         <span class="cm">// ба охир илова</span></pre></div>
+<span class="id">shopping</span>.<span class="fn">push</span>(<span class="st">&quot;анор&quot;</span>);         <span class="cm">// ба охир илова</span></pre></div>
 <h3>Амалҳои асосӣ</h3>
 <table class="ops">
 <tr><td><code>list[0]</code> қимати аввал</td><td><code>list.length</code> чанд қимат</td></tr>
 <tr><td><code>list.push(x)</code> илова</td><td><code>list[list.length - 1]</code> охирин</td></tr>
 </table>
 <h3>Рӯйхат + давр</h3>
-<div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">shopping</span>.<span class="id">length</span>; <span class="id">i</span>++) {
+<div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">shopping</span>.<span class="id">length</span>; <span class="id">i</span>++) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span> + <span class="st">&quot;. &quot;</span> + <span class="id">shopping</span>[<span class="id">i</span>]);
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>0. нон
 1. шир
 …
 5. анор</pre></div></div>
-<div class="tip warn"><b>⚠️ Хатои маъмул:</b> шумора аз <code>0</code> оғоз мешавад. Дар рӯйхати 3-қиматӣ охирин шумора <code>2</code> аст, ва <code>list[3]</code> → <code>undefined</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>6 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> шумора аз <code>0</code> оғоз мешавад. Дар рӯйхати 3-қиматӣ охирин шумора <code>2</code> аст, ва <code>list[3]</code> → <code>undefined</code>.</div><div class="foot"><span>@shahriyor_yunusov</span><span>6 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<span class="chip">ДАРСИ 5</span>
+<h1 class="h">⚙️ Функсия</h1>
+<div class="def"><b>Функсия</b> — коди <b>бо ном</b>. Як бор менависем, борҳо истифода мебарем. Мисли тугмаи мошини либосшӯӣ: пахш мекунӣ — кор мекунад.</div>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>greet.js</span></div><pre><span class="kw">function</span> <span class="fn">greet</span>(<span class="id">name</span>) {      <span class="cm">// сохтан     </span>
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Салом, &quot;</span> + <span class="id">name</span> + <span class="st">&quot;!&quot;</span>);
+}
+<span class="fn">greet</span>(<span class="st">&quot;Алӣ&quot;</span>);               <span class="cm">// даъват кардан</span>
+<span class="fn">greet</span>(<span class="st">&quot;Мариям&quot;</span>);</pre><div class="out"><b>▶ Натиҷа</b><pre>Салом, Алӣ!
+Салом, Мариям!</pre></div></div>
+<h3>return — натиҷаро бармегардонад</h3>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>birthday.js</span></div><pre><span class="kw">function</span> <span class="fn">birthday</span>(<span class="id">age</span>) {
+  <span class="ct">return</span> <span class="id">age</span> + <span class="nu">1</span>;
+}
+<span class="kw">let</span> <span class="id">age</span> = <span class="nu">25</span>;
+<span class="id">age</span> = <span class="fn">birthday</span>(<span class="id">age</span>);
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="id">age</span>);</pre><div class="out"><b>▶ Натиҷа</b><pre>26</pre></div></div>
+<table class="ops">
+<tr><td><code>function ном(x)</code> сохтан</td><td><code>ном(қимат)</code> даъват</td><td><code>return</code> натиҷа</td></tr>
+</table>
+<div class="tip warn"><b>⚠️ Хатои маъмул:</b> навиштани <code>function</code> кифоя нест — онро <b>даъват</b> кунед: <code>greet("Алӣ")</code>. Бе даъват функсия кор намекунад.</div><div class="foot"><span>@shahriyor_yunusov</span><span>7 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ЛОИҲАИ ХУРД</span>
 <h1 class="h">Ҳар се ғишт якҷоя</h1>
 <p>Барнома рақамҳои 1 то 6-ро месанҷад: ҷуфт ё тоқ?</p>
-<div class="term"><div class="bar"><i></i><i></i><i></i><span>juft-toq.js</span></div><pre><span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">6</span>; <span class="id">i</span>++) {       <span class="cm">// 🔁 давр</span>
-  <span class="kw">if</span> (<span class="id">i</span> % <span class="nu">2</span> === <span class="nu">0</span>) {                   <span class="cm">// 🔀 шарт</span>
+<div class="term"><div class="bar"><i></i><i></i><i></i><span>juft-toq.js</span></div><pre><span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">1</span>; <span class="id">i</span> &lt;= <span class="nu">6</span>; <span class="id">i</span>++) {       <span class="cm">// 🔁 давр</span>
+  <span class="ct">if</span> (<span class="id">i</span> % <span class="nu">2</span> === <span class="nu">0</span>) {                   <span class="cm">// 🔀 шарт</span>
     <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span> + <span class="st">&quot; — ҷуфт&quot;</span>);
-  } <span class="kw">else</span> {
+  } <span class="ct">else</span> {
     <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span> + <span class="st">&quot; — тоқ&quot;</span>);
   }
 }</pre><div class="out"><b>▶ Натиҷа</b><pre>1 — тоқ
@@ -203,38 +230,43 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
 5 — тоқ
 6 — ҷуфт</pre></div></div>
 <div class="tip"><b>💡</b> <code>i % 2</code> — бақияи тақсим ба 2. Агар бақия <code>0</code> бошад, рақам ҷуфт аст. Ва <code>i</code> — ҳамон 📦 тағйирёбанда.</div>
-<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 8)</h3>
+<h3>🧠 Вазифаҳо (ҷавобҳо дар саҳифаи 9)</h3>
 <ol class="tasks">
 <li>Тағйирёбандаи <code>myName</code> созед ва «Салом, …!» нишон диҳед.</li>
 <li>Агар <code>temperature &gt; 30</code> — «Гарм аст», вагарна — «Хунук аст».</li>
 <li>Бо давр аз 10 то 1 баръакс ҳисоб кунед.</li>
 <li>Рӯйхати 3 хӯроки дӯстдоштаатонро созед ва қимати <b>дуюм</b>-ро нишон диҳед.</li>
 <li>Бо <code>push</code> хӯроки чорум илова кунед ва бо давр ҳамаро нишон диҳед.</li>
-</ol><div class="foot"><span>@shahriyor_yunusov</span><span>7 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+<li>Функсияи <code>double(n)</code> созед, ки рақамро ду баробар мекунад. <code>double(21)</code> чанд мешавад?</li>
+</ol><div class="foot"><span>@shahriyor_yunusov</span><span>8 / 10</span></div></section><section class="page tight"><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҶАВОБҲО</span>
 <h1 class="h">Худро санҷед ✅</h1>
 <div class="quiz"><b>Санҷиши дарси 1:</b> <code>let age = 25; age = 26;</code> → <b class="good">26</b>. Қимати нав кӯҳнаро иваз мекунад.</div>
 <div class="quiz"><b>Санҷиши дарси 2:</b> <code>age = 15</code> → <b class="good">«Ҳанӯз барвақт»</b>: 15 &lt; 18, шарт нодуруст → <code>else</code>.</div>
 <div class="quiz"><b>Санҷиши дарси 3:</b> <code>for (let i = 0; i &lt; 3; i++)</code> → <b class="good">3 бор</b>: i = 0, 1, 2.</div>
 <div class="quiz"><b>Санҷиши дарси 4:</b> нон — 0, шир — 1, <b class="good">тухм — 2</b>. Шумора аз <code>0</code> оғоз мешавад.</div>
+<div class="quiz"><b>Санҷиши дарси 5:</b> <code>birthday(birthday(25))</code> → <b class="good">27</b>. Аввал дохилӣ иҷро мешавад (26), баъд берунӣ (27).</div>
 <h3>Ҳалли вазифаҳо</h3>
-<div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="cm">// 1</span>
+<div class="small"><div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="cm">// 1</span>
 <span class="kw">let</span> <span class="id">myName</span> = <span class="st">&quot;Нигина&quot;</span>;
 <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Салом, &quot;</span> + <span class="id">myName</span> + <span class="st">&quot;!&quot;</span>);
 <span class="cm">// 2</span>
 <span class="kw">let</span> <span class="id">temperature</span> = <span class="nu">34</span>;
-<span class="kw">if</span> (<span class="id">temperature</span> &gt; <span class="nu">30</span>) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Гарм аст&quot;</span>); }
-<span class="kw">else</span> { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хунук аст&quot;</span>); }
+<span class="ct">if</span> (<span class="id">temperature</span> &gt; <span class="nu">30</span>) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Гарм аст&quot;</span>); }
+<span class="ct">else</span> { <span class="fn">console</span>.<span class="fn">log</span>(<span class="st">&quot;Хунук аст&quot;</span>); }
 <span class="cm">// 3</span>
-<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">10</span>; <span class="id">i</span> &gt;= <span class="nu">1</span>; <span class="id">i</span>--) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span>); }
+<span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">10</span>; <span class="id">i</span> &gt;= <span class="nu">1</span>; <span class="id">i</span>--) { <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">i</span>); }
 <span class="cm">// 4</span>
 <span class="kw">let</span> <span class="id">fav</span> = [<span class="st">&quot;палав&quot;</span>, <span class="st">&quot;самбуса&quot;</span>, <span class="st">&quot;ошташ&quot;</span>];
 <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">fav</span>[<span class="nu">1</span>]);   <span class="cm">// самбуса</span>
 <span class="cm">// 5</span>
-<span class="id">fav</span>.<span class="id">push</span>(<span class="st">&quot;қурутоб&quot;</span>);
-<span class="kw">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">fav</span>.<span class="id">length</span>; <span class="id">i</span>++) {
+<span class="id">fav</span>.<span class="fn">push</span>(<span class="st">&quot;қурутоб&quot;</span>);
+<span class="ct">for</span> (<span class="kw">let</span> <span class="id">i</span> = <span class="nu">0</span>; <span class="id">i</span> &lt; <span class="id">fav</span>.<span class="id">length</span>; <span class="id">i</span>++) {
   <span class="fn">console</span>.<span class="fn">log</span>(<span class="id">fav</span>[<span class="id">i</span>]);
-}</pre></div><div class="foot"><span>@shahriyor_yunusov</span><span>8 / 9</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
+}
+<span class="cm">// 6</span>
+<span class="kw">function</span> <span class="fn">double</span>(<span class="id">n</span>) { <span class="ct">return</span> <span class="id">n</span> * <span class="nu">2</span>; }
+<span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">double</span>(<span class="nu">21</span>));   <span class="cm">// 42</span></pre></div></div><div class="foot"><span>@shahriyor_yunusov</span><span>9 / 10</span></div></section><section class="page "><div class="hdr"><span>ШАҲРИЁР ЮНУСОВ</span><span>БАРНОМАСОЗӢ АЗ СИФР</span></div>
 <span class="chip">ҚАДАМИ НАВБАТӢ</span>
 <h1 class="h">Роҳи шумо 🚀</h1>
 <div class="road">
@@ -242,7 +274,7 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
   <div class="done"><b>02</b>Шарт ✓</div>
   <div class="done"><b>03</b>Давр ✓</div>
   <div class="done"><b>04</b>Рӯйхат ✓</div>
-  <div><b>05</b>Функсия</div>
+  <div class="done"><b>05</b>Функсия ✓</div>
   <div><b>06</b>Объект</div>
   <div><b>07</b>Хатогӣ ва дебаг</div>
   <div><b>08–09</b>Лоиҳаи хурд</div>
@@ -253,4 +285,4 @@ td.ok { border-color:#a9cdb6; } td.no { border-color:#ebc3b6; }
   <div>📲 Дарсҳои нав дар Instagram<br><b>@shahriyor_yunusov</b></div>
   <div>💬 Савол доред? Дар шарҳ ё Direct нависед — ҷавоб медиҳам.</div>
   <div>🤝 Ин файлро ба дӯсте фиристед, ки барномасозиро мехоҳад.</div>
-</div><div class="foot"><span>@shahriyor_yunusov</span><span>9 / 9</span></div></section></body></html>
+</div><div class="foot"><span>@shahriyor_yunusov</span><span>10 / 10</span></div></section></body></html>
