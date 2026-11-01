@@ -13,3 +13,4 @@
 | 2026-10-30 | 1984 | Дарси 4: Рӯйхат (видео + конспект + санҷиш бо рӯйхати харид) | `../reels/04-array/reel-royhat.mp4`, `post-08-royhat.html` |
 | 2026-10-31 | 1989–1990 | Reels 5: Функсия (видео + тавсифи Instagram `caption.txt`; 1990 — муқова `cover.jpg` ҳамчун файл) | `../reels/05-function/reel-funksiya.mp4`, `../reels/05-function/cover.jpg`, `../reels/05-function/caption.txt` |
 | 2026-11-01 | 1995–1997 | Reels 6: Объект (1995 — видео + конспект бо код; 1996 — муқова `cover.jpg` ҳамчун файл; 1997 — тавсифи Instagram барои нусха) | `../reels/06-object/reel-obyekt.mp4`, `../reels/06-object/cover.jpg`, `../reels/06-object/caption.txt`, `post-10-object.html` |
+| 2026-11-01 | 1998 | PDF: шпаргалка дарсҳои 1–5 («Шпаргалка дарсҳои 1 - 5.pdf») | `../pdf/shpargalka-darsho-1-5.pdf` |
