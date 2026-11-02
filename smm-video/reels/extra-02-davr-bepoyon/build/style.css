@@ -108,3 +108,23 @@ animation:capin .05s linear var(--a) forwards,capout .05s linear var(--b) forwar
 .stop{position:absolute;left:190px;top:342px;width:210px;height:74px;border-radius:18px;background:var(--err);color:#fff;font:900 42px/74px Inter;z-index:8;text-align:center;transform:rotate(-4deg);box-shadow:0 12px 30px rgba(244,135,113,.5);animation:slam .4s cubic-bezier(.2,1.3,.4,1) var(--a) both,gone .2s var(--b) forwards}
 .spin{display:inline-block;animation:spin 1.2s linear infinite}
 .cap{z-index:20}
+/* ===== v2: бе шарҳ, код дар ҳаво (мисли услуби истинодӣ: матн ҳамчун ҷузъи ҷаҳон) ===== */
+.fcode{position:absolute;left:0;right:0;text-align:center;font:600 26px/1.55 var(--mono);color:var(--text);font-variant-ligatures:none;white-space:pre;text-shadow:0 0 18px rgba(0,0,0,.6)}
+.fcode .ln{height:40px}
+.cur{display:inline-block;width:3px;height:30px;background:var(--text);vertical-align:-5px;margin-left:2px;animation:blink .9s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.sel{background:rgba(255,255,255,.28);border-radius:4px;animation:selin .12s var(--a) both}
+@keyframes selin{from{background:transparent}to{background:rgba(255,255,255,.28)}}
+.vanish{animation:gone .25s ease-in var(--v) forwards}
+.part{position:relative;border-bottom:4px solid transparent;animation:pcol .3s ease-out var(--a) forwards}
+@keyframes pcol{to{border-bottom-color:var(--col)}}
+.part b{position:absolute;top:-30px;left:50%;margin-left:-10px;width:20px;height:20px;border-radius:50%;background:var(--col);color:#1E1E1E;font:900 13px/20px var(--mono);text-align:center;opacity:0;animation:fadein .2s var(--a) forwards}
+.walk svg{animation:none}
+.wa{animation:wa .44s steps(1) infinite}
+.wb{animation:wa .44s steps(1) .22s infinite}
+@keyframes wa{0%{opacity:1}50%{opacity:0}}
+.wb{opacity:0}
+.bubble{position:absolute;border-radius:40px;background:rgba(45,45,48,.9);border:1.5px solid var(--line);padding:10px 12px;display:flex;gap:6px;animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both,gone .25s ease-in var(--g) forwards}
+.bub-dot{position:absolute;border-radius:50%;background:rgba(45,45,48,.9);border:1.5px solid var(--line)}
+.xmark{position:absolute;font:900 120px/1 Inter;color:var(--err);text-shadow:0 0 30px rgba(244,135,113,.6);animation:slam .4s cubic-bezier(.2,1.3,.4,1) var(--a) both,gone .2s var(--b) forwards}
+.fl{position:absolute;font-size:44px;animation:popin .4s cubic-bezier(.3,1.6,.5,1) var(--a) both}
