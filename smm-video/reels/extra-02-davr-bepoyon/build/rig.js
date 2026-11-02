@@ -170,9 +170,18 @@ function faceSvg(m, look, t) {
 function headSvg(Cx, Cy, rot, m, look, t) {
   const ears = [-1, 1].map(s => `<ellipse cx="${s * 25}" cy="3" rx="5.5" ry="8" fill="${SK2}"/><ellipse cx="${s * 25}" cy="3" rx="2.6" ry="4.5" fill="#C98F66"/>`).join('');
   const hair = `<path d="M-26,-2 Q-30,-38 0,-34 Q30,-38 26,-2 Q22,-18 6,-21 Q-10,-14 -26,-2 Z" fill="${HAIR}"/><path d="M-4,-32 Q14,-44 20,-30" fill="none" stroke="${HAIR}" stroke-width="7" stroke-linecap="round"/>`;
-  return `<g transform="translate(${Cx.toFixed(1)},${Cy.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(.96)"><rect x="-6" y="22" width="12" height="16" rx="5" fill="${SK2}"/>${ears}<ellipse cx="0" cy="0" rx="25" ry="28" fill="url(#skin)"/>${hair}${faceSvg(m, look, t)}</g>`;
+  return `<g transform="translate(${Cx.toFixed(1)},${Cy.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(.88)"><rect x="-6" y="22" width="12" height="16" rx="5" fill="${SK2}"/>${ears}<ellipse cx="0" cy="0" rx="25" ry="28" fill="url(#skin)"/>${hair}${faceSvg(m, look, t)}</g>`;
+}
+function laptopSide(p) {
+  const col = p.heat < .5 ? mixc('#BD93F9', '#FFB86C', p.heat / .5) : mixc('#FFB86C', '#F48771', (p.heat - .5) / .5);
+  let keys = ''; for (let i = 0; i < 9; i++) keys += `<rect x="${-30 + i * 6.4}" y="-8" width="4.4" height="2.4" rx="1" fill="#5a5a66"/>`;
+  return `<g transform="translate(${p.lx.toFixed(1)},${p.ly.toFixed(1)}) rotate(${p.lrot.toFixed(1)})">` +
+    `<polygon points="30,-5 37,-5 50,-64 43,-64" fill="#33333b" stroke="#16161a" stroke-width="1.2"/>` +
+    `<polygon points="30,-5 32,-5 45,-62 43,-62" fill="${col}" opacity=".95" filter="url(#glow)"/>` +
+    `<rect x="-36" y="-6" width="72" height="7" rx="2.5" fill="#4a4a54" stroke="#2a2a30" stroke-width="1.2"/>${keys}</g>`;
 }
 function laptopSvg(p) {
+  if (p.side) return laptopSide(p);
   const col = p.heat < .5 ? mixc('#BD93F9', '#FFB86C', p.heat / .5) : mixc('#FFB86C', '#F48771', (p.heat - .5) / .5);
   const cols = ['#569CD6', '#CE9178', '#B5CEA8', '#DCDCAA', '#9CDCFE'];
   let lines = ''; for (let i = 0; i < 5; i++) lines += `<rect x="${-26}" y="${-52 + i * 8}" width="${20 + ((i * 13) % 30)}" height="4" rx="2" fill="${cols[i]}"/>`;
@@ -203,6 +212,26 @@ function render(t) {
   if (t >= 38.3 && t < 42.9) extra += `<text x="${hd[0] + 22}" y="${hd[1] - 36}" font-size="30" font-weight="900" fill="#FF79C6">?</text><text x="${hd[0] - 34}" y="${hd[1] - 26}" font-size="22" font-weight="900" fill="#BD93F9">?</text>`;
   document.getElementById('rig').innerHTML = s.replace('', '') + lap + extra;
 }
+
+function chairSvg(cx, top) {
+  const c = '#3a3a44', c2 = '#2a2a33', ac = '#BD93F9';
+  return `<g><rect x="${cx - 34}" y="${top - 70}" width="12" height="74" rx="5" fill="${c2}"/><rect x="${cx - 34}" y="${top - 74}" width="12" height="8" rx="4" fill="${ac}"/>` +
+         `<rect x="${cx - 34}" y="${top}" width="74" height="12" rx="6" fill="${c}"/><rect x="${cx - 34}" y="${top + 10}" width="74" height="3" fill="${ac}" opacity=".6"/>` +
+         `<rect x="${cx - 28}" y="${top + 12}" width="8" height="${GY - top - 12}" rx="3" fill="${c2}"/><rect x="${cx + 28}" y="${top + 12}" width="8" height="${GY - top - 12}" rx="3" fill="${c2}"/></g>`;
+}
+function drawPose(p, m, t, chair) {
+  const Hp = [p.x, p.y], Sp = shoulder(p), hd = head(p), hRot = p.torso * 0.5 + p.tilt;
+  let s = chair ? chairSvg(chair.cx, chair.top) : '';
+  s += leg([Hp[0] - 4, Hp[1]], p.hL, p.kL, false);
+  s += arm([Sp[0] - 6, Sp[1] + 4], p.aL, p.bL, false);
+  s += leg([Hp[0] + 4, Hp[1]], p.hR, p.kR, true);
+  s += torsoPath(Hp, Sp);
+  s += headSvg(hd[0], hd[1], hRot, m, p.look, t);
+  s += laptopSvg(p);
+  s += arm([Sp[0] + 6, Sp[1] + 4], p.aR, p.bR, true);
+  return s;
+}
+window.__drawPose = drawPose; window.__STAND = STAND; window.__GY = GY;
 window.__setT = render;
 render(0);
 })();
