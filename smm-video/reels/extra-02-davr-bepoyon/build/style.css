@@ -76,3 +76,35 @@ animation:capin .05s linear var(--a) forwards,capout .05s linear var(--b) forwar
 .idc .av{width:84px;height:104px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:44px}
 .idc .row{margin-bottom:9px}.idc .row small{display:block;font:700 10px var(--mono);letter-spacing:2px;color:var(--muted)}
 .idc .row b{font:800 21px Inter;color:var(--white)}
+/* ===== анимацияи Одамак ===== */
+.pose{position:absolute;left:100px;top:412px;width:300px;height:300px;opacity:0;animation:pin .12s linear var(--a) forwards,pout .12s linear var(--b) forwards}
+@keyframes pin{to{opacity:1}} @keyframes pout{to{opacity:0}}
+.pose svg{width:300px;height:300px;overflow:visible}
+.bob svg{animation:bob 1.1s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.jit svg{animation:jit .09s linear infinite}
+@keyframes jit{0%{transform:translate(-2px,1px)}25%{transform:translate(2px,-1px)}50%{transform:translate(-1px,-2px)}75%{transform:translate(1px,2px)}100%{transform:translate(-2px,1px)}}
+.tap{animation:tap .16s ease-in-out infinite alternate}
+@keyframes tap{from{transform:translateY(-2px)}to{transform:translateY(3px)}}
+.wave{transform-origin:194px 40px;animation:wave .5s ease-in-out infinite alternate}
+@keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+.cap em{font-style:normal;color:var(--purple)}
+.cap.big{font-size:32px}
+.fly{position:absolute;left:0;top:0;opacity:0;animation:flyp var(--d,.8s) cubic-bezier(.2,.7,.3,1) var(--a) forwards,pclear .3s ease-in var(--c) forwards}
+@keyframes flyp{0%{opacity:1;transform:translate(var(--sx),var(--sy)) rotate(0) scale(.5)}100%{opacity:1;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
+@keyframes pclear{to{opacity:0;transform:translate(var(--x),calc(var(--y) + 40px)) rotate(var(--r)) scale(.4)}}
+.pillx{width:58px;height:22px;border-radius:11px;font:800 12px/22px Inter,sans-serif;text-align:center;color:#1E1E1E}
+.counter{position:absolute;left:0;right:0;text-align:center;top:322px;font:900 54px var(--mono);color:var(--pink);text-shadow:0 0 22px rgba(255,121,198,.6);opacity:0;animation:fadein .1s var(--a) forwards,gone .1s var(--b) forwards}
+.steam{position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(200,200,210,.35);opacity:0;animation:steam 1.4s ease-out var(--a) infinite}
+@keyframes steam{0%{opacity:.7;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--sx,0),-90px) scale(1.5)}}
+.lfly{position:absolute;left:272px;top:540px;width:130px;opacity:0;animation:lfly 1.9s cubic-bezier(.5,0,.9,.4) var(--a) forwards}
+@keyframes lfly{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:1;transform:translate(60px,-760px) rotate(1080deg)}}
+.lfall{position:absolute;left:272px;top:540px;width:130px;opacity:0;animation:lfall .7s cubic-bezier(.3,1.4,.5,1) var(--a) forwards,gone .05s linear 20.62s forwards}
+@keyframes lfall{0%{opacity:1;transform:translate(0,-700px) rotate(-200deg)}100%{opacity:1;transform:translate(0,0) rotate(0)}}
+.chipx{position:absolute;border-radius:12px;padding:8px 14px;font:800 15px var(--mono);animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both}
+.ibox{position:absolute;left:392px;top:470px;width:100px;height:90px;border-radius:12px;background:linear-gradient(var(--box1),var(--box2));box-shadow:0 8px 22px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#3a2a14;animation:popin .45s cubic-bezier(.3,1.6,.5,1) var(--a) both}
+.ibox small{font:800 14px var(--mono)} .ibox b{font:900 40px var(--mono);line-height:1;position:relative;height:42px;width:80px;text-align:center}
+.ibox b span{position:absolute;left:0;right:0;opacity:0;animation:fadein .05s var(--a) forwards,gone .05s var(--b) forwards}
+.stop{position:absolute;left:190px;top:342px;width:210px;height:74px;border-radius:18px;background:var(--err);color:#fff;font:900 42px/74px Inter;z-index:8;text-align:center;transform:rotate(-4deg);box-shadow:0 12px 30px rgba(244,135,113,.5);animation:slam .4s cubic-bezier(.2,1.3,.4,1) var(--a) both,gone .2s var(--b) forwards}
+.spin{display:inline-block;animation:spin 1.2s linear infinite}
+.cap{z-index:20}
