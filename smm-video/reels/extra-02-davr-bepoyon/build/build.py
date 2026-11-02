@@ -52,21 +52,17 @@ def P_wave():
 def pose(a, b, inner, cls="bob"):
     H.append(f'<div class="pose {cls}" style="--a:{a:.2f}s;--b:{b:.2f}s">{C.svg(inner)}</div>')
 
-# ---------- 0–3: Одамак бо ноутбук меояд ----------
-H.append('<style>@keyframes walkin{from{transform:translateX(-360px)}to{transform:translateX(0)}}</style>')
-H.append(f'<div class="pose" style="--a:0.20s;--b:2.85s"><div style="animation:walkin 2.55s linear 0.2s both">'
-         f'<div class="wa">{C.svg(P_walk(0))}</div><div class="wb" style="position:absolute;left:0;top:0">{C.svg(P_walk(1))}</div></div></div>')
-for k in range(11): sfx("tick", 0.3 + k * 0.22, 0.35)
-sfx("thud", 2.85, 0.5)
-pose(2.85, 10.0, P_type())
-pose(10.0, 11.4, P_type("#FFB86C", "help", True), "jit")
-pose(11.4, 15.9, P_shock(), "jit")
-pose(15.9, 19.0, P_buried(), "jit")
-pose(19.0, 30.6, P_type("#BD93F9", "type", False, '<text x="96" y="26" font-size="26">💡</text>'))
-pose(30.6, 33.3, P_type("#BD93F9", "type"))
-pose(33.3, 38.0, P_happy())
-pose(38.0, 43.0, P_type("#BD93F9", "help", False, '<text x="128" y="30" font-size="30" font-weight="900" fill="#FF79C6">?</text><text x="84" y="40" font-size="22" font-weight="900" fill="#BD93F9">?</text>'))
-pose(43.0, END + 5, P_wave())
+# ---------- 0–3: қадамзанӣ ----------
+def _ss(x): x = max(0, min(1, x)); return x * x * (3 - 2 * x)
+import math
+_prev = None
+for _i in range(0, 2600):
+    _t = 0.2 + _i * 0.001
+    _x = -90 + 325 * _ss((_t - 0.2) / 2.5)
+    _c = math.floor(_x / 88 * 2)       # ҳар нимтаи давр — як қадам
+    if _prev is not None and _c != _prev: sfx("tick", _t, 0.45)
+    _prev = _c
+sfx("thud", 2.9, 0.4)
 
 # ---------- 3–8: фикр (се «Салом») + код дар ҳаво ----------
 bub = ''.join(f'<div style="border-radius:11px;background:{c};width:58px;height:22px;font:800 12px/22px Inter;text-align:center;color:#1E1E1E">Салом</div>' for c in ("#BD93F9", "#FF79C6", "#BD93F9"))
@@ -93,11 +89,7 @@ for i in range(N):
     if i % 3 == 0: sfx("pop", ta, 0.28)
 for k in range(5): H.append(f'<div class="steam" style="--a:{10.4 + k * .27:.2f}s;left:{300 + k * 14}px;top:540px;--sx:{(k - 2) * 12}px"></div>')
 sfx("riser", 8.4, 0.5); sfx("fan", 9.4, 0.5); sfx("buzz", 11.4, 0.7); sfx("riser", 12.8, 0.5); sfx("boing", 9.6, 0.5)
-lap_svg = '<svg viewBox="0 0 90 70" width="130" height="100">' + C.DEFS + C.laptop(10, 6, "#F48771", 64, 44, '<text x="32" y="30" font-size="20" text-anchor="middle">🔥</text>') + '</svg>'
-H.append(f'<div class="lfly" style="--a:15.9s;z-index:7">{lap_svg}</div>')
 sfx("hit", 15.9, 0.9); sfx("whoosh", 16.0, 0.7); sfx("riser", 16.1, 0.6)
-lap_fall = '<svg viewBox="0 0 90 70" width="130" height="100">' + C.DEFS + C.laptop(10, 6, "#BD93F9", 64, 44) + '</svg>'
-H.append(f'<div class="lfall" style="--a:18.9s;z-index:7">{lap_fall}</div>')
 sfx("thud", 19.05, 0.8)
 
 # ---------- 19–23: код бармегардад, true ♾️ ✅ ----------
@@ -156,8 +148,10 @@ H.append(f'''<div class="sc" style="{S(43.0)}">
 <div class="pill acc2 pop" style="--a:45.5s;top:350px;font-size:17px;padding:8px 24px">🔔</div></div>''')
 sfx("pop", 43.2, 0.6); sfx("pop", 44.4, 0.7); sfx("chime", 44.6, 0.6); sfx("ding", 45.5, 0.6)
 
+RIG = open('rig.js', encoding='utf-8').read()
+STAGE = '<svg id="stage" viewBox="0 0 540 960" width="540" height="960" style="position:absolute;left:0;top:0;z-index:2;overflow:visible">' + C.DEFS + '<g id="rig"></g></svg>'
 html = f'''<!doctype html><html lang="tg"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head><body>
-{"".join(H)}
+{STAGE}{"".join(H)}<script>{RIG}</script>
 </body></html>'''
 open('reel.html', 'w', encoding='utf-8').write(html)
 json.dump(dict(end=END, sfx=SFX), open('sfx.json', 'w'))

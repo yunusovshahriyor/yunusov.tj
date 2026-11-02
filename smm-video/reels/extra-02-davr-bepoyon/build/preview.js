@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
   await p.goto('file://' + __dirname + '/reel.html');
   await p.evaluate(() => document.getAnimations().forEach(a => a.pause()));
   for (let i = 0; i < times.length; i++) {
-    await p.evaluate(t => document.getAnimations().forEach(a => { a.currentTime = t; }), times[i] * 1000);
+    await p.evaluate(t => { if (window.__setT) window.__setT(t / 1000); document.getAnimations().forEach(a => { a.currentTime = t; }); }, times[i] * 1000);
     await p.screenshot({ path: `${out}/p${String(i).padStart(2, '0')}.png` });
   }
   await b.close();
