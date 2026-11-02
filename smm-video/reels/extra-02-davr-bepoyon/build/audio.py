@@ -69,6 +69,18 @@ def make(name):
         n = int(SR * .45); tt = np.arange(n) / SR
         f = 220 + 160 * np.sin(2 * np.pi * 7 * tt) * np.exp(-tt * 5)
         return 0.35 * np.sin(2 * np.pi * np.cumsum(f) / SR) * env(n, .003, .18)
+    if name == 'creak':
+        n = int(SR * .4); tt = np.arange(n) / SR
+        f = 420 - 190 * tt / .4 + 25 * np.sin(2 * np.pi * 31 * tt)
+        x = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * .5 + .5 * np.sin(2 * np.pi * np.cumsum(f * 2.01) / SR)
+        return 0.16 * lp(x, .12) * np.minimum(1, tt / .03) * np.minimum(1, (n / SR - tt) / .12)
+    if name == 'clatter':
+        n = int(SR * .5); out = np.zeros(n)
+        for k, (t0, g) in enumerate([(0, 1.0), (.07, .8), (.14, .55), (.22, .4), (.31, .25)]):
+            i0 = int(t0 * SR); m = int(SR * .05); x = rng.standard_normal(m); x = x - lp(x, .2)
+            out[i0:i0 + m] += g * .5 * x * env(m, .0005, .01)
+            out[i0:i0 + int(SR * .12)] += g * .35 * np.sin(2 * np.pi * (220 - 20 * k) * np.arange(int(SR * .12)) / SR) * env(int(SR * .12), .001, .04)
+        return out
     raise ValueError(name)
 N = int(SR * END) + SR
 fx = np.zeros(N)

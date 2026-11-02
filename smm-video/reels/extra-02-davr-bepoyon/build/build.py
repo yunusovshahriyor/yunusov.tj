@@ -85,7 +85,8 @@ for i in range(N):
     ta = 8.4 + (p ** 1.7) * 7.2
     x = R.randint(20, 470); y = 705 - R.random() * (36 + 190 * p)
     r = R.randint(-25, 25); c = "#BD93F9" if i % 2 else "#FF79C6"
-    H.append(f'<div class="fly" style="--a:{ta:.2f}s;--c:19.0s;--sx:{LX - 29}px;--sy:{LY}px;--x:{x}px;--y:{y:.0f}px;--r:{r}deg;--d:{0.55 + R.random() * .3:.2f}s;z-index:5"><div class="pillx" style="background:{c}">Салом</div></div>')
+    mx = (LX - 29 + x) / 2 + R.randint(-30, 30); my = min(LY, y) - R.randint(70, 150)
+    H.append(f'<div class="fly" style="--a:{ta:.2f}s;--c:19.0s;--sx:{LX - 29}px;--sy:{LY}px;--mx:{mx:.0f}px;--my:{my:.0f}px;--x:{x}px;--y:{y:.0f}px;--r:{r}deg;--d:{0.75 + R.random() * .35:.2f}s;z-index:5"><div class="pillx" style="background:{c}">Салом</div></div>')
     if i % 3 == 0: sfx("pop", ta, 0.28)
 for k in range(5): H.append(f'<div class="steam" style="--a:{10.4 + k * .27:.2f}s;left:{300 + k * 14}px;top:540px;--sx:{(k - 2) * 12}px"></div>')
 sfx("riser", 8.4, 0.5); sfx("fan", 9.4, 0.5); sfx("buzz", 11.4, 0.7); sfx("riser", 12.8, 0.5); sfx("boing", 9.6, 0.5)
@@ -148,8 +149,12 @@ H.append(f'''<div class="sc" style="{S(43.0)}">
 <div class="pill acc2 pop" style="--a:45.5s;top:350px;font-size:17px;padding:8px 24px">🔔</div></div>''')
 sfx("pop", 43.2, 0.6); sfx("pop", 44.4, 0.7); sfx("chime", 44.6, 0.6); sfx("ding", 45.5, 0.6)
 
+for _t in (3.25, 22.15): sfx("creak", _t, 0.9)
+sfx("creak", 11.55, 0.9); sfx("thud", 11.95, 0.7); sfx("clatter", 11.97, 0.9); sfx("clatter", 19.0, 0.8); sfx("creak", 33.4, 0.9)
 RIG = open('rig.js', encoding='utf-8').read()
-STAGE = '<svg id="stage" viewBox="0 0 540 960" width="540" height="960" style="position:absolute;left:0;top:0;z-index:2;overflow:visible">' + C.DEFS + '<g id="rig"></g></svg>'
+EXTRA_DEFS = '<defs><radialGradient id="cheek"><stop offset="0" stop-color="#E7907A" stop-opacity=".55"/><stop offset="1" stop-color="#E7907A" stop-opacity="0"/></radialGradient><filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="22"/></filter></defs>'
+FLOOR = '<div style="position:absolute;left:0;right:0;top:704px;bottom:0;background:linear-gradient(rgba(255,255,255,.06),rgba(0,0,0,.18) 40%,transparent);border-top:1px solid rgba(255,255,255,.07);z-index:1"></div>'
+STAGE = FLOOR + '<svg id="stage" viewBox="0 0 540 960" width="540" height="960" style="position:absolute;left:0;top:0;z-index:2;overflow:visible">' + C.DEFS + EXTRA_DEFS + '<g id="rig"></g></svg>'
 html = f'''<!doctype html><html lang="tg"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"></head><body>
 {STAGE}{"".join(H)}<script>{RIG}</script>
 </body></html>'''

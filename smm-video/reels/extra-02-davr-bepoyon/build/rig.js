@@ -74,14 +74,28 @@ K(42.8, {});
 K(43.4, { torso: 0, tilt: 0, look: 5, aL: p => [p.x - 22, p.y + 34], aR: p => [p.x + 62, p.y - 150], bL: 1, bR: 1, curl: 4 });
 K(47.5, {});
 
+function herm(p0, p1, m0, m1, u) { const u2 = u * u, u3 = u2 * u; return (2 * u3 - 3 * u2 + 1) * p0 + (u3 - 2 * u2 + u) * m0 + (-2 * u3 + 3 * u2) * p1 + (u3 - u2) * m1; }
+const fixP = (p) => { const q = Object.assign({}, p); ['aL', 'aR'].forEach(k => { if (typeof q[k] === 'function') q[k] = q[k](q); }); return q; };
+let KF = null;
 function evalKeys(t) {
-  let i = 0; while (i < KEYS.length - 1 && KEYS[i + 1].t <= t) i++;
-  const A = KEYS[i], B = KEYS[Math.min(i + 1, KEYS.length - 1)];
-  const u = A === B ? 0 : ss((t - A.t) / (B.t - A.t));
-  const pa = Object.assign({}, A.raw), pb = Object.assign({}, B.raw);
-  const fix = (p) => { const q = Object.assign({}, p); ['aL', 'aR'].forEach(k => { if (typeof q[k] === 'function') q[k] = q[k](q); }); return q; };
-  const a = fix(pa), b = fix(pb), o = {};
-  for (const k in a) o[k] = Array.isArray(a[k]) ? [lerp(a[k][0], b[k][0], u), lerp(a[k][1], b[k][1], u)] : (typeof a[k] === 'number' ? lerp(a[k], b[k], u) : (u < .5 ? a[k] : b[k]));
+  if (!KF) KF = KEYS.map(k => ({ t: k.t, v: fixP(k.raw) }));
+  let i = 0; while (i < KF.length - 1 && KF[i + 1].t <= t) i++;
+  const A = KF[i], B = KF[Math.min(i + 1, KF.length - 1)], P = KF[i - 1], N = KF[i + 2];
+  const dt = B.t - A.t, u = dt > 0 ? clamp((t - A.t) / dt, 0, 1) : 0;
+  const one = (v0, v1, vm, vp) => {
+    if (v0 === v1) return v0;
+    const m0 = P ? (v1 - vm) / (B.t - P.t) * dt : (v1 - v0);
+    const m1 = N ? (vp - v0) / (N.t - A.t) * dt : (v1 - v0);
+    return herm(v0, v1, m0 * 0.9, m1 * 0.9, u);
+  };
+  const o = {};
+  for (const k in A.v) {
+    const a = A.v[k], b = B.v[k];
+    if (Array.isArray(a)) o[k] = [0, 1].map(c => one(a[c], b[c], P ? P.v[k][c] : a[c], N ? N.v[k][c] : b[c]));
+    else if (typeof a === 'number') o[k] = one(a, b, P ? P.v[k] : a, N ? N.v[k] : b);
+    else o[k] = u < .5 ? a : b;
+  }
+  o.ly = Math.min(o.ly, GY); o.y = Math.min(o.y, GY - 8);
   return o;
 }
 
@@ -196,25 +210,41 @@ function torsoPath(Hp, Sp) {
   return `<path d="M${f(sl)} L${f(sr)} L${f(hr)} Q${f([Hp[0] - dx / L * -9, Hp[1] - dy / L * -9])} ${f(hl)} Z" fill="url(#hood)"/>` +
          `<path d="M${(Sp[0] - nx * 11 - dx / L * 4).toFixed(1)},${(Sp[1] - ny * 11 - dy / L * 4).toFixed(1)} Q${(Sp[0] - dx / L * 14).toFixed(1)},${(Sp[1] - dy / L * 14).toFixed(1)} ${(Sp[0] + nx * 11 - dx / L * 4).toFixed(1)},${(Sp[1] + ny * 11 - dy / L * 4).toFixed(1)}" fill="none" stroke="${HOOD2}" stroke-width="5" stroke-linecap="round"/>`;
 }
-function faceSvg(m, look, t) {
-  const blink = ((t * 1000) % 3300) < 110;
-  const eye = (dx, wide, happy) => {
-    const x = dx + look * 0.5;
-    if (happy) return `<path d="M${x - 6},-1 Q${x},-9 ${x + 6},-1" fill="none" stroke="#2A2233" stroke-width="2.6" stroke-linecap="round"/>`;
-    if (blink && !wide) return `<path d="M${x - 5},-3 L${x + 5},-3" stroke="#2A2233" stroke-width="2.6" stroke-linecap="round"/>`;
-    const r = wide ? 6.5 : 5;
-    return `<ellipse cx="${x}" cy="-3" rx="${r}" ry="${r + 1}" fill="#fff"/><circle cx="${x + look * 0.18 + (dx < 0 ? 0.6 : -0.6)}" cy="-3" r="${wide ? 2.4 : 3}" fill="#2A2233"/>`;
-  };
-  const nose = `<path d="M${look * 0.5},1 Q${3 + look * 0.5},7 ${look * 0.5},8" fill="none" stroke="${SK2}" stroke-width="2" stroke-linecap="round"/>`;
-  if (m === 'type') return eye(-9) + eye(9) + nose + `<path d="M-14,-13 Q-9,-16 -4,-13 M4,-13 Q9,-16 14,-13" fill="none" stroke="${HAIR}" stroke-width="2.6" stroke-linecap="round"/><path d="M-8,13 Q0,19 8,13" fill="none" stroke="#7a3b3b" stroke-width="2.6" stroke-linecap="round"/>`;
-  if (m === 'shock') return eye(-9, true) + eye(9, true) + nose + `<path d="M-16,-18 L-3,-13 M16,-18 L3,-13" stroke="${HAIR}" stroke-width="2.8" stroke-linecap="round"/><ellipse cx="0" cy="15" rx="6" ry="8" fill="#5a1f2b"/><ellipse cx="0" cy="18" rx="3.5" ry="3" fill="#E36F7B"/>`;
-  if (m === 'happy') return eye(-9, false, true) + eye(9, false, true) + nose + `<path d="M-12,9 Q0,25 12,9 Z" fill="#5a1f2b"/><path d="M-9,10 Q0,14 9,10" fill="#fff"/><ellipse cx="-15" cy="8" rx="4" ry="2.6" fill="#F59BA4" opacity=".6"/><ellipse cx="15" cy="8" rx="4" ry="2.6" fill="#F59BA4" opacity=".6"/>`;
-  return eye(-9) + eye(9) + nose + `<path d="M-15,-12 L-4,-15 M15,-12 L4,-15" stroke="${HAIR}" stroke-width="2.8" stroke-linecap="round"/><path d="M-8,16 Q0,10 8,16" fill="none" stroke="#7a3b3b" stroke-width="2.6" stroke-linecap="round"/>`;
+const MOODS = { type: { eo: 1, ha: 0, sm: .35, op: 0, br: 0, wo: 0, ch: 0 }, help: { eo: .95, ha: 0, sm: -.5, op: 0, br: .1, wo: 1, ch: 0 },
+  shock: { eo: 1.4, ha: 0, sm: 0, op: 1, br: 1, wo: .3, ch: 0 }, happy: { eo: 0, ha: 1, sm: 1, op: .85, br: .3, wo: 0, ch: 1 } };
+const MOOD_T = [[0, 'type'], [10, 'help'], [11.6, 'shock'], [16.2, 'help'], [20.3, 'type'], [30.6, 'happy'], [38, 'help'], [43.2, 'happy']];
+function moodP(t) {
+  let i = 0; while (i < MOOD_T.length - 1 && MOOD_T[i + 1][0] <= t) i++;
+  const cur = MOODS[MOOD_T[i][1]], prev = MOODS[MOOD_T[Math.max(0, i - 1)][1]], w = i === 0 ? 1 : ss((t - MOOD_T[i][0]) / 0.22), o = {};
+  for (const k in cur) o[k] = lerp(prev[k], cur[k], w);
+  return o;
 }
-function headSvg(Cx, Cy, rot, m, look, t) {
+function faceSvg(M, look, t, gz) {
+  const bt = (t * 1000) % 3300, blink = bt < 130 ? Math.sin(bt / 130 * Math.PI) : 0, open = M.eo * (1 - 0.92 * blink);
+  const eye = (dx) => {
+    const ex = dx + look * 0.3, ry = Math.max(0.5, 6.2 * open), rx = 5.1;
+    let g = '';
+    if (M.ha < 0.98) g += `<g opacity="${(1 - M.ha).toFixed(2)}"><ellipse cx="${ex}" cy="-3" rx="${rx}" ry="${ry.toFixed(2)}" fill="#fff"/><ellipse cx="${(ex + gz[0]).toFixed(1)}" cy="${(-3 + gz[1]).toFixed(1)}" rx="3" ry="${Math.min(3.1, ry * 0.9).toFixed(2)}" fill="#2A2233"/><circle cx="${(ex + gz[0] + 1).toFixed(1)}" cy="${(-4 + gz[1]).toFixed(1)}" r="0.9" fill="#fff" opacity="${Math.min(1, open)}"/><path d="M${ex - rx - .5},${-3 - ry * .2} Q${ex},${-3 - ry - 1.4} ${ex + rx + .5},${-3 - ry * .2}" fill="none" stroke="${SK2}" stroke-width="1.6" stroke-linecap="round"/></g>`;
+    if (M.ha > 0.02) g += `<path opacity="${M.ha.toFixed(2)}" d="M${ex - 6},-1 Q${ex},-9 ${ex + 6},-1" fill="none" stroke="#2A2233" stroke-width="2.6" stroke-linecap="round"/>`;
+    return g;
+  };
+  const nose = `<path d="M${look * 0.4},1 Q${3 + look * 0.4},7 ${look * 0.4},8" fill="none" stroke="${SK2}" stroke-width="2" stroke-linecap="round"/>`;
+  const yo = -12 - M.br * 5, yi = yo - M.wo * 3.2 + (M.wo > 0.5 ? 0 : 0);
+  const brow = s => `<path d="M${s * 15},${yo + M.wo * 1.5 + M.br * 0} Q${s * 9.5},${(yo + yi) / 2 - 2.6} ${s * 4},${yi - (M.wo * 2.4)}" fill="none" stroke="${HAIR}" stroke-width="2.7" stroke-linecap="round"/>`;
+  const w = 8 + M.op * 3, y0 = 13 - M.op * 1;
+  let mouth;
+  if (M.op < 0.12) mouth = `<path d="M${-w},${y0} Q0,${y0 + M.sm * 7} ${w},${y0}" fill="none" stroke="#7a3b3b" stroke-width="2.6" stroke-linecap="round"/>`;
+  else mouth = `<path d="M${-w},${y0} Q0,${y0 + M.sm * 4} ${w},${y0} Q0,${y0 + M.op * 17 + 4} ${-w},${y0} Z" fill="#5a1f2b"/>` + (M.sm > 0.6 ? `<path d="M${-w + 2},${y0 + .6} Q0,${y0 + M.sm * 3 + .6} ${w - 2},${y0 + .6} L${w - 3},${y0 + 3.4} Q0,${y0 + M.sm * 3 + 3.4} ${-w + 3},${y0 + 3.4} Z" fill="#fff"/>` : `<ellipse cx="0" cy="${y0 + M.op * 11 + 2}" rx="3.5" ry="${2 + M.op}" fill="#E36F7B"/>`);
+  const cheeks = `<ellipse cx="-15" cy="8" rx="4" ry="2.6" fill="#F59BA4" opacity="${(M.ch * .6).toFixed(2)}"/><ellipse cx="15" cy="8" rx="4" ry="2.6" fill="#F59BA4" opacity="${(M.ch * .6).toFixed(2)}"/>`;
+  return eye(-9) + eye(9) + nose + brow(-1) + brow(1) + mouth + cheeks;
+}
+function headSvg(Cx, Cy, rot, m, look, t, lag, gz) {
+  const M = typeof m === 'string' ? MOODS[m] : m;
   const ears = [-1, 1].map(s => `<ellipse cx="${s * 25}" cy="3" rx="5.5" ry="8" fill="${SK2}"/><ellipse cx="${s * 25}" cy="3" rx="2.6" ry="4.5" fill="#C98F66"/>`).join('');
-  const hair = `<path d="M-26,-2 Q-30,-38 0,-34 Q30,-38 26,-2 Q22,-18 6,-21 Q-10,-14 -26,-2 Z" fill="${HAIR}"/><path d="M-4,-32 Q14,-44 20,-30" fill="none" stroke="${HAIR}" stroke-width="7" stroke-linecap="round"/>`;
-  return `<g transform="translate(${Cx.toFixed(1)},${Cy.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(.88)"><rect x="-6" y="22" width="12" height="16" rx="5" fill="${SK2}"/>${ears}<ellipse cx="0" cy="0" rx="25" ry="28" fill="url(#skin)"/>${hair}${faceSvg(m, look, t)}</g>`;
+  const L = lag || 0;
+  const hair = `<path d="M-26,-2 Q-30,-38 0,-34 Q30,-38 26,-2 Q22,-18 6,-21 Q-10,-14 -26,-2 Z" fill="${HAIR}"/><path d="M-4,-32 Q${14 + L * .8},${-44 + Math.abs(L) * .3} ${20 + L * 1.4},${-30 + L * .4}" fill="none" stroke="${HAIR}" stroke-width="7" stroke-linecap="round"/><path d="M-14,-26 Q-4,-33 8,-30" fill="none" stroke="#4a3d5c" stroke-width="2" stroke-linecap="round" opacity=".7"/>`;
+  const shade = `<ellipse cx="3" cy="14" rx="20" ry="13" fill="url(#cheek)" opacity=".5"/>`;
+  return `<g transform="translate(${Cx.toFixed(1)},${Cy.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(.88)"><rect x="-6" y="22" width="12" height="16" rx="5" fill="${SK2}"/>${ears}<ellipse cx="0" cy="0" rx="25" ry="28" fill="url(#skin)"/>${shade}${hair}${faceSvg(M, look, t, gz || [0, 0])}</g>`;
 }
 function laptopSide(p) {
   const col = p.heat < .5 ? mixc('#BD93F9', '#FFB86C', p.heat / .5) : mixc('#FFB86C', '#F48771', (p.heat - .5) / .5);
@@ -234,29 +264,42 @@ function laptopSvg(p) {
 }
 function mixc(a, b, u) { const pa = [1, 3, 5].map(i => parseInt(a.substr(i, 2), 16)), pb = [1, 3, 5].map(i => parseInt(b.substr(i, 2), 16)); return '#' + pa.map((v, i) => Math.round(lerp(v, pb[i], clamp(u, 0, 1))).toString(16).padStart(2, '0')).join(''); }
 
+function footPos(H, h, k) { const d1 = dir(h), K = [H[0] + d1[0] * Ls.thigh, H[1] + d1[1] * Ls.thigh], d2 = dir(h + k); return [K[0] + d2[0] * Ls.shin, K[1] + d2[1] * Ls.shin]; }
 function render(t) {
-  const p = procedural(evalKeys(t), t), m = mood(t);
-  const Hp = [p.x, p.y], Sp = shoulder(p), hd = head(p), hRot = p.torso * 0.5 + p.tilt;
+  const p = procedural(evalKeys(t), t), M = moodP(t);
+  const Hp = [p.x, p.y], Sp = shoulder(p), hd = head(p);
+  const prev = evalKeys(Math.max(0, t - 0.07)), lag = clamp((prev.torso - p.torso) * 0.55 + (prev.y - p.y) * 0.04, -9, 9);
+  const hRot = p.torso * 0.5 + p.tilt + lag * 0.5;
+  // нигоҳ: ба ноутбук, гоҳ ба код
+  let gz = [p.look * 0.18, 0];
+  const seatedTyping = (t > 3.6 && t < 8.6) || (t > 22.6 && t < 31.5);
+  if (seatedTyping) { const c = t % 2.7; gz = (c > 2.15 && c < 2.55) ? [-1, -2.8] : [2.4, 1.8]; }
+  else if (t >= 11.6 && t < 16) gz = [0, -1.5 * Math.sin(t * 9)];
   const hipL = [Hp[0] - 4, Hp[1]], hipR = [Hp[0] + 4, Hp[1]];
-  let s = chairSvg(CHX, SEAT);
-  s += leg(hipL, p.hL, p.kL, false) ;
+  const fL = footPos(hipL, p.hL, p.kL), fR = footPos(hipR, p.hR, p.kR);
+  const lowest = Math.max(fL[1], fR[1], Hp[1]), air = clamp(GY - 6 - lowest, 0, 120), sx = (fL[0] + fR[0]) / 2;
+  let s = `<ellipse cx="${CHX + 4}" cy="${GY + 5}" rx="54" ry="7" fill="#000" opacity=".38"/>`;
+  s += `<ellipse cx="${sx.toFixed(1)}" cy="${GY + 5}" rx="${(50 - air * 0.18).toFixed(1)}" ry="${(7 - air * 0.03).toFixed(1)}" fill="#000" opacity="${(0.4 * (1 - air / 130)).toFixed(2)}"/>`;
+  if (p.ly > GY - 4) s += `<ellipse cx="${p.lx.toFixed(1)}" cy="${GY + 6}" rx="42" ry="5" fill="#000" opacity=".42"/>`;
+  s += chairSvg(CHX, SEAT);
+  s += leg(hipL, p.hL, p.kL, false);
   s += arm(shoulderJoint(p, -1), p.aL, p.bL, false, p, t, 'L');
   s += leg(hipR, p.hR, p.kR, true);
   s += torsoPath(Hp, Sp);
-  s += headSvg(hd[0], hd[1], hRot, m, p.look, t);
+  s += headSvg(hd[0], hd[1], hRot, M, p.look, t, lag, gz);
   s += laptopSvg(p);
   s += arm(shoulderJoint(p, 1), p.aR, p.bR, true, p, t, 'R');
-  const lap = '';
-  // ноутбук пеш аз дастҳо дар ҳолати навиштан; дар бозуҳо баъд
+  // рӯшноии экран (ба рӯй ва дастҳо мерасад)
+  const gc = p.heat < .5 ? mixc('#BD93F9', '#FFB86C', p.heat / .5) : mixc('#FFB86C', '#F48771', (p.heat - .5) / .5);
+  if (p.ly < GY + 30) s += `<circle cx="${(p.lx + 34).toFixed(1)}" cy="${(p.ly - 34).toFixed(1)}" r="120" fill="${gc}" opacity="${(0.12 + 0.1 * p.heat).toFixed(2)}" style="mix-blend-mode:screen" filter="url(#soft)"/>`;
   let extra = '';
   if (t >= 10.2 && t < 11.6) extra += `<path d="M${hd[0] + 26},${hd[1] - 20} q-5,9 0,12 q5,-3 0,-12z" fill="#4FC1FF"/>`;
   if (t >= 12 && t < 16) extra += `<path d="M${hd[0] - 40},${hd[1] - 10} q-5,9 0,12 q5,-3 0,-12z M${hd[0] + 42},${hd[1] - 2} q-5,9 0,12 q5,-3 0,-12z" fill="#4FC1FF"/>`;
-  if (t >= 19.8 && t < 31) extra += `<text x="${hd[0] - 14}" y="${hd[1] - 46}" font-size="28">💡</text>`;
+  if (t >= 22.6 && t < 31) extra += `<text x="${hd[0] - 14}" y="${hd[1] - 46}" font-size="28">💡</text>`;
   if (t >= 33.4 && t < 37.6) extra += `<text x="${hd[0] - 78}" y="${hd[1] - 20}" font-size="24">✨</text><text x="${hd[0] + 52}" y="${hd[1] - 4}" font-size="24">✨</text>`;
   if (t >= 38.3 && t < 42.9) extra += `<text x="${hd[0] + 22}" y="${hd[1] - 36}" font-size="30" font-weight="900" fill="#FF79C6">?</text><text x="${hd[0] - 34}" y="${hd[1] - 26}" font-size="22" font-weight="900" fill="#BD93F9">?</text>`;
-  document.getElementById('rig').innerHTML = s.replace('', '') + lap + extra;
+  document.getElementById('rig').innerHTML = s + extra;
 }
-
 function chairSvg(cx, top) {
   const c = '#3a3a44', c2 = '#2a2a33', ac = '#BD93F9';
   return `<g><rect x="${cx - 34}" y="${top - 70}" width="12" height="74" rx="5" fill="${c2}"/><rect x="${cx - 34}" y="${top - 74}" width="12" height="8" rx="4" fill="${ac}"/>` +
@@ -270,7 +313,7 @@ function drawPose(p, m, t, chair) {
   s += arm(shoulderJoint(p, -1), p.aL, p.bL, false, p, t, 'L');
   s += leg([Hp[0] + 4, Hp[1]], p.hR, p.kR, true);
   s += torsoPath(Hp, Sp);
-  s += headSvg(hd[0], hd[1], hRot, m, p.look, t);
+  s += headSvg(hd[0], hd[1], hRot, m, p.look, t, 0, [2.4, 1.8]);
   s += laptopSvg(p);
   s += arm(shoulderJoint(p, 1), p.aR, p.bR, true, p, t, 'R');
   return s;

@@ -128,3 +128,12 @@ animation:capin .05s linear var(--a) forwards,capout .05s linear var(--b) forwar
 .bub-dot{position:absolute;border-radius:50%;background:rgba(45,45,48,.9);border:1.5px solid var(--line)}
 .xmark{position:absolute;font:900 120px/1 Inter;color:var(--err);text-shadow:0 0 30px rgba(244,135,113,.6);animation:slam .4s cubic-bezier(.2,1.3,.4,1) var(--a) both,gone .2s var(--b) forwards}
 .fl{position:absolute;font-size:44px;animation:popin .4s cubic-bezier(.3,1.6,.5,1) var(--a) both}
+
+/* v5: физикаи таблеткаҳо — ҷаҳиш, афтидан, такони хурд */
+@keyframes flyp{0%{opacity:1;transform:translate(var(--sx),var(--sy)) rotate(0) scale(.5)}
+ 52%{opacity:1;transform:translate(var(--mx),var(--my)) rotate(calc(var(--r)*.6)) scale(1)}
+ 80%{opacity:1;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}
+ 90%{opacity:1;transform:translate(var(--x),calc(var(--y) - 9px)) rotate(var(--r)) scale(1)}
+ 100%{opacity:1;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
+.fly{animation:flyp var(--d,.8s) linear var(--a) forwards,pclear .3s ease-in var(--c) forwards}
+.pillx{filter:drop-shadow(0 3px 3px rgba(0,0,0,.4))}
