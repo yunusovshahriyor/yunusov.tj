@@ -9,58 +9,69 @@ const lerp = (a, b, u) => a + (b - a) * u;
 const rad = d => d * Math.PI / 180;
 
 // ---------- калидҳо ----------
-const LX = 299;                       // ҷойи ноутбук рӯи замин
-const base = () => ({ x: 235, y: KNEEL, torso: 24, tilt: 8, look: 3, hL: 0, kL: -90, hR: 0, kR: -90,
-  aL: [LX - 14, GY - 8], aR: [LX + 10, GY - 8], bL: -1, bR: -1, lx: LX, ly: GY, lrot: 0, heat: 0 });
+const CHX = 170, SEAT = GY - 46, SX = CHX + 4, HIPY = SEAT - 14;        // курсӣ ва ҷойи нишастан
+const LAPX = SX + 36, LAPY = HIPY - 8;                                     // ноутбук рӯи зону
+const FLX = SX + 92;                                                       // ноутбук рӯи замин
+const base = () => ({ x: SX, y: HIPY, torso: 10, tilt: 8, look: 9, hL: 90, kL: -90, hR: 88, kR: -90, aL: [LAPX - 24, LAPY - 11], aR: [LAPX - 4, LAPY - 11],
+  bL: 1, bR: 1, lx: LAPX, ly: LAPY, lrot: 0, heat: 0, side: 1, curl: 16 });
 const head = p => { const s = shoulder(p); const a = rad(p.torso); return [s[0] + Math.sin(a) * 30, s[1] - Math.cos(a) * 30]; };
+function shoulderJoint(p, side) { const S = shoulder(p), a = rad(p.torso); return [S[0] - Math.sin(a) * 11 + Math.cos(a) * 3 * side, S[1] + Math.cos(a) * 11 + Math.sin(a) * 3 * side]; }
 function shoulder(p) { const a = rad(p.torso); return [p.x + Math.sin(a) * Ls.torso, p.y - Math.cos(a) * Ls.torso]; }
 const KEYS = [];
 function K(t, o) { const prev = KEYS.length ? KEYS[KEYS.length - 1].raw : base(); const raw = Object.assign({}, prev, o); KEYS.push({ t, raw }); return raw; }
-const hx = p => head(p), carry = (x, y) => ({ lx: x + 50, ly: y + 8, aL: [x + 26, y - 6], aR: [x + 72, y - 8], bL: 1, bR: 1 });
-// 0.2–2.7 қадамзанӣ бо ноутбук
-K(0.2, Object.assign({ x: -90, y: STAND, torso: 8, tilt: 0, look: 3, hL: 0, kL: -6, hR: 0, kR: -6 }, carry(-90, STAND)));
-K(2.7, Object.assign({ x: 235, y: STAND, torso: 8 }, carry(235, STAND)));
-// 3.5 зону мезанад ва ноутбукро мемонад
-K(3.5, { x: 235, y: KNEEL, torso: 24, tilt: 8, look: 3, hL: 0, kL: -90, hR: 0, kR: -90, lx: LX, ly: GY, aL: [LX - 14, GY - 8], aR: [LX + 10, GY - 8], bL: -1, bR: -1 });
-K(7.1, { torso: 22, tilt: 6 });
-K(7.9, { torso: 12, tilt: -6, look: 5, aL: [LX - 14, GY - 36], aR: [LX + 10, GY - 36] });      // «Осон!» — лабханд
-K(8.0, { aR: [LX + 10, GY - 32] });
-K(8.11, { aR: [LX + 10, GY - 5] });                                                            // Enter
-K(8.3, { aR: [LX + 10, GY - 30] });
-K(8.9, { torso: 6, tilt: 5, look: 6, aL: [235 + 8, KNEEL + 26], aR: [235 + 14, KNEEL + 30], bL: -1, bR: -1 });   // тамошо
-K(10.0, { torso: 2, tilt: 6, look: 7, heat: 0.55 });
-K(10.9, { torso: -2, tilt: 8, look: 8, heat: 0.75, aR: p => [hx(p)[0] + 14, hx(p)[1] + 26], bR: 1 });             // даст ба гардан
-K(11.35, { torso: -4, heat: 0.85 });
-K(11.6, { x: 225, y: STAND - 62, torso: -12, tilt: 0, look: 0, hL: 22, kL: -36, hR: -16, kR: -22, heat: 0.9, aL: p => [p.x - 50, p.y - 150], aR: p => [p.x + 46, p.y - 150], bL: 1, bR: -1 });   // ҷаҳиш
-K(12.0, { x: 212, y: STAND + 8, torso: -8, hL: 14, kL: -34, hR: -10, kR: -26 });                                // фуромадан
-K(12.5, { x: 205, y: STAND, torso: -8, hL: 4, kL: -8, hR: -4, kR: -8, aL: p => [hx(p)[0] - 30, hx(p)[1] + 4], aR: p => [hx(p)[0] + 30, hx(p)[1] + 4], bL: 1, bR: -1, heat: 0.95 });   // сарро мегирад
-K(14.4, { torso: -12, x: 202 });
-K(15.2, { x: 238, y: STAND + 16, torso: 32, tilt: 10, hL: 24, kL: -40, hR: -10, kR: -52, look: 7, aL: [LX - 16, GY - 54], aR: [LX + 12, GY - 54], bL: -1, bR: -1, heat: 1 });   // ноутбукро медорад
+const hx = p => head(p);
+const carry = (x, y) => ({ lx: x + 64, ly: y - 26, aL: [x + 34, y - 22], aR: [x + 58, y - 36], bL: 1, bR: 1 });
+const onLap = { lx: LAPX, ly: LAPY, lrot: 0, aL: [LAPX - 24, LAPY - 11], aR: [LAPX - 4, LAPY - 11], bL: 1, bR: 1 };
+const seated = { x: SX, y: HIPY, hL: 90, kL: -90, hR: 88, kR: -90 };
+// 0.2–2.6 қадамзанӣ бо ноутбук дар даст
+K(0.2, Object.assign({ x: -90, y: STAND, torso: 4, tilt: 5, look: 9, hL: 6, kL: -6, hR: -6, kR: -8 }, carry(-90, STAND)));
+K(2.55, Object.assign({ x: 140, y: STAND, torso: 4 }, carry(140, STAND)));
+K(3.0, Object.assign({ x: 156, y: STAND + 22, torso: 14, tilt: 6, hL: 52, kL: -64, hR: 48, kR: -58 }, carry(156, STAND + 22)));        // менишинад
+K(3.55, Object.assign({}, seated, onLap, { torso: 10, tilt: 8 }));
+K(7.1, { torso: 9 });
+K(7.9, { torso: 3, tilt: -4, aL: [LAPX - 24, LAPY - 44], aR: [LAPX - 4, LAPY - 44], curl: 28 });                // «Осон!»
+K(8.0, { aR: [LAPX - 4, LAPY - 40] });
+K(8.11, { aR: [LAPX - 4, LAPY - 10], curl: 40 });                                                          // Enter
+K(8.3, { aR: [LAPX - 4, LAPY - 34], curl: 20 });
+K(8.9, { torso: 2, tilt: 5, aL: [LAPX - 28, LAPY - 16], aR: [LAPX + 4, LAPY - 18], curl: 14 });             // тамошо
+K(10.0, { torso: -1, tilt: 6, heat: 0.55 });
+K(10.9, { torso: -4, tilt: 8, heat: 0.75, aR: p => [hx(p)[0] + 14, hx(p)[1] + 26], bR: 1 });                // даст ба гардан
+K(11.3, { torso: -6, heat: 0.85, aR: [LAPX - 4, LAPY - 20] });
+K(11.65, Object.assign({}, { x: SX + 26, y: STAND - 52, torso: -14, tilt: 0, look: 0, hL: 26, kL: -40, hR: -16, kR: -30, heat: 0.9,
+  lx: SX + 70, ly: GY - 150, lrot: -4, aL: p => [p.x - 50, p.y - 150], aR: p => [p.x + 46, p.y - 150], bL: 1, bR: -1 }));       // ҷаҳиш аз курсӣ
+K(11.95, { x: SX + 52, y: STAND + 8, torso: -8, hL: 14, kL: -34, hR: -10, kR: -26, lx: FLX, ly: GY, lrot: -3 });
+K(12.5, { x: SX + 62, y: STAND, torso: -8, hL: 4, kL: -8, hR: -4, kR: -8, aL: p => [hx(p)[0] - 30, hx(p)[1] + 4], aR: p => [hx(p)[0] + 30, hx(p)[1] + 4], bL: 1, bR: -1, heat: 0.95 });
+K(14.4, { torso: -12, x: SX + 60 });
+K(15.2, { x: SX + 78, y: STAND + 18, torso: 32, tilt: 10, hL: 24, kL: -40, hR: -10, kR: -52, look: 9, aL: [FLX + 10, GY - 56], aR: [FLX + 34, GY - 48], bL: 1, bR: 1, heat: 1 });
 K(15.9, { heat: 1 });
-K(16.15, { x: 226, y: STAND + 2, torso: -18, tilt: 0, hL: 10, kL: -6, hR: 4, kR: -6, aL: p => [p.x - 44, p.y - 150], aR: p => [p.x + 40, p.y - 150], bL: 1, bR: -1, ly: GY, lx: LX });   // ноутбук парид
-K(16.9, { x: 188, y: GY - 14, torso: -88, tilt: 6, look: 0, hL: 86, kL: 0, hR: 80, kR: 4, aL: p => [shoulder(p)[0] + 40, shoulder(p)[1] + 4], aR: p => [shoulder(p)[0] + 8, shoulder(p)[1] - 78], bL: -1, bR: 1 });   // афтод
+K(16.15, { x: SX + 70, y: STAND + 2, torso: -18, tilt: 0, hL: 10, kL: -6, hR: 4, kR: -6, aL: p => [p.x - 44, p.y - 150], aR: p => [p.x + 40, p.y - 150], bL: 1, bR: -1 });
+K(16.9, { x: SX + 20, y: GY - 14, torso: -88, tilt: 6, look: 0, hL: 86, kL: 0, hR: 80, kR: 4, aL: p => [shoulder(p)[0] + 40, shoulder(p)[1] + 4], aR: p => [shoulder(p)[0] + 8, shoulder(p)[1] - 78], bL: 1, bR: 1 });
 K(19.0, {});
 K(19.5, { y: GY - 16 });
-K(20.3, { x: 205, y: GY - 28, torso: 6, tilt: 4, hL: 74, kL: -96, hR: 62, kR: -90, aL: p => [p.x + 40, p.y + 6], aR: p => [p.x + 30, p.y + 10], bL: -1, bR: -1, heat: 0 });   // менишинад
-K(21.0, { x: 235, y: KNEEL, torso: 14, tilt: 4, look: 4, hL: 0, kL: -90, hR: 0, kR: -90, aL: [LX - 14, GY - 8], aR: p => [hx(p)[0] + 12, hx(p)[1] + 28], bL: -1, bR: 1 });   // фикр
-K(23.2, {});
-K(23.45, { torso: 20, aR: [LX + 10, GY - 8], bR: -1 });
-K(24.4, { torso: 24, tilt: 8, look: 3 });
-K(30.4, { torso: 22 });
-K(30.55, { aR: [LX + 10, GY - 32] });
-K(30.68, { aR: [LX + 10, GY - 5] });                                                           // Enter-и дуюм
-K(30.9, { aR: [LX + 10, GY - 30], torso: 14, look: 6 });
-K(31.5, { torso: 6, tilt: 4, aL: [235 + 8, KNEEL + 26], aR: [235 + 14, KNEEL + 30] });
-K(33.0, { torso: 2 });
-K(33.45, { x: 235, y: STAND + 10, torso: 6, hL: 14, kL: -38, hR: 10, kR: -30, aL: p => [p.x - 40, p.y - 40], aR: p => [p.x + 40, p.y - 40], bL: 1, bR: -1 });   // хез мекунад
-K(33.9, { y: STAND - 8, torso: 0, hL: 0, kL: -4, hR: 0, kR: -4, aL: p => [p.x - 50, p.y - 150], aR: p => [p.x + 48, p.y - 150] });
-K(34.3, { y: STAND - 66, hL: 38, kL: -66, hR: 28, kR: -58 });                                  // ҷаҳиш
+K(20.2, { x: SX + 30, y: GY - 26, torso: -30, tilt: 4, look: 6, hL: 80, kL: -70, hR: 70, kR: -60, aL: p => [p.x + 30, p.y + 10], aR: p => [p.x + 40, p.y + 6], bL: 1, bR: 1, heat: 0 });       // менишинад
+K(20.9, { x: SX + 52, y: STAND, torso: 6, tilt: 4, hL: 4, kL: -6, hR: -4, kR: -8, aL: p => [p.x - 14, p.y - 6], aR: p => [hx(p)[0] + 6, hx(p)[1] - 12], bL: 1, bR: 1 });            // хез мекунад, сар мехорад
+K(21.4, { x: SX + 74, y: STAND + 20, torso: 30, tilt: 8, hL: 20, kL: -34, hR: -10, kR: -48, aL: [FLX + 6, GY - 28], aR: [FLX + 28, GY - 30] });                            // ноутбукро мегирад
+K(21.9, Object.assign({ x: SX + 40, y: STAND, torso: 6, tilt: 6, hL: 4, kL: -6, hR: -6, kR: -8, lrot: 0 }, carry(SX + 40, STAND)));
+K(22.5, Object.assign({}, seated, onLap, { torso: 12, tilt: 6, curl: 16 }));
+K(23.1, { torso: 10, aR: p => [hx(p)[0] + 12, hx(p)[1] + 28], bR: 1 });                                 // фикр: даст ба манаҳ
+K(23.4, { aR: p => [hx(p)[0] + 12, hx(p)[1] + 28] });
+K(23.7, { aR: [LAPX - 4, LAPY - 11] });
+K(24.4, { torso: 10, tilt: 8 });
+K(30.4, { torso: 9 });
+K(30.55, { aR: [LAPX - 4, LAPY - 38], curl: 28 });
+K(30.68, { aR: [LAPX - 4, LAPY - 10], curl: 40 });
+K(30.9, { aR: [LAPX - 4, LAPY - 34], torso: 3, look: 9 });
+K(31.5, { torso: 0, tilt: 4, aL: [LAPX - 28, LAPY - 16], aR: [LAPX + 4, LAPY - 18], curl: 14 });
+K(33.0, { torso: -2 });
+K(33.45, { x: SX + 20, y: STAND + 14, torso: 8, hL: 34, kL: -50, hR: 28, kR: -44, lx: CHX + 6, ly: SEAT - 8, aL: p => [p.x - 40, p.y - 40], aR: p => [p.x + 40, p.y - 40], bL: 1, bR: -1 });   // хез мекунад
+K(33.9, { x: SX + 46, y: STAND - 8, torso: 0, hL: 0, kL: -4, hR: 0, kR: -4, lx: CHX + 6, ly: SEAT - 8, aL: p => [p.x - 50, p.y - 150], aR: p => [p.x + 48, p.y - 150] });
+K(34.3, { y: STAND - 66, hL: 38, kL: -66, hR: 28, kR: -58 });
 K(34.75, { y: STAND + 8, hL: 16, kL: -34, hR: 12, kR: -30 });
 K(35.2, { y: STAND, hL: 0, kL: -4, hR: 0, kR: -4 });
 K(37.6, { y: STAND, torso: 2 });
-K(38.1, { x: 235, y: STAND, torso: 4, tilt: 12, look: 4, hL: 0, kL: -4, hR: 0, kR: -4, aL: p => [p.x - 24, p.y - 10], aR: p => [hx(p)[0] + 6, hx(p)[1] - 20], bL: -1, bR: 1 });   // сарро харошидан
+K(38.1, { x: SX + 60, y: STAND, torso: 4, tilt: 12, look: 6, hL: 0, kL: -4, hR: 0, kR: -4, aL: p => [p.x - 24, p.y - 10], aR: p => [hx(p)[0] + 6, hx(p)[1] - 20], bL: 1, bR: 1 });
 K(42.8, {});
-K(43.4, { torso: 0, tilt: 0, look: 3, aL: p => [p.x - 22, p.y + 34], aR: p => [p.x + 62, p.y - 150], bL: -1, bR: 1 });   // салом
+K(43.4, { torso: 0, tilt: 0, look: 5, aL: p => [p.x - 22, p.y + 34], aR: p => [p.x + 62, p.y - 150], bL: 1, bR: 1, curl: 4 });
 K(47.5, {});
 
 function evalKeys(t) {
@@ -82,20 +93,25 @@ function mood(t) {
 function procedural(p, t) {
   const o = Object.assign({}, p, { aL: p.aL.slice(), aR: p.aR.slice() });
   // қадамзанӣ
-  const w = ss((t - 0.2) / 0.2) * (1 - ss((t - 2.55) / 0.3));
+  const w = ss((t - 0.2) / 0.2) * (1 - ss((t - 2.45) / 0.25));
   if (w > 0) {
     const ph = o.x / 88 * 2 * Math.PI;
     o.hL = lerp(o.hL, 30 * Math.sin(ph), w); o.hR = lerp(o.hR, -30 * Math.sin(ph), w);
     o.kL = lerp(o.kL, -8 - 34 * Math.max(0, Math.cos(ph)), w); o.kR = lerp(o.kR, -8 - 34 * Math.max(0, -Math.cos(ph)), w);
     const bob = -4 * Math.abs(Math.sin(ph)) * w; o.y += bob; o.aL[1] += bob; o.aR[1] += bob; o.ly += bob;
   }
-  // навиштан: зарбаи ангуштон
-  [[3.8, 7.1, 1], [24.5, 30.4, 1.35]].forEach(([a, b, e]) => {
-    const f = ss((t - a) / 0.2) * (1 - ss((t - (b - .15)) / 0.15));
+  // навиштан: пайдарпайии зарбаҳо (burst) + ҳаракати ангуштон
+  o.tL = 0; o.tR = 0;
+  [[3.8, 7.1, 1], [24.5, 30.4, 1.25]].forEach(([a, b, e]) => {
+    const f = ss((t - a) / 0.25) * (1 - ss((t - (b - .2)) / 0.2));
     if (f > 0) {
-      const k1 = Math.max(0, Math.sin(2 * Math.PI * 6.3 * t) + 0.6 * Math.sin(2 * Math.PI * 9.1 * t + 1)) * 5 * e;
-      const k2 = Math.max(0, Math.sin(2 * Math.PI * 7.2 * t + 2) + 0.5 * Math.sin(2 * Math.PI * 4.7 * t)) * 5 * e;
-      o.aL[1] -= k1 * f; o.aR[1] -= k2 * f; o.tilt += 1.6 * Math.sin(2 * Math.PI * 3.2 * t) * f; o.torso += 1.2 * Math.sin(2 * Math.PI * 1.6 * t) * f;
+      const burst = clamp((Math.sin(2 * Math.PI * 0.62 * t) + 0.55) * 1.6, 0, 1);               // тез-тез навишта, таваққуфҳо
+      const burst2 = clamp((Math.sin(2 * Math.PI * 0.62 * t + 0.9) + 0.5) * 1.6, 0, 1);
+      o.tL = f * burst * e; o.tR = f * burst2 * e;
+      const k1 = Math.max(0, Math.sin(2 * Math.PI * 7.4 * t) + 0.5 * Math.sin(2 * Math.PI * 11 * t + 1)) * 1.8 * o.tL;
+      const k2 = Math.max(0, Math.sin(2 * Math.PI * 8.1 * t + 2) + 0.5 * Math.sin(2 * Math.PI * 5.3 * t)) * 1.8 * o.tR;
+      o.aL[1] -= k1; o.aR[1] -= k2;
+      o.tilt += (1.2 * Math.sin(2 * Math.PI * 1.7 * t) + 2.2 * (burst - 0.5)) * f; o.torso += 0.8 * Math.sin(2 * Math.PI * 1.1 * t) * f;
     }
   });
   // ларзиш
@@ -106,9 +122,10 @@ function procedural(p, t) {
   const lj = jit(13.2, 15.9, 3.5) + jit(10.2, 13.2, 1.2);
   o.lx += Math.sin(t * 77) * lj; o.ly += Math.cos(t * 69) * lj * 0.6; o.lrot += Math.sin(t * 63) * lj * 1.5;
   // ноутбук парвоз мекунад ва бармегардад
-  if (t >= 15.9 && t < 18.7) { const u = (t - 15.9) / 2.8; o.ly = GY - 760 * Math.pow(u, 1.6) - 40 * u; o.lx = LX + 60 * u; o.lrot = 1080 * Math.pow(u, 1.3); }
-  if (t >= 18.7 && t < 19.5) { const u = (t - 18.7) / 0.8, e = u * u; o.ly = lerp(-170, GY, Math.min(1, e)); o.lx = LX; o.lrot = lerp(-220, 0, ss(u)); o.heat = 0; }
+  if (t >= 15.9 && t < 18.7) { const u = (t - 15.9) / 2.8; o.ly = GY - 760 * Math.pow(u, 1.6) - 40 * u; o.lx = FLX + 60 * u; o.lrot = 1080 * Math.pow(u, 1.3); }
+  if (t >= 18.7 && t < 19.5) { const u = (t - 18.7) / 0.8, e = u * u; o.ly = lerp(-170, GY, Math.min(1, e)); o.lx = FLX; o.lrot = lerp(-220, 0, ss(u)); o.heat = 0; }
   if (t >= 19.5 && t < 19.8) o.ly = GY - 8 * Math.sin((t - 19.5) / 0.3 * Math.PI);
+  if (t >= 19.8 && t < 21.3) { o.lx = FLX; o.ly = GY; o.lrot = 0; o.heat = 0; }
   // даст меҷунбонад
   const wv = (a, b, key, amp) => { const f = ss((t - a) / 0.2) * (1 - ss((t - b) / 0.2)); if (f > 0) { o[key][0] += Math.sin(t * 13) * amp * f; o[key][1] += Math.cos(t * 7) * 6 * f; } };
   wv(17.0, 19.4, 'aR', 16); wv(43.6, 47.6, 'aR', 22);
@@ -138,9 +155,36 @@ function leg(H, h, k, front, off) {
   const shoe = `<g transform="translate(${F[0].toFixed(1)},${F[1].toFixed(1)}) rotate(${ang.toFixed(1)})"><ellipse cx="7" cy="3" rx="12.5" ry="6.2" fill="#F5F5F7" stroke="#C9C9D2" stroke-width="1.5"/><rect x="-5" y="7" width="24" height="2.6" rx="1" fill="#BD93F9"/></g>`;
   return seg([H, K, F], 15, front ? JEANS : JEANS2) + shoe;
 }
-function arm(S, T, bend, front) {
+function handSvg(Hd, ang, curl, typ, t, ph) {
+  // кафи даст + чор ангуш (ду банд) + нарм шудани ангуштон ҳангоми навиштан
+  const d = [Math.cos(ang), Math.sin(ang)], pp = [-d[1], d[0]], deg = 180 / Math.PI;
+  let g = `<ellipse cx="${Hd[0].toFixed(1)}" cy="${Hd[1].toFixed(1)}" rx="7.6" ry="6.6" transform="rotate(${(ang * deg).toFixed(1)} ${Hd[0].toFixed(1)} ${Hd[1].toFixed(1)})" fill="${SK}"/>`;
+  for (let i = 0; i < 4; i++) {
+    const off = (i - 1.5) * 3.5, len1 = 5.6 - Math.abs(i - 1.5) * 0.6, len2 = 4.6 - Math.abs(i - 1.5) * 0.5;
+    const tap = typ * Math.max(0, Math.sin(2 * Math.PI * (6.5 + i * 1.1) * t + ph + i * 1.7)) * 34;
+    const f1 = rad(curl * 0.55 + tap * 0.7), f2 = rad(curl * 0.7 + tap);
+    const P0 = [Hd[0] + d[0] * 5.4 + pp[0] * off, Hd[1] + d[1] * 5.4 + pp[1] * off];
+    const a1 = ang + f1, P1 = [P0[0] + Math.cos(a1) * len1, P0[1] + Math.sin(a1) * len1];
+    const a2 = a1 + f2, P2 = [P1[0] + Math.cos(a2) * len2, P1[1] + Math.sin(a2) * len2];
+    g += seg([P0, P1, P2], 3.3, SK);
+  }
+  // ангуштони бузург
+  const T0 = [Hd[0] + d[0] * 1 - pp[0] * 5, Hd[1] + d[1] * 1 - pp[1] * 5], a3 = ang - rad(40 - curl * 0.4);
+  g += seg([T0, [T0[0] + Math.cos(a3) * 6, T0[1] + Math.sin(a3) * 6]], 3.6, SK);
+  return g;
+}
+function arm(S, T, bend, front, o, t, side) {
   const [E, Hd] = ik(S, T, Ls.ua, Ls.fa, bend);
-  return seg([S, E, Hd], 13.5, front ? HOOD : HOOD2) + `<circle cx="${Hd[0].toFixed(1)}" cy="${Hd[1].toFixed(1)}" r="7" fill="${SK}"/>`;
+  const fx = Hd[0] - E[0], fy = Hd[1] - E[1];
+  let ang = Math.atan2(fy, fx);
+  const typ = side === 'L' ? (o.tL || 0) : (o.tR || 0);
+  ang += rad(10 + 12 * typ);                                                              // кафи даст каме поён
+  const L = Math.hypot(fx, fy) || 1, cuffStart = [Hd[0] - fx / L * 9, Hd[1] - fy / L * 9];
+  const col = front ? HOOD : HOOD2, cuffc = front ? '#5B3BB0' : '#4B2F96';
+  // оринҷ ва китф — кулоҳи ҷома, то даст ба бадан часпида бошад
+  const sleeve = seg([S, E, Hd], 13.5, col) + `<circle cx="${S[0].toFixed(1)}" cy="${S[1].toFixed(1)}" r="9.5" fill="${col}"/><circle cx="${E[0].toFixed(1)}" cy="${E[1].toFixed(1)}" r="6.9" fill="${col}"/>`;
+  const cuff = seg([cuffStart, [Hd[0] - fx / L * 3, Hd[1] - fy / L * 3]], 14.5, cuffc);
+  return sleeve + cuff + handSvg([Hd[0] + fx / L * 3, Hd[1] + fy / L * 3], ang, o.curl, typ, t, side === 'L' ? 0 : 2.1);
 }
 function torsoPath(Hp, Sp) {
   const dx = Sp[0] - Hp[0], dy = Sp[1] - Hp[1], L = Math.hypot(dx, dy), nx = dy / L, ny = -dx / L;     // перпендикуляр
@@ -194,14 +238,14 @@ function render(t) {
   const p = procedural(evalKeys(t), t), m = mood(t);
   const Hp = [p.x, p.y], Sp = shoulder(p), hd = head(p), hRot = p.torso * 0.5 + p.tilt;
   const hipL = [Hp[0] - 4, Hp[1]], hipR = [Hp[0] + 4, Hp[1]];
-  let s = '';
+  let s = chairSvg(CHX, SEAT);
   s += leg(hipL, p.hL, p.kL, false) ;
-  s += arm([Sp[0] - 6, Sp[1] + 4], p.aL, p.bL, false);
+  s += arm(shoulderJoint(p, -1), p.aL, p.bL, false, p, t, 'L');
   s += leg(hipR, p.hR, p.kR, true);
   s += torsoPath(Hp, Sp);
   s += headSvg(hd[0], hd[1], hRot, m, p.look, t);
   s += laptopSvg(p);
-  s += arm([Sp[0] + 6, Sp[1] + 4], p.aR, p.bR, true);
+  s += arm(shoulderJoint(p, 1), p.aR, p.bR, true, p, t, 'R');
   const lap = '';
   // ноутбук пеш аз дастҳо дар ҳолати навиштан; дар бозуҳо баъд
   let extra = '';
@@ -223,12 +267,12 @@ function drawPose(p, m, t, chair) {
   const Hp = [p.x, p.y], Sp = shoulder(p), hd = head(p), hRot = p.torso * 0.5 + p.tilt;
   let s = chair ? chairSvg(chair.cx, chair.top) : '';
   s += leg([Hp[0] - 4, Hp[1]], p.hL, p.kL, false);
-  s += arm([Sp[0] - 6, Sp[1] + 4], p.aL, p.bL, false);
+  s += arm(shoulderJoint(p, -1), p.aL, p.bL, false, p, t, 'L');
   s += leg([Hp[0] + 4, Hp[1]], p.hR, p.kR, true);
   s += torsoPath(Hp, Sp);
   s += headSvg(hd[0], hd[1], hRot, m, p.look, t);
   s += laptopSvg(p);
-  s += arm([Sp[0] + 6, Sp[1] + 4], p.aR, p.bR, true);
+  s += arm(shoulderJoint(p, 1), p.aR, p.bR, true, p, t, 'R');
   return s;
 }
 window.__drawPose = drawPose; window.__STAND = STAND; window.__GY = GY;

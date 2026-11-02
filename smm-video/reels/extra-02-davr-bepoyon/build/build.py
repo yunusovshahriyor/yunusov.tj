@@ -56,18 +56,18 @@ def pose(a, b, inner, cls="bob"):
 def _ss(x): x = max(0, min(1, x)); return x * x * (3 - 2 * x)
 import math
 _prev = None
-for _i in range(0, 2600):
+for _i in range(0, 2400):
     _t = 0.2 + _i * 0.001
-    _x = -90 + 325 * _ss((_t - 0.2) / 2.5)
+    _x = -90 + 230 * _ss((_t - 0.2) / 2.35)
     _c = math.floor(_x / 88 * 2)       # ҳар нимтаи давр — як қадам
     if _prev is not None and _c != _prev: sfx("tick", _t, 0.45)
     _prev = _c
-sfx("thud", 2.9, 0.4)
+sfx("thud", 3.5, 0.5)
 
 # ---------- 3–8: фикр (се «Салом») + код дар ҳаво ----------
 bub = ''.join(f'<div style="border-radius:11px;background:{c};width:58px;height:22px;font:800 12px/22px Inter;text-align:center;color:#1E1E1E">Салом</div>' for c in ("#BD93F9", "#FF79C6", "#BD93F9"))
-H.append(f'<div class="bubble" style="--a:3.0s;--g:8.0s;left:90px;top:332px;flex-direction:column;gap:5px;padding:9px 11px;border-radius:22px">{bub}</div>')
-H.append('<div class="bub-dot pop" style="--a:3.0s;left:196px;top:470px;width:14px;height:14px"></div><div class="bub-dot pop" style="--a:3.0s;left:186px;top:448px;width:9px;height:9px"></div>')
+H.append(f'<div class="bubble" style="--a:3.0s;--g:8.0s;left:196px;top:318px;flex-direction:column;gap:5px;padding:9px 11px;border-radius:22px">{bub}</div>')
+H.append('<div class="bub-dot pop" style="--a:3.0s;left:222px;top:470px;width:14px;height:14px"></div><div class="bub-dot pop" style="--a:3.0s;left:214px;top:448px;width:9px;height:9px"></div>')
 sfx("pop", 3.0, 0.6)
 l1 = TYP(3.6, 1.2, "<span class=c>while</span> (<span class=k>true</span>) {", "while (true) {")
 l2 = TYP(4.9, 1.7, LOGH, LOGR)
@@ -79,7 +79,7 @@ sfx("click", 8.0, 0.9); sfx("ding", 8.05, 0.6)
 H.append(f'<div class="fl" style="--a:8.0s;left:340px;top:560px;font-size:30px;color:#4EC9B0;animation:popin .3s var(--a) both,gone .2s 8.9s forwards">▶</div>')
 
 # ---------- 8.4–15.9: «Салом»-ҳо мепаранд ----------
-N = 70; LX, LY = 330, 590
+N = 70; LX, LY = 250, 610
 for i in range(N):
     p = i / N
     ta = 8.4 + (p ** 1.7) * 7.2
