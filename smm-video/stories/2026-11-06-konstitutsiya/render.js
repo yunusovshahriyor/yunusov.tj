@@ -13,7 +13,7 @@ const { chromium } = require('playwright-core');
   } else {
     const out = process.argv[3]; const p = await b.newPage({ viewport: { width: 540, height: 960 }, deviceScaleFactor: 2 });
     await p.goto('file://' + __dirname + '/card.html'); await p.waitForTimeout(300);
-    for (let i = 0; i < 12 * 30; i++) { await p.evaluate(t => window.frame(t), i / 30); await p.screenshot({ path: `${out}/f${String(i).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 90 }); }
+    for (let i = 0; i < 16 * 30; i++) { await p.evaluate(t => window.frame(t), i / 30); await p.screenshot({ path: `${out}/f${String(i).padStart(4, '0')}.jpg`, type: 'jpeg', quality: 90 }); }
   }
   await b.close();
 })();
