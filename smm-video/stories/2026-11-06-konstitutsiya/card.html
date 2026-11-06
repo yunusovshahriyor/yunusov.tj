@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--kw:#569CD6;--str:#CE9178;--fn:#DCDCAA;--teal:#4EC9B0;--purple:#BD93F9;--pink:#FF79C6;--red:#CC0000;--green:#006600;--mono:"DejaVu Sans Mono",monospace}
+*{margin:0;box-sizing:border-box}
+html,body{width:540px;height:960px;overflow:hidden}
+body{background:radial-gradient(circle at 80% 18%,rgba(189,147,249,.13),transparent 42%),radial-gradient(circle at 10% 85%,rgba(0,102,0,.16),transparent 45%),var(--bg);color:var(--text);font-family:Inter,sans-serif;position:relative}
+body::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:27px 27px}
+.a{position:absolute}
+.flag{left:0;top:0;width:100%;height:12px;display:flex}
+.flag i{flex:1}.flag i:nth-child(1){background:var(--red)}.flag i:nth-child(2){background:#fff;flex:1.4}.flag i:nth-child(3){background:var(--green)}
+.kick{left:34px;top:56px;font:800 14px var(--mono);letter-spacing:2px;color:var(--purple)}
+.kick b{background:var(--panel2);color:#fff;border-radius:6px;padding:4px 8px;margin-right:8px;border:1px solid var(--line)}
+.ed{left:28px;top:110px;width:484px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.bar{height:34px;background:var(--panel2);display:flex;align-items:center;gap:7px;padding:0 12px;border-bottom:1px solid var(--line)}
+.bar i{width:10px;height:10px;border-radius:50%}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{margin-left:8px;font:500 12px var(--mono);color:var(--muted)}
+.bar .run{margin-left:auto;background:#2ea043;color:#fff;border-radius:6px;padding:3px 10px;font:700 12px Inter;transition:none}
+pre{font:500 15.5px/1.75 var(--mono);padding:14px 16px;white-space:pre;color:var(--text);min-height:170px}
+.k{color:var(--kw)}.s{color:var(--str)}.f{color:var(--fn)}.n{color:#B5CEA8}
+.caret{display:inline-block;width:2px;height:18px;background:#fff;vertical-align:-3px}
+.out{border-top:1px solid var(--line);padding:10px 16px 14px;font:600 15.5px var(--mono);color:var(--teal);min-height:46px}
+.out small{display:block;font:700 10px var(--mono);letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.title{left:34px;top:470px;right:30px}
+.title h1{font-weight:900;font-size:50px;line-height:1.02;letter-spacing:-1px;color:#fff}
+.title h1 span{background:linear-gradient(90deg,var(--red),#fff 50%,#2fbf4f);-webkit-background-clip:text;color:transparent}
+.title p{margin-top:12px;font:700 19px Inter;color:#cfcfcf}
+.note{left:34px;right:30px;top:640px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--purple);border-radius:12px;padding:14px 16px;font:600 16px/1.45 Inter;color:var(--text)}
+.note code{font:700 15px var(--mono);color:var(--kw);background:var(--bg);padding:1px 6px;border-radius:5px}
+.wish{left:34px;right:30px;top:770px;font:700 17px/1.45 Inter;color:#fff}
+.sign{left:34px;bottom:34px;font:700 13px var(--mono);letter-spacing:1px;color:var(--muted)}
+.sign b{color:#fff}
+body.post{height:675px}
+body.post .ed{top:96px}body.post pre{min-height:0;font-size:14px;padding:10px 14px}body.post .title{top:395px}body.post .title h1{font-size:42px}
+body.post .note,body.post .wish{display:none}body.post .kick{top:40px}body.post .sign{bottom:22px}
+</style></head><body>
+<div class="a flag" id="flag"><i></i><i></i><i></i></div>
+<div class="a kick" id="kick"><b>6 НОЯБР</b>РӮЗИ КОНСТИТУТСИЯ</div>
+<div class="a ed" id="ed"><div class="bar"><i></i><i></i><i></i><span>tabrik.js</span><span class="run" id="run">▶ Иҷро</span></div><pre id="code"></pre><div class="out" id="out"><small>НАТИҶА</small><span id="res"></span></div></div>
+<div class="a title" id="title"><h1>Бо Рӯзи <span>Конститутсия!</span></h1><p>Ҷумҳурии Тоҷикистон · 6 ноябри 1994 — 32 сол</p></div>
+<div class="a note" id="note">Дар барномасозӣ <code>const</code> — қимати доимӣ. Дар ҳаёти мо Конститутсия — асоси доимии давлат ва ҳуқуқҳои ҳар яки мо.</div>
+<div class="a wish" id="wish">Бигзор сулҳ, ваҳдат ва эҳтироми ҳамдигар ҳамеша асоси фардои мо бошад! 💚</div>
+<div class="a sign" id="sign"><b>ШАҲРИЁР ЮНУСОВ</b> · БАРНОМАСОЗӢ АЗ СИФР</div>
+<script>
+if(location.hash==='#post')document.body.classList.add('post');
+const LINES=[['k','const'],[' ',' vatan = '],['s','"Тоҷикистон"'],[' ',';\n'],['k','const'],[' ',' sana = '],['s','"6 ноябр"'],[' ',';\n'],['k','const'],[' ',' arzishho = ['],['s','"сулҳ"'],[' ',', '],['s','"ваҳдат"'],[' ',', '],['s','"ҳуқуқ"'],[' ','];\n\n'],['f','console.log'],[' ','(`Бо Рӯзи Конститутсия, ${vatan}!`);']];
+const FULL=LINES.map(x=>x[1]).join('');
+const cl=x=>x<0?0:x>1?1:x, eo=p=>1-Math.pow(1-p,3), bk=p=>{const c=1.7;return 1+(c+1)*Math.pow(p-1,3)+c*Math.pow(p-1,2)};
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function code(n){let out='',k=0;for(const [c,s] of LINES){if(k>=n)break;const part=s.slice(0,n-k);k+=s.length;out+=c===' '?esc(part):`<span class="${c}">${esc(part)}</span>`}return out}
+function show(id,t0,kind){const e=document.getElementById(id),p=cl((t-t0)/.5);e.style.opacity=cl(p*2);e.style.transform=kind==='pop'?`scale(${p?bk(p):0})`:`translateY(${(1-eo(p))*30}px)`}
+let t=0;
+window.frame=function(tt){t=tt;
+ document.getElementById('flag').style.transform=`scaleX(${eo(cl(t/.8))})`;
+ show('kick',.2);show('ed',.4);
+ const n=Math.floor(FULL.length*cl((t-.9)/4.6));
+ document.getElementById('code').innerHTML=code(n)+(t<6.2&&Math.floor(t*2.4)%2===0?'<i class="caret"></i>':'');
+ const r=document.getElementById('run');r.style.transform=t>6&&t<6.25?'scale(.9)':'none';r.style.filter=t>6&&t<6.4?'brightness(1.4)':'none';
+ document.getElementById('res').textContent=t>6.3?'Бо Рӯзи Конститутсия, Тоҷикистон!':'';
+ show('title',7,'pop');show('note',8);show('wish',9);show('sign',9.5);
+};
+window.frame(location.hash==='#post'?99:(parseFloat(new URLSearchParams(location.search).get('t'))||99));
+</script></body></html>
