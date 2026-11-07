@@ -1,0 +1,54 @@
+:root{--ink:#0A0A12;--lime:#D7FF3A;--coral:#FF4D6D;--violet:#7C4DFF;--sky:#38D5FF;--muted:#9A9AB5;--mono:"Cascadia Mono",Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:540px;height:960px;overflow:hidden;position:relative;background:var(--ink);font-family:"Segoe UI",sans-serif;color:#fff}
+body::after{content:"";position:absolute;inset:0;z-index:50;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.10;mix-blend-mode:overlay;pointer-events:none}
+.sc{position:absolute;inset:0;opacity:0;animation:scin .3s cubic-bezier(.2,.9,.3,1.1) var(--a) forwards,scout .25s ease-in var(--b) forwards}
+@keyframes scin{from{opacity:0;scale:1.06}to{opacity:1;scale:1}}
+@keyframes scout{from{opacity:1}to{opacity:0;scale:.96}}
+.orb{position:absolute;border-radius:50%;filter:blur(70px)}
+.abs{position:absolute}
+.blk{font-family:"Segoe UI Black","Segoe UI",sans-serif;font-weight:900;letter-spacing:-1px;line-height:.98;text-transform:uppercase}
+.c{position:absolute;left:0;right:0;text-align:center}
+.stroke{color:transparent;-webkit-text-stroke:2px #fff}
+.grad{background:linear-gradient(90deg,var(--lime),#FFE53A 60%,#FFB23A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sticker{position:absolute;left:50%;padding:10px 26px;border-radius:18px;font-family:"Segoe UI Black";font-size:var(--s,50px);white-space:nowrap;text-transform:uppercase;box-shadow:0 14px 0 rgba(0,0,0,.35),0 24px 50px rgba(0,0,0,.45);translate:-50% 0;rotate:var(--r,0deg);animation:drop .55s cubic-bezier(.3,1.5,.5,1) var(--a) both}
+@keyframes drop{from{opacity:0;translate:-50% -90px;scale:1.5}50%{opacity:1}to{opacity:1;translate:-50% 0;scale:1}}
+.pill{position:absolute;left:50%;translate:-50% 0;padding:8px 18px;border-radius:999px;font:800 13px var(--mono);letter-spacing:2px;white-space:nowrap}
+.emo{font-family:"Segoe UI Emoji",sans-serif}
+.pop{animation:popin .5s cubic-bezier(.3,1.6,.5,1) var(--a) both}
+@keyframes popin{from{scale:0;opacity:0}40%{opacity:1}to{scale:1;opacity:1}}
+.rise{animation:rise .5s cubic-bezier(.2,.9,.3,1) var(--a) both}
+@keyframes rise{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
+.slamin{animation:slamin .45s cubic-bezier(.2,1.3,.4,1) var(--a) both}
+@keyframes slamin{from{scale:2.6;opacity:0}60%{opacity:1}to{scale:1;opacity:1}}
+.slidel{animation:slidel .5s cubic-bezier(.2,.9,.3,1) var(--a) both}
+@keyframes slidel{from{opacity:0;translate:-120px 0}to{opacity:1;translate:0 0}}
+.slider{animation:slider .5s cubic-bezier(.2,.9,.3,1) var(--a) both}
+@keyframes slider{from{opacity:0;translate:120px 0}to{opacity:1;translate:0 0}}
+.fade{animation:fadein .3s ease-out var(--a) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.bob{animation:bob 1.6s ease-in-out infinite alternate}
+@keyframes bob{from{translate:0 -6px}to{translate:0 6px}}
+.wig{animation:wig .6s ease-in-out var(--a) 3 alternate}
+@keyframes wig{from{rotate:6deg}to{rotate:22deg}}
+.draw{animation:draw var(--d) ease-in-out var(--a) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ringfill{animation:ringfill var(--d) cubic-bezier(.3,.8,.3,1) var(--a) both}
+@keyframes ringfill{from{stroke-dashoffset:1068}to{stroke-dashoffset:300}}
+.cell{border-radius:9px;background:rgba(255,255,255,.08);animation:cell .25s ease-out var(--a) forwards}
+@keyframes cell{to{background:linear-gradient(135deg,#D7FF3A,#FFB23A);box-shadow:0 0 18px rgba(215,255,58,.55)}}
+.flip{animation:flip .4s ease-out var(--a) both}
+@keyframes flip{from{rotate:x 90deg;opacity:0}to{rotate:x 0deg;opacity:1}}
+.type{display:inline-block;overflow:hidden;white-space:pre;vertical-align:top;width:0;animation:typing var(--d) steps(var(--n)) var(--a) forwards}
+@keyframes typing{to{width:calc(var(--n)*1ch)}}
+.hl{animation:hl .3s ease-out var(--a) forwards}
+@keyframes hl{to{background:linear-gradient(135deg,#D7FF3A,#FFE53A);box-shadow:0 8px 0 rgba(0,0,0,.15);scale:1.06}}
+.handle{position:absolute;left:0;right:0;top:668px;text-align:center;font:700 12px var(--mono);letter-spacing:3px;color:rgba(255,255,255,.55)}
+/* captions */
+.cap{position:absolute;left:14px;right:14px;top:716px;text-align:center;font-family:"Segoe UI Black","Segoe UI";font-weight:900;font-size:29px;line-height:1.2;color:#fff;opacity:0;z-index:40;
+animation:capin .05s linear var(--a) forwards,capout .05s linear var(--b) forwards}
+@keyframes capin{to{opacity:1}}@keyframes capout{to{opacity:0}}
+.cap>span{-webkit-text-stroke:7px #0A0A12;paint-order:stroke fill;text-shadow:0 4px 0 rgba(0,0,0,.35)}
+.w{color:#fff;display:inline;animation:wk .01s steps(1) var(--w) forwards,wk2 .01s steps(1) var(--w1) forwards}
+@keyframes wk{to{color:var(--lime)}}@keyframes wk2{to{color:#fff}}
+.kwd{text-decoration:underline;text-decoration-color:var(--coral);text-underline-offset:5px;text-decoration-thickness:3px}
