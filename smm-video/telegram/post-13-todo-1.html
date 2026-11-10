@@ -1,0 +1,23 @@
+📝 <b>Дарси 9: To-Do — лоиҳаи ҳақиқӣ (қисми 1)</b>
+
+Дафтари вазифаҳоро дар код нигоҳ доштан мумкин аст — бо як рӯйхат ва як давр.
+
+<pre><code class="language-javascript">let tasks = [
+  { text: "нон харидан", done: false },
+  { text: "дарс хондан", done: false }
+];
+tasks.push({ text: "занг задан", done: false });
+
+for (let i = 0; i < tasks.length; i++) {
+  console.log(i + 1 + ". " + tasks[i].text);
+}
+// 1. нон харидан
+// 2. дарс хондан
+// 3. занг задан
+
+tasks[0].done = true;</code></pre>
+• <b>Вазифа = объект:</b> <code>text</code> + <code>done</code> (дарси 6)
+• <b>Рӯйхат</b> — вазифаҳо бо шумора аз 0 (дарси 4)
+• <b>for</b> — чоп кардани ҳама (дарси 3)
+
+🧠 <b>Санҷиш:</b> дар рӯйхат се вазифа ҳаст. console.log(tasks[1].text) чӣ чоп мекунад? Ҷавобро дар шарҳ нависед 👇
