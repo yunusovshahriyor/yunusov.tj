@@ -6,38 +6,38 @@
 <title>JS IDE</title>
 <meta name="description" content="Редактори код дар браузер: код нависед, иҷро кунед ва вазифаҳои дарсҳои тағйирёбанда, шарт ва давро санҷед.">
 <style>
-:root{--bg:#1e1e1e;--panel:#252526;--panel2:#2d2d30;--line:#3c3c3c;--text:#d4d4d4;--muted:#8b949e;--white:#fff;--blue:#0e639c;--cyan:#4fc1ff;--green:#2ea043;--teal:#4ec9b0;--red:#f48771;--yellow:#dcdcaa;--orange:#ce9178;--mono:ui-monospace,"JetBrains Mono","SF Mono","DejaVu Sans Mono",Consolas,monospace}
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#FFFFFF;--kw:#569CD6;--cyan:#4FC1FF;--teal:#4EC9B0;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--ctrl:#C586C0;--ok:#4EC9B0;--err:#F48771;--warn:#DCDCAA;--run:#2EA043;--purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;--mono:"JetBrains Mono","SF Mono","DejaVu Sans Mono",ui-monospace,Consolas,monospace}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:radial-gradient(circle at 78% 0,rgba(189,147,249,.10),transparent 40%),radial-gradient(circle at 10% 100%,rgba(255,121,198,.05),transparent 45%),var(--bg) fixed;color:var(--text);-webkit-text-size-adjust:100%}
 .app{display:flex;flex-direction:column;min-height:100%}
 .top{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.logo{font:800 14px var(--mono);color:var(--cyan);letter-spacing:.5px}
-.logo b{color:var(--white)}
+.logo{font:800 14px var(--mono);color:var(--white);letter-spacing:.5px}
+.logo b{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 100%;min-width:0;order:3}
 @media(min-width:900px){.tabs{order:0;flex:1 1 0}}
 .tabs::-webkit-scrollbar{display:none}
 .tab{all:unset;cursor:pointer;flex:none;padding:7px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
 .tab:hover{color:var(--text);background:var(--panel2)}
-.tab.on{color:var(--white);background:var(--bg);border-bottom-color:var(--cyan)}
-.tab.ok::after{content:" ✓";color:var(--teal);font-weight:900}
+.tab.on{color:var(--white);background:var(--bg);border-bottom-color:var(--purple)}
+.tab.ok::after{content:" ✓";color:var(--ok);font-weight:900}
 .progress{display:flex;align-items:center;gap:10px;margin-left:auto}
 .progress .pt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
 .pbar{width:90px;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
-.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--cyan));transition:width .4s}
-.cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 10px;border-radius:6px;background:var(--yellow);color:#1e1e1e;white-space:nowrap}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 12px;border-radius:999px;background:var(--accent);color:#1E1E1E;white-space:nowrap}
 .cert[disabled]{opacity:.35;pointer-events:none;background:var(--line);color:var(--muted)}
 .main{display:grid;grid-template-columns:1fr;flex:1;min-height:0}
 @media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 49px)}.left,.work{overflow:auto}}
 .left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line)}
 @media(min-width:1000px){.left{border-right:1px solid var(--line);border-bottom:0}}
 .work{display:flex;flex-direction:column;min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
 .card h2{font-size:16px;font-weight:800;color:var(--white);margin-bottom:6px}
 .card p,.card li{font-size:14px;line-height:1.6;color:#cccccc}
 .card ul{padding-left:18px}
-.tag{display:inline-block;font:700 10px var(--mono);letter-spacing:1.5px;background:var(--blue);color:#fff;padding:3px 8px;border-radius:4px;margin-bottom:8px}
-code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--orange);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
+.tag{display:inline-block;font:800 11px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:8px}
+code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--str);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
 .card b{color:var(--white)}
 .ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
 .bar{display:flex;align-items:center;gap:6px;padding:0 12px;height:34px;background:var(--panel);border-bottom:1px solid var(--line)}
@@ -48,8 +48,9 @@ code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);co
 .ed .bar select{max-width:130px;padding:5px 8px;font-size:12px}
 .acts{display:flex;gap:6px;flex:none}
 .ic{all:unset;cursor:pointer;height:30px;min-width:32px;padding:0 9px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.ic:hover{background:#37373d}.ic:active{transform:scale(.95)}
-.ic.run{background:var(--green);border-color:var(--green);color:#fff}.ic.chk{background:var(--blue);border-color:var(--blue);color:#fff;font-size:13px}
+.ic:hover{background:#37373D}.ic:active{transform:scale(.95)}
+.ic.run{background:var(--run);border-color:var(--run);color:#fff}.ic.chk{background:var(--accent);border:0;color:#1E1E1E;font-size:13px;font-weight:800}
+.ic:focus-visible,.btn:focus-visible,.tab:focus-visible,.sym button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .ic[disabled]{opacity:.5;pointer-events:none}
 @media(max-width:600px){.bar i.dots,.ed .bar #fname{display:none}.ed .bar select{margin-right:auto}.ic{height:34px;min-width:34px;padding:0 8px}.ic .lbl{display:none}.ed .bar{padding:0 8px;gap:6px}}
 .main.free{grid-template-columns:1fr}.main.free .left{display:none}
@@ -60,23 +61,24 @@ code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);co
 .codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 14px;font:500 14px/1.65 var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
 .codewrap pre{color:#d4d4d4;pointer-events:none;overflow:hidden}
 .codewrap textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none;-webkit-text-fill-color:transparent}
-.codewrap textarea::selection{background:rgba(38,79,120,.8);-webkit-text-fill-color:transparent}
-.kw{color:#569cd6}.st{color:#ce9178}.nu{color:#b5cea8}.cm{color:#6a9955;font-style:italic}.fn{color:#dcdcaa}
+.codewrap textarea::selection{background:rgba(189,147,249,.35);-webkit-text-fill-color:transparent}
+.kw{color:var(--kw)}.ct{color:var(--ctrl)}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--cm);font-style:italic}.fn{color:var(--fn)}.tp{color:var(--teal)}
 .sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line)}
 .sym::-webkit-scrollbar{display:none}
 .sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:38px;border-radius:6px;background:var(--panel2);color:var(--text);font:700 16px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.sym button:active{background:var(--blue)}
+.sym button:active{background:var(--purple);color:#1E1E1E}
 .sym button.tabk{font-size:12px;color:var(--muted)}
 @media(min-width:1000px){.sym{display:none}}
 .btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
-.btn.run{background:var(--green);color:#fff;font-size:15px;padding:10px 18px}
+.btn.run{background:var(--run);color:#fff;font-size:15px;padding:10px 18px}
 .btn.run:hover,.ic.run:hover,.ic.chk:hover{filter:brightness(1.1)}
-.btn.chk{background:var(--blue);color:#fff;font-size:15px;padding:10px 16px}
+.btn.chk{background:var(--accent);color:#1E1E1E;font-size:15px;padding:10px 16px}
 .ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
-.ghost:hover{background:#37373d}
+.ghost:hover{background:#37373D}
+.ghost.on{border-color:var(--purple);color:var(--white);box-shadow:0 0 0 3px rgba(189,147,249,.18)}
 .btn[disabled]{opacity:.5;pointer-events:none}
-select{font:600 13px Inter,system-ui,sans-serif;padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
+select{font:600 13px var(--sans);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
 .con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column}
 @media(min-width:1000px){.con{height:34%;min-height:170px}}
 .con .bar{height:32px}
@@ -84,21 +86,68 @@ select{font:600 13px Inter,system-ui,sans-serif;padding:8px 10px;border-radius:6
 .con .bar button{margin-left:auto}
 .out{padding:10px 14px;min-height:150px;max-height:300px;overflow:auto;font:500 13.5px/1.6 var(--mono);color:#cccccc;white-space:pre-wrap;word-break:break-word;flex:1}
 @media(min-width:1000px){.out{max-height:none}}
-.out .l{display:block}.out .e{color:var(--red)}.out .i{color:var(--muted)}
-.out .hint{display:block;margin-top:8px;padding:9px 12px;border-radius:6px;background:rgba(220,220,170,.08);border-left:3px solid var(--yellow);color:var(--yellow);font:500 13.5px Inter,system-ui,sans-serif}
-.out .hint code{color:var(--orange)}
+.out .l{display:block}.out .e{color:var(--err)}.out .i{color:var(--muted)}
+.out .hint{display:block;margin-top:8px;padding:9px 12px;border-radius:6px;background:rgba(189,147,249,.10);border-left:3px solid var(--purple);color:var(--text);font:500 13.5px var(--sans)}
+.out .hint code{color:var(--str)}
 .checks{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .checks div{font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:6px;background:var(--panel2);color:var(--text)}
-.checks .ok{background:rgba(78,201,176,.12);color:var(--teal)}.checks .no{background:rgba(244,135,113,.12);color:var(--red)}
-.win{background:var(--green);color:#fff;border-radius:6px;padding:10px 12px;font-weight:700;font-size:14px;margin-top:10px}
+.checks .ok{background:rgba(78,201,176,.15);color:var(--ok)}.checks .no{background:rgba(244,135,113,.15);color:var(--err)}
+.win{background:rgba(78,201,176,.15);border:1px solid rgba(78,201,176,.4);color:var(--ok);border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px;margin-top:10px}
 .sol{margin-top:10px}
 .sol pre{background:var(--bg);color:#d4d4d4;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font:500 13px/1.6 var(--mono);overflow:auto;margin-top:8px;white-space:pre}
-dialog{border:1px solid var(--line);border-radius:12px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+dialog{border:1px solid var(--line);border-radius:16px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
 dialog::backdrop{background:rgba(0,0,0,.65)}
 dialog img{width:100%;border-radius:8px;border:1px solid var(--line);margin:10px 0}
 dialog p{font-size:14px;line-height:1.5;color:#cccccc}
 dialog b{color:#fff}
 canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+/* ---- трекҳо, таби файлҳо ва пешнамоиш (ҳолати Web) ---- */
+:root{--attr:#9CDCFE;--selc:#D7BA7D;--gray:#808080}
+.at{color:var(--attr)}.pn{color:var(--gray)}.sel{color:var(--selc)}
+.trk{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
+.trk button{all:unset;cursor:pointer;font:700 11px var(--mono);padding:5px 9px;border-radius:6px;color:var(--muted);white-space:nowrap}
+.trk button:hover{color:var(--text)}
+.trk button.on{background:var(--panel2);color:var(--white);box-shadow:inset 0 -2px 0 var(--purple)}
+.main.web .ed .bar i.dots,.main.web .ic .lbl{display:none}
+.main.web .ed .bar{gap:6px;padding:0 8px}.main.web .ed .acts{gap:4px}
+.ftabs{display:none;gap:2px;margin-right:auto;align-self:stretch;align-items:flex-end}
+.main.web .ftabs{display:flex}.main.web #fname{display:none}
+.ftabs button{all:unset;cursor:pointer;font:700 12px var(--mono);padding:8px 12px;border-radius:6px 6px 0 0;color:var(--muted)}
+.ftabs button:hover{color:var(--text)}
+.ftabs button.on{color:var(--white);background:var(--bg);box-shadow:inset 0 -2px 0 var(--purple)}
+.ftabs button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+.pv{display:none;flex-direction:column;min-height:0;background:var(--bg);border-top:1px solid var(--line)}
+.main.web .pv{display:flex}
+.pv .bar{height:32px}
+.pv .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.pv .ic{height:24px;min-width:28px;padding:0 6px;font-size:13px}
+.pvbox{flex:1;min-height:260px;background:var(--panel2);display:flex;justify-content:center}
+.pvbox iframe{border:0;background:#fff;width:100%;height:100%;min-height:260px}
+.pvbox.mob iframe{width:375px;max-width:100%}
+.mnav{display:none}
+@media(min-width:1000px){
+  .main.web .work{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(140px,30vh);grid-template-areas:"ed pv" "ed con";overflow:hidden}
+  .main.web .ed{grid-area:ed;border-right:1px solid var(--line)}
+  .main.web .pv{grid-area:pv;border-top:0}
+  .main.web .con{grid-area:con;height:auto;min-height:0}
+  .main.web .out{min-height:0}
+}
+@media(max-width:999px){
+  .main.web .left,.main.web .work{display:none}
+  .main.web[data-pane=lesson] .left{display:flex}
+  .main.web[data-pane=code] .work,.main.web[data-pane=result] .work{display:flex}
+  .main.web[data-pane=code] .pv,.main.web[data-pane=code] .con{display:none}
+  .main.web[data-pane=result] .ed,.main.web[data-pane=result] .sym{display:none}
+  .main.web[data-pane=result] .pvbox{min-height:55vh}
+  .main.web .editor{height:clamp(280px,58vh,560px)}
+  .main.web .ed .bar{height:auto;min-height:42px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+  .main.web .ed .bar .ftabs{order:5;flex:1 1 100%}
+  body.webmode .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  body.webmode.freemode #mn-lesson{display:none}
+  .mnav button{all:unset;cursor:pointer;flex:1;text-align:center;padding:13px 4px;font:700 13px var(--sans);color:var(--muted);touch-action:manipulation}
+  .mnav button.on{color:var(--white);box-shadow:inset 0 2px 0 var(--purple)}
+  body.webmode .app{padding-bottom:52px}
+}
 </style>
 </head>
 <body>
@@ -107,6 +156,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 <div class="app">
   <header class="top">
     <span class="logo">&lt;/&gt; <b>JS</b></span>
+    <div class="trk" id="trk"></div>
     <nav class="tabs" id="tabs"></nav>
     <div class="progress"><span class="pt" id="pt"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
   </header>
@@ -117,16 +167,20 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     </aside>
     <section class="work">
       <div class="ed">
-        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span>
+        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span><div class="ftabs" id="ftabs"></div>
           <div class="acts"><button class="ic run" id="run" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро">▶</button><button class="ic chk" id="check" title="Санҷиш" aria-label="Санҷиш" style="display:none">✓ <span class="lbl">Санҷиш</span></button><button class="ic" id="reset" title="Аз нав" aria-label="Аз нав">↺</button><button class="ic" id="copy" title="Нусха" aria-label="Нусха">📋</button><button class="ic" id="share" title="Пайванд" aria-label="Пайванд">🔗</button></div></div>
         <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
       </div>
       <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
-      <div class="con"><div class="bar"><span>НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
+      <div class="pv" id="pv"><div class="bar"><span>ПЕШНАМОИШ</span><div class="acts" style="margin-left:auto"><button class="ic" id="pvdev" title="Андозаи телефон" aria-label="Андозаи телефон">📱</button><button class="ic" id="pvopen" title="Дар tab-и нав" aria-label="Дар tab-и нав">↗</button><button class="ic" id="pvdl" title="Зеркашии index.html" aria-label="Зеркашӣ">⬇</button></div></div><div class="pvbox" id="pvbox"><iframe id="pvf" title="Пешнамоиш" sandbox="allow-scripts"></iframe></div></div>
+      <div class="con"><div class="bar"><span id="conlbl">НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
     </section>
   </div>
 </div>
+<nav class="mnav" id="mnav" aria-label="Қисмҳо"><button data-p="lesson" id="mn-lesson">📖 Дарс</button><button data-p="code">✏️ Код</button><button data-p="result">👁 Натиҷа</button></nav>
 
+<script src="lessons/js.js"></script>
+<script src="lessons/web.js"></script>
 <script>
 (function () {
   "use strict";
@@ -134,139 +188,33 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   var STORE = "mini-ide-v1";
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(STORE + k); localStorage.setItem(STORE + k, v); } catch (e) { return null; } }
 
-  /* ---------- мисолҳо ва вазифаҳо ---------- */
-  var EXAMPLES = [
-    ["Мисолҳо ▾", ""],
-    ["Салом, ҷаҳон", 'console.log("Салом, ҷаҳон!");\n'],
-    ["Тағйирёбанда", 'let age = 25;\nconsole.log(age);\nage = 26;\nconsole.log(age);\n\nconst name = "Шаҳриёр";\nconsole.log("Салом, " + name + "!");\n'],
-    ["Шарт (if / else)", 'let age = 15;\n\nif (age >= 18) {\n  console.log("Хуш омадед!");\n} else {\n  console.log("Ҳанӯз барвақт");\n}\n'],
-    ["else if (баҳо)", 'let score = 75;\n\nif (score >= 90) {\n  console.log("Аъло");\n} else if (score >= 70) {\n  console.log("Хуб");\n} else {\n  console.log("Боз кӯшиш кунед");\n}\n'],
-    ["Давр: 1 то 10", 'for (let i = 1; i <= 10; i++) {\n  console.log("Нишаст-хез " + i);\n}\n'],
-    ["Ҷамъи 1 то 100", 'let sum = 0;\nfor (let i = 1; i <= 100; i++) {\n  sum = sum + i;\n}\nconsole.log(sum);\n'],
-    ["Ҷадвали зарб", 'for (let i = 1; i <= 10; i++) {\n  console.log("7 × " + i + " = " + 7 * i);\n}\n'],
-    ["Ҷуфт ё тоқ", 'for (let i = 1; i <= 6; i++) {\n  if (i % 2 === 0) {\n    console.log(i + " — ҷуфт");\n  } else {\n    console.log(i + " — тоқ");\n  }\n}\n']
-  ];
-  var LESSONS = [
-    { id: "free", tab: "✏️ Озод", free: true },
-    { id: "l1", tab: "1 · Тағйирёбанда", tag: "ДАРСИ 1",
-      theory: "Тағйирёбанда — қуттӣ бо <b>ном</b>, ки <b>қимат</b> нигоҳ медорад: <code>let age = 25;</code>. Қиматро иваз кардан мумкин: <code>age = 26;</code>.",
-      tasks: [
-        { title: "Вазифаи 1: қимати нав", text: "Тағйирёбандаи <code>age</code>-ро бо қимати <b>25</b> созед, баъд ба <b>26</b> иваз кунед ва онро бо <code>console.log</code> нишон диҳед.",
-          starter: "// Тағйирёбандаи age-ро созед ва ба 26 иваз кунед\n", hint: "let age = 25; баъд age = 26; ва console.log(age);",
-          solution: "let age = 25;\nage = 26;\nconsole.log(age);\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [
-            ["Тағйирёбандаи age сохта шуд (let ё const)", /\b(let|var|const)\s+age\b/.test(c)],
-            ["Қиматро иваз кардед (age = 26)", /\bage\s*=\s*26\b/.test(c)],
-            ["Дар натиҷа ҳамагӣ 26 нишон дода шуд", !r.err && r.out[r.out.length - 1] === "26"]]; }); } },
-        { title: "Вазифаи 2: салом бо ном", text: "Тағйирёбандаи <code>name</code>-ро бо номи худ созед ва «<b>Салом, &lt;ном&gt;!</b>» нависед. Масалан: <code>Салом, Нигина!</code>",
-          starter: "// Тағйирёбандаи name-ро созед\n", hint: 'let name = "Нигина"; console.log("Салом, " + name + "!");',
-          solution: 'let name = "Нигина";\nconsole.log("Салом, " + name + "!");\n',
-          check: function (c, R) { return R.run(c).then(function (r) { var o = r.out[r.out.length - 1] || ""; return [
-            ["Тағйирёбандаи name сохта шуд", /\b(let|var|const)\s+name\b/.test(c)],
-            ["Матн бо «Салом, » оғоз мешавад", /^Салом, /.test(o)],
-            ["Матн бо «!» тамом мешавад ва ном дорад", /^Салом, .+!$/.test(o) && o.length > 9]]; }); } }
-      ] },
-    { id: "l2", tab: "2 · Шарт", tag: "ДАРСИ 2",
-      theory: "<code>if</code> — агар, <code>else</code> — вагарна. Шарт = <b>савол + ду роҳ</b>. Муқоиса: <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code> <code>===</code>.",
-      tasks: [
-        { title: "Вазифаи 1: гарм ё хунук", text: "Агар <code>temperature &gt; 30</code> бошад — нависед «<b>Гарм аст</b>», вагарна — «<b>Хунук аст</b>». Тағйирёбандаи <code>temperature</code>-ро нигоҳ доред: санҷиш онро бо қиматҳои гуногун месанҷад.",
-          starter: "let temperature = 34;\n\n// if / else нависед\n", hint: 'if (temperature > 30) { console.log("Гарм аст"); } else { console.log("Хунук аст"); }',
-          solution: 'let temperature = 34;\n\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n}\n',
-          check: function (c, R) { return Promise.all([34, 31, 30, 10].map(function (v) { return R.run(R.setVar(c, "temperature", v)); })).then(function (rs) { var o = function (i) { return rs[i].out.join("|"); }; return [
-            ["temperature = 34 → «Гарм аст»", o(0) === "Гарм аст"], ["temperature = 31 → «Гарм аст»", o(1) === "Гарм аст"],
-            ["temperature = 30 → «Хунук аст»", o(2) === "Хунук аст"], ["temperature = 10 → «Хунук аст»", o(3) === "Хунук аст"]]; }); } },
-        { title: "Вазифаи 2: даромадан иҷозат аст?", text: "Агар <code>age</code> аз <b>18</b> зиёд ё баробар бошад — «<b>Хуш омадед!</b>», вагарна — «<b>Ҳанӯз барвақт</b>». Ёдовар: барои «зиёд ё баробар» <code>&gt;=</code> лозим аст.",
-          starter: "let age = 15;\n\n// if / else нависед\n", hint: 'if (age >= 18) { console.log("Хуш омадед!"); } else { console.log("Ҳанӯз барвақт"); }',
-          solution: 'let age = 15;\n\nif (age >= 18) {\n  console.log("Хуш омадед!");\n} else {\n  console.log("Ҳанӯз барвақт");\n}\n',
-          check: function (c, R) { return Promise.all([25, 18, 17, 5].map(function (v) { return R.run(R.setVar(c, "age", v)); })).then(function (rs) { var o = function (i) { return rs[i].out.join("|"); }; return [
-            ["age = 25 → «Хуш омадед!»", o(0) === "Хуш омадед!"], ["age = 18 → «Хуш омадед!» (18 ҳам дохил аст)", o(1) === "Хуш омадед!"],
-            ["age = 17 → «Ҳанӯз барвақт»", o(2) === "Ҳанӯз барвақт"], ["age = 5 → «Ҳанӯз барвақт»", o(3) === "Ҳанӯз барвақт"]]; }); } }
-      ] },
-    { id: "l3", tab: "3 · Давр", tag: "ДАРСИ 3",
-      theory: "<code>for (let i = 1; i &lt;= 10; i++)</code> — се қисм: <b>оғоз</b> (<code>i = 1</code>), <b>шарт</b> (<code>i &lt;= 10</code>), <b>қадам</b> (<code>i++</code>). Давр = оғоз + шарт + қадам.",
-      tasks: [
-        { title: "Вазифаи 1: аз 1 то 5", text: "Бо давр рақамҳои <b>1, 2, 3, 4, 5</b>-ро нависед (ҳар як дар сатри алоҳида).",
-          starter: "// давр нависед\n", hint: "for (let i = 1; i <= 5; i++) { console.log(i); }",
-          solution: "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [
-            ["Давр (for ё while) истифода шуд", /\b(for|while)\b/.test(c)],
-            ["Дар натиҷа 1, 2, 3, 4, 5 аст", !r.err && r.out.join(",") === "1,2,3,4,5"]]; }); } },
-        { title: "Вазифаи 2: ҷамъи 1 то 100", text: "Бо давр ҷамъи ҳамаи рақамҳои <b>1 то 100</b>-ро ҳисоб кунед ва нависед. Ҷавоб: <b>5050</b>. Ёдовар: тағйирёбандаи <code>sum</code> созед ва дар давр ба он илова кунед.",
-          starter: "let sum = 0;\n\n// давр нависед\n\nconsole.log(sum);\n", hint: "for (let i = 1; i <= 100; i++) { sum = sum + i; }",
-          solution: "let sum = 0;\nfor (let i = 1; i <= 100; i++) {\n  sum = sum + i;\n}\nconsole.log(sum);\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [
-            ["Давр истифода шуд", /\b(for|while)\b/.test(c)],
-            ["Ҷавоб 5050 аст", !r.err && r.out[r.out.length - 1] === "5050"]]; }); } },
-        { title: "Вазифаи 3: ҳисоби баръакс", text: "Рақамҳоро аз <b>10 то 1</b> баръакс нависед: 10, 9, 8 … 1. Ёдовар: <code>i--</code> ҳар бор як кам мекунад.",
-          starter: "// ҳисоби баръакс\n", hint: "for (let i = 10; i >= 1; i--) { console.log(i); }",
-          solution: "for (let i = 10; i >= 1; i--) {\n  console.log(i);\n}\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [
-            ["Давр истифода шуд", /\b(for|while)\b/.test(c)],
-            ["Дар натиҷа 10, 9, … 1 аст", !r.err && r.out.join(",") === "10,9,8,7,6,5,4,3,2,1"]]; }); } }
-      ] },
-    { id: "l4", tab: "4 · Рӯйхат", tag: "ДАРСИ 4",
-      theory: "Рӯйхат (array) — тағйирёбанда бо <b>якчанд қимат</b>: <code>let fruits = [\"себ\", \"нок\", \"ангур\"];</code>. Ҳар қимат шумора дорад, ва шумора аз <b>0</b> оғоз мешавад: <code>fruits[0]</code> — себ. <code>fruits.length</code> — чанд қимат; <code>fruits.push(x)</code> — ба охир илова мекунад.",
-      tasks: [
-        { title: "Вазифаи 1: рӯйхати хӯрок", text: "Рӯйхати 3 хӯроки дӯстдоштаатонро бо номи <code>foods</code> созед ва қимати <b>дуюм</b>-ро нишон диҳед (бо шумора!).",
-          starter: "// let foods = [ ... ];\n", hint: 'let foods = ["палав", "самбуса", "ошташ"]; console.log(foods[1]); — шумораи дуюм 1 аст!',
-          solution: 'let foods = ["палав", "самбуса", "ошташ"];\nconsole.log(foods[1]);\n',
-          check: function (c, R) { return R.run(c).then(function (r) { var m = /\bfoods\s*=\s*\[([^\]]*)\]/.exec(c), it = m ? m[1].split(",").map(function (x) { return x.trim().replace(/^["'`]|["'`]$/g, ""); }) : [];
-            return [["Рӯйхати foods созед (3 қимат)", it.length === 3 && it.every(function (x) { return x; })], ["Қимати дуюм бо foods[1] гирифта шуд", /foods\s*\[\s*1\s*\]/.test(c)], ["Дар натиҷа қимати дуюм аст", !r.err && it.length === 3 && r.out[r.out.length - 1] === it[1]]]; }); } },
-        { title: "Вазифаи 2: илова кардан", text: "Бо <code>push</code> «<b>анор</b>»-ро ба рӯйхат илова кунед ва шумораи қиматҳоро (<code>length</code>) нишон диҳед. Бояд <b>4</b> шавад.",
-          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// push ва length\n', hint: 'fruits.push("анор"); console.log(fruits.length);',
-          solution: 'let fruits = ["себ", "нок", "ангур"];\nfruits.push("анор");\nconsole.log(fruits.length);\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["push истифода шуд", /fruits\.push\(/.test(c)], ["Шумораи қиматҳо 4 аст", !r.err && r.out[r.out.length - 1] === "4"]]; }); } },
-        { title: "Вазифаи 3: рӯйхат ва давр", text: "Бо давр ҳар як қимати рӯйхатро як-як нависед: себ, нок, ангур. Ёдовар: <code>i &lt; fruits.length</code>.",
-          starter: 'let fruits = ["себ", "нок", "ангур"];\n\n// давр нависед\n', hint: "for (let i = 0; i < fruits.length; i++) { console.log(fruits[i]); }",
-          solution: 'let fruits = ["себ", "нок", "ангур"];\nfor (let i = 0; i < fruits.length; i++) {\n  console.log(fruits[i]);\n}\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Давр истифода шуд", /\b(for|while)\b/.test(c)], ["Дар натиҷа: себ, нок, ангур", !r.err && r.out.join(",") === "себ,нок,ангур"]]; }); } }
-      ] },
-    { id: "l5", tab: "5 · Функсия", tag: "ДАРСИ 5",
-      theory: "Функсия — «рецепти» барнома: як маротиба менависем, бисёр бор истифода мебарем. <code>function double(x) { return x * 2; }</code> — қабул мекунад <code>x</code> ва <code>return</code> ҷавоб бармегардонад. Даъват: <code>double(5)</code> → 10.",
-      tasks: [
-        { title: "Вазифаи 1: ду баробар", text: "Функсияи <code>double(x)</code> нависед, ки рақамро <b>ду баробар</b> кунад ва баргардонад (<code>return</code>).",
-          starter: "function double(x) {\n  // return ...\n}\n", hint: "return x * 2;", solution: "function double(x) {\n  return x * 2;\n}\n",
-          check: function (c, R) { return R.run(c + "\nconsole.log(double(4), double(0), double(-3));").then(function (r) { return [["double(4) → 8, double(0) → 0, double(-3) → -6", !r.err && r.out[r.out.length - 1] === "8 0 -6"], ["return истифода шуд", /\breturn\b/.test(c)]]; }); } },
-        { title: "Вазифаи 2: калон аст?", text: "Функсияи <code>isAdult(age)</code> нависед: агар <code>age &gt;= 18</code> бошад — <code>true</code>, вагарна — <code>false</code> баргардонад.",
-          starter: "function isAdult(age) {\n  // ...\n}\n", hint: "return age >= 18;", solution: "function isAdult(age) {\n  return age >= 18;\n}\n",
-          check: function (c, R) { return R.run(c + "\nconsole.log(isAdult(20), isAdult(18), isAdult(17));").then(function (r) { return [["isAdult(20) → true", !r.err && r.out[r.out.length - 1].split(" ")[0] === "true"], ["isAdult(18) → true, isAdult(17) → false", !r.err && r.out[r.out.length - 1] === "true true false"]]; }); } },
-        { title: "Вазифаи 3: салом", text: "Функсияи <code>greet(name)</code> нависед: <b>«Салом, &lt;ном&gt;!»</b> баргардонад. Масалан <code>greet(\"Нигина\")</code> → <code>Салом, Нигина!</code>",
-          starter: "function greet(name) {\n  // ...\n}\n", hint: 'return "Салом, " + name + "!";', solution: 'function greet(name) {\n  return "Салом, " + name + "!";\n}\n',
-          check: function (c, R) { return R.run(c + '\nconsole.log(greet("Нигина")); console.log(greet("Фарҳод"));').then(function (r) { return [["greet(\"Нигина\") → Салом, Нигина!", !r.err && r.out[0] === "Салом, Нигина!"], ["greet(\"Фарҳод\") → Салом, Фарҳод!", !r.err && r.out[1] === "Салом, Фарҳод!"]]; }); } }
-      ] },
-    { id: "l6", tab: "6 · Объект", tag: "ДАРСИ 6",
-      theory: "Объект — «корти» чизе бо якчанд хусусият: <code>let person = { name: \"Нигина\", age: 20 };</code>. Хусусиятро бо нуқта мегиранд: <code>person.name</code>, иваз мекунанд: <code>person.age = 21</code>.",
-      tasks: [
-        { title: "Вазифаи 1: корт", text: "Объекти <code>person</code> созед: <code>name</code> — «<b>Нигина</b>», <code>age</code> — <b>20</b>.",
-          starter: "let person = {\n  \n};\n", hint: 'let person = { name: "Нигина", age: 20 };', solution: 'let person = {\n  name: "Нигина",\n  age: 20\n};\n',
-          check: function (c, R) { return R.run(c + "\nconsole.log(typeof person, person.name, person.age);").then(function (r) { return [["person объект аст", !r.err && /^object /.test(r.out[r.out.length - 1] || "")], ["name = Нигина ва age = 20", !r.err && r.out[r.out.length - 1] === "object Нигина 20"]]; }); } },
-        { title: "Вазифаи 2: иваз кардан", text: "Бо <code>person.age = ...</code> синну солро <b>1 зиёд</b> кунед (бояд 21 шавад) ва нишон диҳед.",
-          starter: 'let person = { name: "Нигина", age: 20 };\n\n// синну солро 1 зиёд кунед ва нишон диҳед\n', hint: "person.age = person.age + 1; console.log(person.age);",
-          solution: 'let person = { name: "Нигина", age: 20 };\nperson.age = person.age + 1;\nconsole.log(person.age);\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Синну сол иваз шуд (person.age = …)", /person\.age\s*=/.test(c)], ["Дар натиҷа 21 аст", !r.err && r.out[r.out.length - 1] === "21"]]; }); } },
-        { title: "Вазифаи 3: хусусияти нав", text: "Ба объект хусусияти <code>city</code>-ро бо қимати «<b>Душанбе</b>» илова кунед ва онро нишон диҳед.",
-          starter: 'let person = { name: "Нигина", age: 20 };\n\n// city илова кунед\n', hint: 'person.city = "Душанбе"; console.log(person.city);',
-          solution: 'let person = { name: "Нигина", age: 20 };\nperson.city = "Душанбе";\nconsole.log(person.city);\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["city дар код ҳаст", /\bcity\b/.test(c)], ["Дар натиҷа «Душанбе» аст", !r.err && r.out[r.out.length - 1] === "Душанбе"]]; }); } }
-      ] },
-    { id: "l7", tab: "7 · Хатогиро ёб", tag: "ДАРСИ 7",
-      theory: "Дебаг — ёфтан ва ислоҳи хато. Хатогӣ — муқаррарӣ аст! <b>Қадамҳо:</b> 1) хатои сурхро бихонед, 2) сатри нишондодашударо бубинед, 3) ишораи 💡-ро истифода баред. Дар ин ҷо коди хатодор ҳаст — ислоҳ кунед!",
-      tasks: [
-        { title: "Хатои 1: қавси гумшуда", text: "Барнома хато медиҳад. Чӣ гум шудааст? Ислоҳ кунед, то «<b>Гарм аст</b>» нишон дода шавад.",
-          starter: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n', hint: "Дар охир қавси } намерасад — онро илова кунед.",
-          solution: 'let temperature = 34;\nif (temperature > 30) {\n  console.log("Гарм аст");\n} else {\n  console.log("Хунук аст");\n}\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «Гарм аст»", !r.err && r.out.join("|") === "Гарм аст"]]; }); } },
-        { title: "Хатои 2: давре, ки хотима намеёбад", text: "Давр бояд 1, 2, 3-ро нависад, вале «овезон» мешавад (♾️). Ислоҳ кунед.",
-          starter: "for (let i = 1; i <= 3; ) {\n  console.log(i);\n}\n", hint: "Қадам (i++) фаромӯш шудааст.", solution: "for (let i = 1; i <= 3; i++) {\n  console.log(i);\n}\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Барнома қатъ мешавад (бе ♾️)", !r.timeout], ["Натиҷа: 1, 2, 3", !r.timeout && !r.err && r.out.join(",") === "1,2,3"]]; }); } },
-        { title: "Хатои 3: const-ро иваз кардан", text: "Барнома бояд ҷамъи 1 то 5-ро нависад (<b>15</b>), вале хато медиҳад. Ислоҳ кунед.",
-          starter: "const total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n", hint: "const-ро иваз кардан мумкин нест. Ба ҷои он let нависед.", solution: "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = total + i;\n}\nconsole.log(total);\n",
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: 15", !r.err && r.out[r.out.length - 1] === "15"]]; }); } },
-        { title: "Хатои 4: шумораи нодуруст", text: "Барнома бояд «<b>тухм</b>»-ро нишон диҳад, вале <code>undefined</code> менависад. Шумора аз 0 оғоз мешавад! Ислоҳ кунед.",
-          starter: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[3]);\n', hint: "«тухм» сеюм аст, шумораи он 2 аст.", solution: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[2]);\n',
-          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «тухм»", !r.err && r.out.join("|") === "тухм"]]; }); } }
-      ] }
-  ];
+  /* ---------- трекҳо, мисолҳо ва дарсҳо (дарсҳо дар lessons/*.js) ---------- */
+  var TRACKS = { js: { short: "JS", cert: true }, web: { short: "HTML · CSS", cert: false } };
+  var FILES = ["html", "css", "js"], FLABEL = { html: "HTML", css: "CSS", js: "JS" };
+  var DEF_JS = 'console.log("Салом, ҷаҳон!");\n';
+  var DEF_WEB = { html: "<h1>Салом, веб!</h1>\n<p>Ин саҳифаи аввалини ман аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" };
+  var EXAMPLES = {
+    js: window.IDE_EXAMPLES_JS || [["Мисолҳо ▾", ""]],
+    web: [
+      ["Мисолҳо ▾", null],
+      ["Сарлавҳа ва матн", { html: "<h1>Салом, веб!</h1>\n<p>Ин <b>абзац</b> аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" }],
+      ["Рӯйхат ва пайванд", { html: '<h2>Дӯстдоштаҳо</h2>\n<ul>\n  <li>Палав</li>\n  <li>Самбуса</li>\n  <li>Ошташ</li>\n</ul>\n<a href="#x">Пайванд</a>\n', css: "ul {\n  color: #2563eb;\n}\n", js: "" }],
+      ["Корт бо CSS", { html: '<div class="card">\n  <h2>Нигина</h2>\n  <p>Барномасоз</p>\n</div>\n', css: "body {\n  font-family: sans-serif;\n  background: #f3f4f6;\n}\n\n.card {\n  width: 220px;\n  margin: 24px auto;\n  padding: 16px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);\n}\n", js: "" }],
+      ["Тугма ва JS", { html: '<button id="btn">Пахш кунед</button>\n<p id="msg">0 маротиба</p>\n', css: "button {\n  padding: 10px 18px;\n  font-size: 16px;\n}\n", js: 'let count = 0;\nconst btn = document.getElementById("btn");\nconst msg = document.getElementById("msg");\n\nbtn.addEventListener("click", function () {\n  count = count + 1;\n  msg.textContent = count + " маротиба";\n});\n' }]
+    ]
+  };
+  function norm(L) {
+    L.track = L.track || "js";
+    (L.tasks || []).forEach(function (t) {
+      if (t.starter != null && !t.files) t.files = { js: t.starter };
+      t.solFiles = typeof t.solution === "string" ? { js: t.solution } : (t.solution || {});
+    });
+  }
+  var LESSONS = (function () {
+    var all = window.IDE_LESSONS || []; all.forEach(norm);
+    var of = function (tk) { return all.filter(function (L) { return L.track === tk; }); };
+    return [{ id: "free", track: "js", tab: "✏️ Озод", free: true }].concat(of("js"), [{ id: "webfree", track: "web", tab: "✏️ Озод", free: true }], of("web"));
+  })();
 
   /* ---------- иҷрои код дар Worker ---------- */
   var WSRC = "var __f=function(v){if(typeof v==='string')return v;if(v===undefined)return 'undefined';if(v===null)return 'null';if(typeof v==='object'){try{return JSON.stringify(v)}catch(e){return String(v)}}return String(v)};" +
@@ -301,131 +249,318 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   /* ---------- редактор ---------- */
   var ta = $("ta"), hl = $("hl"), gut = $("gut");
-  var KW = /^(let|const|var|if|else|for|while|do|function|return|true|false|null|undefined|break|continue|switch|case|new|typeof)$/;
-  function highlight(src) {
+  var KW = /^(let|const|var|function|true|false|null|undefined|new|typeof)$/, CT = /^(if|else|for|while|do|return|break|continue|switch|case)$/;
+  function sp(c, s) { return '<span class="' + c + '">' + s + "</span>"; }
+  function hlJs(src) {
     var out = "", re = /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?|`(?:[^`\\]|\\.)*`?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g, m;
     while ((m = re.exec(src))) {
-      if (m[1]) out += '<span class="cm">' + esc(m[1]) + "</span>";
-      else if (m[2]) out += '<span class="st">' + esc(m[2]) + "</span>";
-      else if (m[3]) out += '<span class="nu">' + m[3] + "</span>";
-      else if (m[4]) out += KW.test(m[4]) ? '<span class="kw">' + m[4] + "</span>" : (m[4] === "console" || m[4] === "log" ? '<span class="fn">' + m[4] + "</span>" : esc(m[4]));
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += KW.test(m[4]) ? sp("kw", m[4]) : CT.test(m[4]) ? sp("ct", m[4]) : m[4] === "console" ? sp("tp", m[4]) : src.charAt(re.lastIndex) === "(" ? sp("fn", m[4]) : esc(m[4]);
       else out += esc(m[5]);
     }
     return out + "\n";
   }
+  function hlHtml(src) {
+    var out = "", re = /(<!--[\s\S]*?(?:-->|$))|(<\/?[A-Za-z!][^\s>\/]*)((?:"[^"]*"|'[^']*'|[^>"'])*)(>?)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) {
+        var t = /^(<\/?)(.*)$/.exec(m[2]);
+        out += sp("pn", esc(t[1])) + sp("kw", esc(t[2]));
+        out += m[3].replace(/("[^"]*"?|'[^']*'?)|([\w:-]+)|([\s\S])/g, function (_, s, n, o) { return s ? sp("st", esc(s)) : n ? sp("at", esc(n)) : sp("pn", esc(o)); });
+        if (m[4]) out += sp("pn", "&gt;");
+      } else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function hlCss(src) {
+    var out = "", tp = -1, tc = "", m;
+    var re = /(\/\*[\s\S]*?(?:\*\/|$))|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?)|(#[0-9A-Fa-f]{3,8}\b)|(-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|vh|vw|vmin|vmax|ms|s|deg|fr|ch|%)?)|(@?[A-Za-z_-][\w-]*)|([\s\S])/g;
+    function term(i) { if (i > tp) { var k = i; while (k < src.length && "{;}".indexOf(src.charAt(k)) < 0) k++; tp = k; tc = src.charAt(k); } return tc; }
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += sp("nu", m[4]);
+      else if (m[5]) out += m[5].charAt(0) === "@" ? sp("ct", m[5]) : term(re.lastIndex) === "{" ? sp("sel", m[5]) : /^\s*:/.test(src.substr(re.lastIndex, 12)) ? sp("at", m[5]) : sp("st", m[5]);
+      else out += esc(m[6]);
+    }
+    return out + "\n";
+  }
+  function highlight(src, lang) { return (lang === "html" ? hlHtml : lang === "css" ? hlCss : hlJs)(src); }
   function paint() {
-    hl.innerHTML = highlight(ta.value);
+    hl.innerHTML = highlight(ta.value, curFile);
     var n = ta.value.split("\n").length, g = ""; for (var i = 1; i <= n; i++) g += i + "\n"; gut.textContent = g;
     sync();
   }
   function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; }
+  function changed() { paint(); saveFile(); schedulePreview(); }
   ta.addEventListener("scroll", sync);
-  ta.addEventListener("input", function () { paint(); saveCode(); });
+  ta.addEventListener("input", changed);
   ta.addEventListener("keydown", function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); doRun(); return; }
     var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
-    if (e.key === "Tab") { e.preventDefault(); ta.value = v.slice(0, s) + "  " + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 2; paint(); saveCode(); }
+    if (e.key === "Tab") { e.preventDefault(); ta.value = v.slice(0, s) + "  " + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 2; changed(); }
     else if (e.key === "Enter") {
       var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s), ind = /^\s*/.exec(line)[0];
       if (/[{(\[]\s*$/.test(line)) ind += "  ";
-      e.preventDefault(); ta.value = v.slice(0, s) + "\n" + ind + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 1 + ind.length; paint(); saveCode();
+      e.preventDefault(); ta.value = v.slice(0, s) + "\n" + ind + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 1 + ind.length; changed();
     }
   });
 
   /* ---------- ҳолат ---------- */
-  var cur = ls("tab") || "free", ti = 0, done = {};
+  var cur = ls("tab") || "free", ti = 0, done = {}, files = {}, curFile = "js", pane = "lesson";
   try { done = JSON.parse(ls("done") || "{}"); } catch (e) { done = {}; }
   function lesson() { return LESSONS.filter(function (l) { return l.id === cur; })[0] || LESSONS[0]; }
-  function key() { var L = lesson(); return L.free ? "code-free" : "code-" + L.id + "-" + ti; }
-  function saveCode() { ls(key(), ta.value); }
+  function track() { return lesson().track; }
+  function isWeb() { return track() === "web"; }
   function task() { var L = lesson(); return L.free ? null : L.tasks[ti]; }
+  function fileList() {
+    if (!isWeb()) return ["js"];
+    var t = task(); if (!t) return FILES;
+    return FILES.filter(function (f) { return t.files && f in t.files; });
+  }
+  function baseKey() { var L = lesson(); return L.free ? "code-" + L.id : "code-" + L.id + "-" + ti; }
+  /* JS-трек: калидҳои пештара (code-free, code-l1-0) нигоҳ дошта мешаванд */
+  function fkey(f) { return isWeb() ? baseKey() + "-" + f : baseKey(); }
+  function starter(f) { var t = task(); if (t) return t.files && t.files[f] != null ? t.files[f] : ""; return isWeb() ? DEF_WEB[f] : DEF_JS; }
+  function saveFile() { files[curFile] = ta.value; ls(fkey(curFile), ta.value); }
+  function solText(t) { return fileList().map(function (f) { return (isWeb() ? "/* " + FLABEL[f] + " */\n" : "") + (t.solFiles[f] || ""); }).join("\n"); }
 
+  function drawTrack() {
+    var box = $("trk"), tk = track(); box.innerHTML = "";
+    Object.keys(TRACKS).forEach(function (k) {
+      var b = document.createElement("button"); b.textContent = TRACKS[k].short; b.className = k === tk ? "on" : "";
+      b.onclick = function () {
+        if (k === tk) return;
+        var first = LESSONS.filter(function (l) { return l.track === k; })[0], id = ls("tab-" + k);
+        cur = LESSONS.some(function (l) { return l.id === id && l.track === k; }) ? id : first.id; ti = 0; ls("tab", cur); pane = lesson().free ? "code" : "lesson"; load();
+      };
+      box.appendChild(b);
+    });
+  }
   function drawTabs() {
-    $("tabs").innerHTML = "";
-    LESSONS.forEach(function (L) {
+    $("tabs").innerHTML = ""; var tk = track();
+    LESSONS.filter(function (L) { return L.track === tk; }).forEach(function (L) {
       var b = document.createElement("button"); b.className = "tab" + (L.id === cur ? " on" : "") + (!L.free && L.tasks.every(function (_, i) { return done[L.id + "-" + i]; }) ? " ok" : ""); b.textContent = L.tab;
-      b.onclick = function () { cur = L.id; ti = 0; ls("tab", cur); load(); }; $("tabs").appendChild(b);
+      b.onclick = function () { cur = L.id; ti = 0; ls("tab", cur); pane = L.free ? "code" : "lesson"; load(); }; $("tabs").appendChild(b);
     });
   }
   function drawSide() {
     var L = lesson(), t = task(), s = $("side");
-    if (L.free) { s.innerHTML = '<span class="tag">ОЗОД</span><h2>Ҳар чизро санҷед</h2><p>Дар ин ҷо ҳар кодро бе маҳдудият менависед. Мисолҳо дар рӯйхати поёни редактор ҳастанд. Барои вазифаҳо ба ҷадвалҳои «1», «2», «3» гузаред.</p>'; return; }
+    if (L.free) {
+      s.innerHTML = isWeb()
+        ? '<span class="tag">ОЗОД</span><h2>Саҳифаи худро созед</h2><p>Дар таби <b>HTML</b> сохтор, дар <b>CSS</b> намуд ва дар <b>JS</b> рафтори саҳифаро нависед. Натиҷа дар тарафи рост бо ҳар тағйир нав мешавад. Мисолҳо дар рӯйхати болои редактор ҳастанд.</p>'
+        : '<span class="tag">ОЗОД</span><h2>Ҳар чизро санҷед</h2><p>Дар ин ҷо ҳар кодро бе маҳдудият менависед. Мисолҳо дар рӯйхати поёни редактор ҳастанд. Барои вазифаҳо ба ҷадвалҳои «1», «2», «3» гузаред.</p>';
+      return;
+    }
     var h = '<span class="tag">' + L.tag + '</span><h2>Назария</h2><p>' + L.theory + "</p>";
-    h += '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + L.tasks.map(function (_, i) { return '<button class="btn ghost" data-i="' + i + '" style="padding:6px 12px;' + (i === ti ? "background:#1F3F44;color:#fff;border-color:#1F3F44" : "") + '">' + (done[L.id + "-" + i] ? "✓ " : "") + (i + 1) + "</button>"; }).join("") + "</div>";
+    h += '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + L.tasks.map(function (_, i) { return '<button data-i="' + i + '" style="padding:6px 12px" class="btn ghost' + (i === ti ? " on" : "") + '">' + (done[L.id + "-" + i] ? "✓ " : "") + (i + 1) + "</button>"; }).join("") + "</div>";
     s.innerHTML = h;
-    Array.prototype.forEach.call(s.querySelectorAll("button[data-i]"), function (b) { b.onclick = function () { ti = +b.dataset.i; load(); }; });
+    Array.prototype.forEach.call(s.querySelectorAll("button[data-i]"), function (b) { b.onclick = function () { ti = +b.dataset.i; pane = "code"; load(); }; });
     var tk = $("task"); tk.style.display = "block";
     tk.innerHTML = "<h2>" + t.title + "</h2><p>" + t.text + '</p><div class="checks" id="checks"></div><div id="winbox"></div><div class="sol"><button class="btn ghost" id="hintb" style="padding:6px 12px">💡 Кӯмак</button> <button class="btn ghost" id="solb" style="padding:6px 12px">🔓 Ҳал</button><div id="solbox"></div></div>';
     $("hintb").onclick = function () { $("solbox").innerHTML = '<p style="margin-top:6px">💡 ' + esc(t.hint) + "</p>"; };
-    $("solb").onclick = function () { $("solbox").innerHTML = "<pre>" + esc(t.solution) + "</pre>"; };
+    $("solb").onclick = function () { $("solbox").innerHTML = "<pre>" + esc(solText(t)) + "</pre>"; };
+  }
+  function drawFileTabs() {
+    var ft = $("ftabs"); ft.innerHTML = ""; if (!isWeb()) return;
+    fileList().forEach(function (f) {
+      var b = document.createElement("button"); b.textContent = FLABEL[f]; b.className = f === curFile ? "on" : "";
+      b.onclick = function () { saveFile(); curFile = f; ta.value = files[f]; ta.scrollTop = 0; paint(); drawFileTabs(); drawSyms(); };
+      ft.appendChild(b);
+    });
+  }
+  function setPane(p) {
+    pane = p; document.querySelector(".main").setAttribute("data-pane", p);
+    Array.prototype.forEach.call($("mnav").children, function (b) { b.className = b.getAttribute("data-p") === p ? "on" : ""; });
   }
   function load() {
-    var L = lesson(), t = task();
-    $("task").style.display = L.free ? "none" : "block"; $("check").style.display = L.free ? "none" : "inline-flex"; $("ex").style.display = L.free ? "" : "none"; document.querySelector(".main").classList.toggle("free", !!L.free);
+    var L = lesson(), t = task(), web = isWeb(), main = document.querySelector(".main");
+    ls("tab-" + L.track, cur);
+    if (web && L.free && pane === "lesson") pane = "code";
+    main.classList.toggle("free", !!L.free); main.classList.toggle("web", web);
+    document.body.classList.toggle("webmode", web); document.body.classList.toggle("freemode", !!L.free);
+    var fl = fileList(); files = {};
+    fl.forEach(function (f) { var s = ls(fkey(f)); files[f] = s != null ? s : starter(f); });
+    if (fl.indexOf(curFile) < 0) curFile = fl[0];
+    ta.value = files[curFile];
+    $("task").style.display = L.free ? "none" : "block";
+    $("check").style.display = !L.free && (!web || (t && t.checks)) ? "inline-flex" : "none";
+    $("ex").style.display = L.free ? "" : "none";
+    $("ex").innerHTML = EXAMPLES[L.track].map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
     $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
-    ta.value = ls(key()) != null ? ls(key()) : (t ? t.starter : 'console.log("Салом, ҷаҳон!");\n');
-    $("out").innerHTML = '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
-    drawTabs(); drawSide(); paint(); drawProgress(); setHash();
+    $("out").innerHTML = web ? "" : '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
+    $("conlbl").textContent = web ? "КОНСОЛ" : "НАТИҶА";
+    drawTrack(); drawTabs(); drawSide(); drawFileTabs(); drawSyms(); paint(); drawProgress(); setHash(); setPane(pane);
+    if (web) renderPreview();
   }
+
+  /* ---------- пешнамоиш (HTML + CSS + JS дар iframe-и ҷудогона) ---------- */
+  var pvTimer = 0, pvToken = 0, pvOnReady = null, pvCheckCb = null;
+  /* Скрипт дар дохили iframe: консол, хатоҳо ва санҷиши DOM-ро ба саҳифаи асосӣ мефиристад */
+  function probe(L0, K) {
+    var P = function (o) { o.ide = 1; o.k = K; try { parent.postMessage(o, "*"); } catch (e) {} };
+    var f = function (v) { if (typeof v === "string") return v; if (v === undefined) return "undefined"; if (v === null) return "null"; if (typeof v === "object") { try { return JSON.stringify(v); } catch (e) { return String(v); } } return String(v); };
+    var n = 0;
+    function p(t, a) { if (n++ < 500) P({ t: t, v: Array.prototype.map.call(a, f).join(" ") }); }
+    console.log = function () { p("log", arguments); }; console.info = console.log;
+    console.warn = function () { p("warn", arguments); }; console.error = function () { p("err", arguments); };
+    window.alert = console.log; window.__lg = 0;
+    window.onerror = function (msg, src, line, col, err) {
+      P({ t: "error", name: (err && err.name) || "Error", msg: (err && err.message) || String(msg), line: line >= L0 ? line - L0 + 1 : null }); return true;
+    };
+    window.addEventListener("unhandledrejection", function (e) { P({ t: "error", name: "Error", msg: String(e.reason && e.reason.message || e.reason), line: null }); });
+    document.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+      var h = a.getAttribute("href"); if (h.charAt(0) === "#") return;
+      e.preventDefault(); p("warn", ["(Пайванд дар пешнамоиш кушода намешавад: " + h + ")"]);
+    }, true);
+    document.addEventListener("submit", function (e) { e.preventDefault(); p("warn", ["(Фиристодани форма дар пешнамоиш кор намекунад)"]); }, true);
+    function ck(c) {
+      var els = document.querySelectorAll(c.sel);
+      if (c.none) return els.length === 0;
+      if (c.count != null) { if (els.length !== c.count) return false; if (c.count === 0) return true; } else if (els.length < (c.min || 1)) return false;
+      var el = els[0], k, v, w;
+      if (c.text != null) { var tx = (el.textContent || "").trim(); if (c.text instanceof RegExp ? !c.text.test(tx) : tx !== c.text) return false; }
+      if (c.attr) for (k in c.attr) { v = el.getAttribute(k); w = c.attr[k]; if (v == null || (w instanceof RegExp ? !w.test(v) : v !== w)) return false; }
+      if (c.css) {
+        var cs = getComputedStyle(el);
+        for (k in c.css) { var tmp = document.createElement("div"); tmp.style.setProperty(k, c.css[k]); document.body.appendChild(tmp); w = getComputedStyle(tmp).getPropertyValue(k); document.body.removeChild(tmp); if (cs.getPropertyValue(k) !== w) return false; }
+      }
+      return true;
+    }
+    window.addEventListener("message", function (e) {
+      var m = e.data; if (!m || m.ide !== 1 || m.t !== "check" || m.k !== K) return;
+      P({ t: "checked", res: m.checks.map(function (c) { try { return ck(c); } catch (x) { return false; } }) });
+    });
+    window.addEventListener("DOMContentLoaded", function () { setTimeout(function () { P({ t: "ready" }); }, 30); });
+  }
+  /* Ҳимоя аз давраи беохир: ҳисобкунаки умумӣ дар ибтидои ҳар for/while */
+  function guardLoops(s) { return s.replace(/\b(for|while)\s*\(((?:[^()]|\([^()]*\))*)\)\s*\{/g, function (m) { return m + " if(++window.__lg>1e6){throw new Error('Давр хотима наёфт (♾️)')}"; }); }
+  function buildDoc(f, token) {
+    var js = guardLoops(f.js || "").replace(/<\/script/gi, "<\\/script"), css = (f.css || "").replace(/<\/style/gi, "<\\/style");
+    var csp = "default-src 'none'; style-src 'unsafe-inline' https:; script-src 'unsafe-inline'; img-src data: https:; media-src data: https:; font-src data: https:";
+    var a = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="' + csp + '">' +
+      "<script>(" + probe.toString() + ")(@@L0@@," + token + ")<\/script><style>" + css + "</style></head><body>" + (f.html || "") + "\n<script>\n";
+    return a.replace("@@L0@@", a.split("\n").length) + js + "\n<\/script></body></html>";
+  }
+  /* Саҳифаи тозаи тайёр (барои зеркашӣ ва кушодан дар tab-и нав) */
+  function cleanDoc(f) {
+    var h = f.html || "", css = f.css || "", js = f.js || "";
+    if (/<html[\s>]/i.test(h)) {
+      if (css) h = /<\/head>/i.test(h) ? h.replace(/<\/head>/i, function () { return "<style>\n" + css + "</style>\n</head>"; }) : "<style>\n" + css + "</style>\n" + h;
+      if (js) h = /<\/body>/i.test(h) ? h.replace(/<\/body>/i, function () { return "<script>\n" + js + "<\/script>\n</body>"; }) : h + "<script>\n" + js + "<\/script>";
+      return h;
+    }
+    return '<!doctype html>\n<html lang="tg">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Саҳифаи ман</title>\n' + (css ? "<style>\n" + css + "</style>\n" : "") + "</head>\n<body>\n" + h + (js ? "<script>\n" + js + "<\/script>\n" : "") + "</body>\n</html>\n";
+  }
+  function renderPreview(cb) {
+    clearTimeout(pvTimer); if (!isWeb()) return;
+    $("out").innerHTML = ""; pvOnReady = cb || null; pvToken++;
+    $("pvf").srcdoc = buildDoc(files, pvToken);
+  }
+  function schedulePreview() { if (!isWeb()) return; clearTimeout(pvTimer); pvTimer = setTimeout(function () { renderPreview(); }, 350); }
+  function runWebChecks(checks) {
+    return new Promise(function (resolve) {
+      var tm = setTimeout(function () { pvOnReady = pvCheckCb = null; resolve(null); }, 5000);
+      pvCheckCb = function (res) { clearTimeout(tm); resolve(res); };
+      renderPreview(function () { try { $("pvf").contentWindow.postMessage({ ide: 1, t: "check", k: pvToken, checks: checks }, "*"); } catch (x) {} });
+    });
+  }
+  addEventListener("message", function (e) {
+    var m = e.data;
+    if (!m || m.ide !== 1 || e.source !== $("pvf").contentWindow || m.k !== pvToken) return;
+    if (m.t === "ready") { var f = pvOnReady; pvOnReady = null; if (f) f(); }
+    else if (m.t === "checked") { var g = pvCheckCb; pvCheckCb = null; if (g) g(m.res); }
+    else show(m);
+  });
+  function saveBlob(blob, name) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $("pvdev").onclick = function () { var on = $("pvbox").classList.toggle("mob"); this.textContent = on ? "🖥" : "📱"; this.title = on ? "Дар паҳнои пурра" : "Андозаи телефон"; };
+  $("pvopen").onclick = function () {
+    /* саҳифа дар iframe-и sandbox мегузорем, то код ба маълумоти IDE дастрас набошад */
+    var w = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Натиҷа</title><style>html,body{margin:0;height:100%;background:#fff}iframe{border:0;width:100%;height:100%;display:block}</style><iframe sandbox="allow-scripts allow-modals" srcdoc="' + cleanDoc(files).replace(/&/g, "&amp;").replace(/"/g, "&quot;") + '"></iframe>';
+    window.open(URL.createObjectURL(new Blob([w], { type: "text/html" })), "_blank");
+  };
+  $("pvdl").onclick = function () { saveBlob(new Blob([cleanDoc(files)], { type: "text/html" }), "index.html"); };
 
   /* ---------- иҷро ---------- */
   function line(cls, html) { var d = document.createElement("span"); d.className = "l " + cls; d.innerHTML = html; $("out").appendChild(d); $("out").scrollTop = 1e9; }
+  function show(m) {
+    if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
+    else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg) || (/Давр хотима наёфт/.test(m.msg) ? "Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?" : ""); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
+    else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
+  }
   function doRun() {
+    if (isWeb()) { renderPreview(); setPane("result"); return; }
     $("out").innerHTML = ""; $("run").disabled = true; var any = false;
-    runCode(ta.value, function (m) {
-      any = true;
-      if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
-      else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
-      else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
-    }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
+    runCode(ta.value, function (m) { any = true; show(m); }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
   }
   $("run").onclick = doRun;
   $("clr").onclick = function () { $("out").innerHTML = ""; };
-  $("reset").onclick = function () { var t = task(); if (confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) { ta.value = t ? t.starter : 'console.log("Салом, ҷаҳон!");\n'; paint(); saveCode(); } };
+  $("reset").onclick = function () {
+    if (!confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) return;
+    Object.keys(files).forEach(function (f) { files[f] = starter(f); ls(fkey(f), files[f]); });
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
   $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋"; }, 1500); }); };
-  $("ex").innerHTML = EXAMPLES.map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
-  $("ex").onchange = function () { var e = EXAMPLES[+this.value]; if (e && e[1]) { ta.value = e[1]; paint(); saveCode(); } this.value = 0; };
+  $("ex").onchange = function () {
+    var e = EXAMPLES[track()][+this.value], c = e && e[1]; this.value = 0; if (!c) return;
+    if (isWeb()) Object.keys(files).forEach(function (f) { files[f] = c[f] || ""; ls(fkey(f), files[f]); }); else { files.js = c; ls(fkey("js"), c); }
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
+  $("mnav").onclick = function (e) { var p = e.target.getAttribute && e.target.getAttribute("data-p"); if (p) setPane(p); };
 
   $("check").onclick = function () {
     var t = task(), L = lesson(); if (!t) return; $("check").disabled = true;
-    t.check(ta.value, R).then(function (rs) {
+    var p = isWeb()
+      ? runWebChecks(t.checks).then(function (res) { return res ? t.checks.map(function (c, i) { return [c.label, !!res[i]]; }) : [["Саҳифа бор нашуд — дубора кӯшиш кунед", false]]; })
+      : t.check(ta.value, R);
+    p.then(function (rs) {
       var all = rs.every(function (r) { return r[1]; });
-      $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + r[0] + "</div>"; }).join("");
+      $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + esc(r[0]) + "</div>"; }).join("");
       if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); drawProgress(); }
       else $("winbox").innerHTML = "";
       $("check").disabled = false;
+      if (isWeb()) { setPane("lesson"); $("task").scrollIntoView({ block: "nearest" }); }
     });
   };
 
   /* ---------- конфетти ---------- */
   var cv = $("fx"), cx = cv.getContext("2d"), parts = [], on = false;
   function fit() { cv.width = innerWidth; cv.height = innerHeight; } addEventListener("resize", fit); fit();
-  function confetti() { var c = ["#B4472E", "#E9B949", "#3E7C59", "#1F3F44"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
+  function confetti() { var c = ["#BD93F9", "#FF79C6", "#4EC9B0", "#DCDCAA"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
   function tick() { cx.clearRect(0, 0, cv.width, cv.height); parts = parts.filter(function (p) { return p.y < cv.height + 20; }); parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); }); if (parts.length) requestAnimationFrame(tick); else { on = false; cx.clearRect(0, 0, cv.width, cv.height); } }
 
 
   /* ---------- пешравӣ ва шаҳодатнома ---------- */
-  function totals() { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
+  function totals(tk) { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free && L.track === tk) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
   function drawProgress() {
-    var t = totals(); $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = Math.round(100 * t[0] / t[1]) + "%";
+    var tk = track(), t = totals(tk), pct = t[1] ? Math.round(100 * t[0] / t[1]) : 0;
+    $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = pct + "%";
+    $("cert").style.display = TRACKS[tk].cert ? "" : "none";
     $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
     $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома" : "🎓 Шаҳодатнома гиред!";
   }
   function makeCert(name) {
     var cv2 = document.createElement("canvas"); cv2.width = 1600; cv2.height = 1130; var x = cv2.getContext("2d");
-    x.fillStyle = "#F4EFE6"; x.fillRect(0, 0, 1600, 1130);
-    x.strokeStyle = "#B4472E"; x.lineWidth = 10; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#1F3F44"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
+    var g = function (x0, x1) { var k = x.createLinearGradient(x0, 0, x1, 0); k.addColorStop(0, "#BD93F9"); k.addColorStop(1, "#FF79C6"); return k; };
+    x.fillStyle = "#1E1E1E"; x.fillRect(0, 0, 1600, 1130);
+    var gl = x.createRadialGradient(1250, 280, 0, 1250, 280, 640); gl.addColorStop(0, "rgba(189,147,249,.18)"); gl.addColorStop(1, "rgba(189,147,249,0)"); x.fillStyle = gl; x.fillRect(0, 0, 1600, 1130);
+    x.strokeStyle = g(40, 1560); x.lineWidth = 8; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#3C3C3C"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
     x.textAlign = "center"; var F = "Inter, 'DejaVu Sans', Arial, sans-serif";
-    x.fillStyle = "#B4472E"; x.font = "700 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
-    x.fillStyle = "#1F3F44"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
-    x.font = "600 38px " + F; x.fillStyle = "#5C616B"; x.fillText("Ин шаҳодатнома ба", 800, 450);
-    x.fillStyle = "#B4472E"; x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillText(nm, 800, 580);
-    x.fillStyle = "#1F3F44"; x.fillRect(420, 615, 760, 4);
-    x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
-    x.font = "800 36px " + F; x.fillStyle = "#3E7C59"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
-    x.fillStyle = "#857D70"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
-    x.fillStyle = "#1F3F44"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
-    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = "#E9B949"; x.fill(); x.fillStyle = "#1F3F44"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
+    x.fillStyle = "#BD93F9"; x.font = "800 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
+    x.fillStyle = "#FFFFFF"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
+    x.font = "600 38px " + F; x.fillStyle = "#8B949E"; x.fillText("Ин шаҳодатнома ба", 800, 450);
+    x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillStyle = g(800 - x.measureText(nm).width / 2, 800 + x.measureText(nm).width / 2); x.fillText(nm, 800, 580);
+    x.fillStyle = "#3C3C3C"; x.fillRect(420, 615, 760, 4);
+    x.fillStyle = "#D4D4D4"; x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
+    x.font = "800 36px " + F; x.fillStyle = "#4EC9B0"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
+    x.fillStyle = "#8B949E"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
+    x.fillStyle = "#FFFFFF"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
+    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = g(1330, 1470); x.fill(); x.fillStyle = "#1E1E1E"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
     return cv2.toDataURL("image/png");
   }
   $("cert").onclick = function () {
@@ -437,7 +572,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   /* ---------- пайвандҳо ба дарс ва нусхаи код ---------- */
   function setHash() {
-    var L = lesson(), h = L.free ? "#free" : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
+    var L = lesson(), h = L.free ? (L.track === "web" ? "#web" : "#free") : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
     try { history.replaceState(null, "", h); } catch (e) {}
   }
   function b64u(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
@@ -445,29 +580,40 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   function parseHash() {
     var h = location.hash || "", m;
     if ((m = /^#code=(.+)$/.exec(h))) { try { cur = "free"; ls("code-free", unb64u(m[1])); return; } catch (e) {} }
+    if ((m = /^#web=(.+)$/.exec(h))) {
+      try { var o = JSON.parse(unb64u(m[1])); cur = "webfree"; pane = "code"; FILES.forEach(function (f) { if (typeof o[f] === "string") ls("code-webfree-" + f, o[f]); }); return; } catch (e) {}
+    }
     if ((m = /^#dars-(\d+)(?:-(\d+))?$/.exec(h))) { var id = "l" + m[1]; if (LESSONS.some(function (L) { return L.id === id; })) { cur = id; ti = Math.max(0, (+m[2] || 1) - 1); var L = lesson(); if (ti >= L.tasks.length) ti = 0; ls("tab", cur); return; } }
     if (h === "#free") cur = "free";
+    if (h === "#web") { cur = "webfree"; pane = "code"; }
   }
   $("share").onclick = function () {
-    var b = this, u = location.href.split("#")[0] + "#code=" + b64u(ta.value);
+    var b = this, u = location.href.split("#")[0] + (isWeb() ? "#web=" + b64u(JSON.stringify({ html: files.html || "", css: files.css || "", js: files.js || "" })) : "#code=" + b64u(ta.value));
     (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗"; }, 1800); });
   };
 
   /* ---------- аломатҳои зуд (барои телефон) ---------- */
-  var SYMS = [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]];
-  SYMS.forEach(function (sy) {
-    var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
-    b.addEventListener("pointerdown", function (e) {
-      e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
-      ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
-      var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
-      ta.focus(); ta.selectionStart = ta.selectionEnd = pos; paint(); saveCode();
+  var SYMS = {
+    js: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]],
+    html: [["⇥", "  ", "tab"], ["<", "<"], [">", ">"], ["</", "</"], ["/>", "/>"], ["=", "="], ['"', '""'], ["#", "#"], [".", "."], ["-", "-"], ["!", "!"], ["&", "&"], [";", ";"]],
+    css: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], [":", ":"], [";", ";"], ["#", "#"], [".", "."], ["%", "%"], ["(", "()"], [")", ")"], [",", ","], ['"', '""'], ["-", "-"], ["/", "/"], ["*", "*"]]
+  };
+  function drawSyms() {
+    var box = $("sym"); box.innerHTML = "";
+    SYMS[curFile].forEach(function (sy) {
+      var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
+        ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
+        var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
+        ta.focus(); ta.selectionStart = ta.selectionEnd = pos; changed();
+      });
+      box.appendChild(b);
     });
-    $("sym").appendChild(b);
-  });
+  }
 
-  window.__ide = { lessons: LESSONS, setCode: function (c) { ta.value = c; paint(); }, goto: function (id, i) { cur = id; ti = i || 0; load(); } };
-  parseHash(); load();
+  window.__ide = { lessons: LESSONS, setCode: function (c, f) { f = f || curFile; files[f] = c; if (f === curFile) { ta.value = c; paint(); } schedulePreview(); }, goto: function (id, i) { cur = id; ti = i || 0; pane = "code"; load(); } };
+  pane = "lesson"; parseHash(); if (lesson().free) pane = "code"; load();
   addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
 })();
 </script>

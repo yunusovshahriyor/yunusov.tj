@@ -11,3 +11,9 @@
 | 2026-10-28 | 1973 | PDF: шпаргалка дарсҳои 1–3 | `../pdf/shpargalka-darsho-1-3.pdf`, `post-05-pdf.html` |
 | 2026-10-28 | 1975 | Дарси 3: Давр (видео v3 + конспект + санҷиш) | `../reels/03-loop/reel-davr-v3.mp4`, `post-06-davr.html` |
 | 2026-10-30 | 1984 | Дарси 4: Рӯйхат (видео + конспект + санҷиш бо рӯйхати харид) | `../reels/04-array/reel-royhat.mp4`, `post-08-royhat.html` |
+| 2026-10-31 | 1989–1990 | Reels 5: Функсия (видео + тавсифи Instagram `caption.txt`; 1990 — муқова `cover.jpg` ҳамчун файл) | `../reels/05-function/reel-funksiya.mp4`, `../reels/05-function/cover.jpg`, `../reels/05-function/caption.txt` |
+| 2026-11-01 | 1995–1997 | Reels 6: Объект (1995 — видео + конспект бо код; 1996 — муқова `cover.jpg` ҳамчун файл; 1997 — тавсифи Instagram барои нусха) | `../reels/06-object/reel-obyekt.mp4`, `../reels/06-object/cover.jpg`, `../reels/06-object/caption.txt`, `post-10-object.html` |
+| 2026-11-01 | 1998 | PDF: шпаргалка дарсҳои 1–5 («Шпаргалка дарсҳои 1 - 5.pdf») | `../pdf/shpargalka-darsho-1-5.pdf` |
+| 2026-11-01 | 1999–2001 | Reels: 3 хатои рӯзи аввал (1999 — видео + конспект; 2000 — муқова `cover.jpg` ҳамчун файл; 2001 — тавсифи Instagram барои нусха) | `../reels/extra-01-3-xato/reel-3-xato.mp4`, `../reels/extra-01-3-xato/cover.jpg`, `../reels/extra-01-3-xato/caption.txt`, `post-11-3-xato.html` |
+| 2026-11-07 | 2011–2012 | Reels иловагӣ: «Сайтҳо пароли шуморо чӣ тавр нигоҳ медоранд?» (видео + тавсифи Instagram `caption.txt`; 2012 — муқова `cover.jpg` ҳамчун файл) | `../reels/extra-02-parol/reel-parol.mp4`, `../reels/extra-02-parol/cover.jpg`, `../reels/extra-02-parol/caption.txt` |
+| 2026-11-10 | 2025–2027 | Reels 11: Намуди барнома — HTML ва CSS (2025 — видео + конспект `post-14-html-css.html`; 2026 — муқова `cover.jpg` ҳамчун файл; 2027 — тавсифи Instagram барои нусха) | `../reels/11-html-css/reel-html-css.mp4`, `../reels/11-html-css/cover.jpg`, `../reels/11-html-css/caption.txt`, `send_html_css.js` |
