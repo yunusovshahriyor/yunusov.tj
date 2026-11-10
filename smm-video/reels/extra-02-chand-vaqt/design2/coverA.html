@@ -1,0 +1,49 @@
+<!doctype html><html lang="tg"><head><meta charset="utf-8"><style>
+:root{--blue:#2B6BFF;--blue2:#5B8CFF;--mint:#35E0B5;--violet:#8B5CF6;--amber:#FFB23A;--ink:#04060D;--lt:#EDF1F7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:540px;height:960px;overflow:hidden;position:relative;font-family:'Segoe UI',sans-serif;color:#fff}
+body.dark{background:#04060D}
+body.light{background:#EDF1F7;color:#18202E}
+.abs{position:absolute}.c{position:absolute;left:0;right:0;text-align:center}
+.glow{position:absolute;border-radius:50%;filter:blur(40px)}
+.glass{position:absolute;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.17);border-radius:28px;backdrop-filter:blur(14px);box-shadow:0 30px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.28)}
+.gl{position:absolute;background:rgba(255,255,255,.78);border:1px solid #fff;border-radius:26px;box-shadow:0 26px 60px rgba(60,90,130,.18),0 2px 0 rgba(255,255,255,.9) inset}
+.title{position:absolute;left:0;right:0;text-align:center;font:600 30px/1.15 'Segoe UI Semibold','Segoe UI';letter-spacing:-.3px}
+.sub{position:absolute;left:0;right:0;text-align:center;font:500 16px 'Segoe UI';opacity:.65}
+.chip{position:absolute;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.2)}
+.light .chip{background:#fff;border:1px solid #fff;box-shadow:0 10px 24px rgba(60,90,130,.16)}
+.pillg{position:absolute;padding:9px 18px;border-radius:999px;font:600 15px 'Segoe UI Semibold','Segoe UI';white-space:nowrap;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
+.light .pillg{background:#fff;border:1px solid #fff;box-shadow:0 10px 24px rgba(60,90,130,.14);color:#18202E}
+.num{font-family:'Segoe UI Light','Segoe UI';font-weight:300;letter-spacing:-4px;line-height:1}
+.emo{font-family:'Segoe UI Emoji',sans-serif}
+.handle{position:absolute;right:26px;top:102px;display:flex;align-items:center;gap:6px;font:700 10px 'Cascadia Mono',Consolas;letter-spacing:1px;opacity:.55}
+.ig{width:16px;height:16px;border-radius:5px;border:2px solid currentColor;position:relative}.ig::after{content:"";position:absolute;inset:3px;border-radius:50%;border:1.5px solid currentColor}
+.bar{height:10px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.light .bar{background:rgba(24,32,46,.08)}
+.bar>i{display:block;height:100%;border-radius:99px}
+.cap{position:absolute;left:18px;right:18px;top:716px;text-align:center;font:700 29px/1.2 'Segoe UI';text-shadow:0 2px 14px rgba(0,0,0,.45)}
+.light .cap{color:#18202E;text-shadow:0 1px 10px rgba(255,255,255,.7)}
+.cap b{font-weight:700;color:var(--blue2)}
+.light .cap b{color:#1F6BFF}
+
+.tok{position:absolute;font:700 17px 'Cascadia Mono',Consolas;color:rgba(255,255,255,.2);filter:blur(1.2px)}
+.orbit{position:absolute;display:flex;align-items:center;gap:10px;padding:12px 20px 12px 14px;border-radius:22px;background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);box-shadow:0 22px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3);font:700 20px 'Segoe UI Semibold','Segoe UI'}
+.orbit .i{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.big{position:absolute;left:0;right:0;text-align:center;font-family:'Segoe UI Black','Segoe UI Semibold','Segoe UI';letter-spacing:-2px;line-height:.95}
+</style></head><body class="dark">
+<div class="glow" style="width:560px;height:560px;left:-10px;top:250px;background:radial-gradient(circle,rgba(43,107,255,.8),rgba(20,50,150,.35) 55%,transparent 72%)"></div>
+<div class="glow" style="width:300px;height:300px;right:-90px;top:120px;background:radial-gradient(circle,rgba(139,92,246,.8),transparent 70%)"></div>
+<div class="glow" style="width:300px;height:300px;left:-100px;top:600px;background:radial-gradient(circle,rgba(53,224,181,.55),transparent 70%)"></div>
+<div class="tok" style="left:30px;top:200px;transform:rotate(-8deg)">let</div><div class="tok" style="right:34px;top:250px;transform:rotate(7deg)">if ( )</div>
+<div class="tok" style="left:44px;top:520px;transform:rotate(6deg)">for</div><div class="tok" style="right:40px;top:560px;transform:rotate(-6deg)">[ ]</div>
+<div class="tok" style="left:120px;top:170px;font-size:13px">{ }</div><div class="tok" style="right:120px;top:740px;font-size:14px">=&gt;</div>
+<div class="pillg" style="left:50%;transform:translateX(-50%);top:158px;font:700 12px 'Cascadia Mono',Consolas;letter-spacing:3px;color:#7DF0CF;border-color:rgba(53,224,181,.55);background:rgba(53,224,181,.08)">БАРНОМАСОЗӢ АЗ СИФР</div>
+<div class="big" style="top:212px;font-size:38px;font-weight:600;letter-spacing:-.6px;font-family:'Segoe UI Semibold'">ДАР ЧАНД ВАҚТ</div>
+<div class="big" style="top:256px;font-size:62px;background:linear-gradient(90deg,#7DF0CF,#5B8CFF 55%,#B49BFF);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 30px rgba(91,140,255,.55))">БАРНОМАСОЗ</div>
+<div class="big" style="top:330px;font-size:38px;font-weight:600;letter-spacing:-.6px;font-family:'Segoe UI Semibold'">ШУДАН МУМКИН?</div>
+<svg class="abs" style="left:0;top:380px" width="540" height="330" viewBox="0 0 540 330"><g stroke="rgba(255,255,255,.22)" stroke-width="2" stroke-dasharray="3 7" fill="none"><path d="M150 70 L225 130"/><path d="M390 70 L315 130"/><path d="M270 262 L270 215"/></g></svg>
+<div class="abs" style="left:190px;top:440px;width:160px;height:160px;border-radius:46px;background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;transform:perspective(700px) rotateX(10deg) rotateY(-12deg) rotate(-3deg);box-shadow:0 0 110px rgba(43,107,255,.9),0 40px 80px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.4)"><div class="num" style="font-size:124px;letter-spacing:0">?</div></div>
+<div class="orbit" style="left:40px;top:395px;transform:rotate(-5deg)"><span class="i" style="background:linear-gradient(135deg,#FF4D6D,#FF8DA1)">⏱</span>1 ҳафта</div>
+<div class="orbit" style="right:36px;top:395px;transform:rotate(5deg)"><span class="i" style="background:linear-gradient(135deg,#8B5CF6,#B49BFF)">📅</span>1 моҳ</div>
+<div class="orbit" style="left:175px;top:640px;transform:rotate(-2deg)"><span class="i" style="background:linear-gradient(135deg,#35E0B5,#7DF0CF)">🗓</span>1 сол</div>
+<div class="c" style="top:742px;font:600 17px 'Segoe UI Semibold';opacity:.8">Ин аз худи Шумо вобаста ҳаст <span style="color:#7DF0CF">→</span></div>
+</body></html>
