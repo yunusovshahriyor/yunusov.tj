@@ -420,6 +420,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     }, true);
     document.addEventListener("submit", function (e) { e.preventDefault(); p("warn", ["(Фиристодани форма дар пешнамоиш кор намекунад)"]); }, true);
     function ck(c) {
+      if (c.click) { var cb = document.querySelector(c.click); if (cb) cb.click(); }
       var els = document.querySelectorAll(c.sel);
       if (c.none) return els.length === 0;
       if (c.count != null) { if (els.length !== c.count) return false; if (c.count === 0) return true; } else if (els.length < (c.min || 1)) return false;
