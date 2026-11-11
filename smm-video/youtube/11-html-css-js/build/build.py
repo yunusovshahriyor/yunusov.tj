@@ -181,7 +181,7 @@ typ(N(384.6), C_CL, 1.2, 'css'); MK(N(384.7), N(388.5), 'css', '.card', 'нуқ�
 # --- слайд «қуттӣ» (модели коробки) ---
 slides.append(f'''<section class="scene" id="s-box">
 <div class="kicker" {A('down', T_BOX + .1)}><b>03</b>ҲАР ЭЛЕМЕНТ — ҚУТТӢ</div>
-<div class="h2" style="left:600px;top:60px;font-size:40px" {A('up', T_BOX + .6)}>📦 ҳамон қуттии картонӣ аз дарси 1</div>
+<div class="h2" style="left:240px;top:62px;font-size:40px;white-space:nowrap" {A('up', T_BOX + .6)}>📦 ҳамон қуттии картонӣ аз дарси 1</div>
 <div style="left:240px;top:140px;width:800px;height:500px;border:3px dashed var(--muted);border-radius:22px;background:rgba(139,148,158,.06)" {A('pop', N(404.4) - 1.5)}></div>
 <div style="left:300px;top:200px;width:680px;height:380px;border:6px solid var(--purple);border-radius:18px;background:var(--panel)" {A('pop', N(402.0) - 1.5)}></div>
 <div style="left:360px;top:260px;width:560px;height:260px;border:2px dashed #E2B070;border-radius:12px;background:rgba(226,176,112,.12)" {A('pop', N(397.8) - 1.5)}></div>
