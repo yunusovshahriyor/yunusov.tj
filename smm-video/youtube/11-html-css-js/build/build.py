@@ -16,6 +16,9 @@ def V(nt): return nt + sum(d for g, d in GAPS if g <= nt)
 def N(nt): return round(V(nt), 3)          # время повествования (из транскрипта) -> время видео
 def I(phrase, after=0): return find(phrase, after)
 PAUSE = 5.0
+# вырез: неверная фраза «Дар дарси гузашта дидем, ки браузер саҳифаро аз сервер мегирад.» (52.83–56.83); оставляем паузу 0.28 с (сдвиг = 3.80 с = 114 кадров)
+CUTS = [(52.79, 56.87, 0.28)]
+for c0, c1, p in CUTS: GAPS.append((c0, p - (c1 - c0)))
 GAP_Q = W[I('фикр кунед.', I('Ва санҷиши нав')) + 1]['t1'] + 0.05; GAPS.append((GAP_Q, PAUSE))
 END = round(V(NARR_END) + 0.8, 2)
 
@@ -75,12 +78,12 @@ slides.append(f'''<section class="scene" id="s-hook">
 <div class="node" style="left:880px;top:140px;width:330px;text-align:left" {A('pop', N(2.5))}><span class="mono" style="font-size:44px;color:var(--purple)">Салом!</span><small>сохтор (HTML)</small></div>
 <div class="node" style="left:880px;top:290px;width:330px;border-color:var(--purple)" {A('pop', N(6.0))}><span style="font-size:34px;color:#fff;background:var(--accent);border-radius:12px;padding:6px 18px;color:#1E1E1E">Пахш кун</span><small>ранг (CSS)</small></div>
 <div class="node" style="left:880px;top:440px;width:330px" {A('pop', N(8.6))}><span class="mono" style="font-size:44px">⚡ click</span><small>ҳаракат (JS)</small></div>
-<div style="left:850px;top:640px" {A('pop', N(21.3))}><span class="pill accent">🎯 Дар охир: корти профил ва санҷиш</span></div>
+<div style="left:850px;top:640px" {A('pop', N(21.3))}><span class="pill accent">🎯 Дар охир: корти профил</span></div>
 </section>''')
 S('s-hook', 0, T_HOUSE)
 
 # ---------- 1. Хона ва браузер ----------
-t_w = N(26.9); t_c = N(37.6); t_e = N(45.6); t_br = N(52.8); t_files = N(59.1); t_rd = N(68.3); t_three = N(72.4); t_work = N(85.2)
+t_w = N(26.9); t_c = N(37.6); t_e = N(45.6); t_br = N(56.95); t_files = N(59.1); t_rd = N(68.3); t_three = N(72.4); t_work = N(85.2)
 slides.append(f'''<section class="scene" id="s-house">
 <div class="kicker" {A('down', T_HOUSE)}><b>01</b>ОБРАЗИ ХОНА</div>
 <div class="node" style="left:70px;top:190px;width:360px" {A('up', t_w, t_br - .3)}><span class="big">🧱</span>Деворҳо<small><span class="mono">HTML</span> — сохтор</small></div>
@@ -397,6 +400,7 @@ caps = []; cur = []
 def flush():
     if cur: caps.append(dict(t0=V(cur[0]['t0']), t1=V(cur[-1]['t1']), text=disp(' '.join(w['w'] for w in cur)))); cur.clear()
 for w in W:
+    if any(c0 < w['t0'] < c1 for c0, c1, p in CUTS): continue
     cur.append(w)
     if w['w'][-1] in '.!?:' or len(cur) >= 9 or len(' '.join(x['w'] for x in cur)) > 62: flush()
 flush()
@@ -419,7 +423,7 @@ open('video.html', 'w', encoding='utf8').write(src)
 
 sfx = [s for s in sfx if 0 <= s['t'] < END]
 json.dump(dict(end=END, sfx=sorted(sfx, key=lambda s: s['t'])), open('sfx.json', 'w'), indent=0)
-json.dump(dict(gaps=GAPS, end=END), open('gaps.json', 'w'))
+json.dump(dict(gaps=GAPS, end=END, cuts=CUTS), open('gaps.json', 'w'))
 def ts(t): h = int(t // 3600); m = int(t % 3600 // 60); s = t % 60; return f'{h:02}:{m:02}:{int(s):02},{int(round((s % 1) * 1000)) % 1000:03}'
 with open('../youtube-lesson-11.srt', 'w', encoding='utf8') as f:
     for k, c in enumerate(caps, 1): f.write(f"{k}\n{ts(c['t0'])} --> {ts(c['t1'])}\n{c['text']}\n\n")
