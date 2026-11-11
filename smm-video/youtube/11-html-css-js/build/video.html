@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="tg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JS IDE</title>
+<meta name="description" content="Редактори код дар браузер: код нависед, иҷро кунед ва вазифаҳои дарсҳои тағйирёбанда, шарт ва давро санҷед.">
+<style>
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#FFFFFF;--kw:#569CD6;--cyan:#4FC1FF;--teal:#4EC9B0;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--ctrl:#C586C0;--ok:#4EC9B0;--err:#F48771;--warn:#DCDCAA;--run:#2EA043;--purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;--mono:"JetBrains Mono","SF Mono","DejaVu Sans Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:radial-gradient(circle at 78% 0,rgba(189,147,249,.10),transparent 40%),radial-gradient(circle at 10% 100%,rgba(255,121,198,.05),transparent 45%),var(--bg) fixed;color:var(--text);-webkit-text-size-adjust:100%}
+.app{display:flex;flex-direction:column;min-height:100%}
+.top{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.logo{font:800 14px var(--mono);color:var(--white);letter-spacing:.5px}
+.logo b{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 100%;min-width:0;order:3}
+@media(min-width:900px){.tabs{order:0;flex:1 1 0}}
+.tabs::-webkit-scrollbar{display:none}
+.tab{all:unset;cursor:pointer;flex:none;padding:7px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.tab:hover{color:var(--text);background:var(--panel2)}
+.tab.on{color:var(--white);background:var(--bg);border-bottom-color:var(--purple)}
+.tab.ok::after{content:" ✓";color:var(--ok);font-weight:900}
+.progress{display:flex;align-items:center;gap:10px;margin-left:auto}
+.progress .pt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
+.pbar{width:90px;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 12px;border-radius:999px;background:var(--accent);color:#1E1E1E;white-space:nowrap}
+.cert[disabled]{opacity:.35;pointer-events:none;background:var(--line);color:var(--muted)}
+.main{display:grid;grid-template-columns:1fr;flex:1;min-height:0}
+@media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 49px)}.left,.work{overflow:auto}}
+.left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line)}
+@media(min-width:1000px){.left{border-right:1px solid var(--line);border-bottom:0}}
+.work{display:flex;flex-direction:column;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h2{font-size:16px;font-weight:800;color:var(--white);margin-bottom:6px}
+.card p,.card li{font-size:14px;line-height:1.6;color:#cccccc}
+.card ul{padding-left:18px}
+.tag{display:inline-block;font:800 11px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:8px}
+code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--str);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
+.card b{color:var(--white)}
+.ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
+.bar{display:flex;align-items:center;gap:6px;padding:0 12px;height:34px;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57;flex:none}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{font:500 12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed .bar{height:42px;gap:8px}
+.ed .bar #fname{margin-right:auto}
+.ed .bar select{max-width:130px;padding:5px 8px;font-size:12px}
+.acts{display:flex;gap:6px;flex:none}
+.ic{all:unset;cursor:pointer;height:30px;min-width:32px;padding:0 9px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ic:hover{background:#37373D}.ic:active{transform:scale(.95)}
+.ic.run{background:var(--run);border-color:var(--run);color:#fff}.ic.chk{background:var(--accent);border:0;color:#1E1E1E;font-size:13px;font-weight:800}
+.ic:focus-visible,.btn:focus-visible,.tab:focus-visible,.sym button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.ic[disabled]{opacity:.5;pointer-events:none}
+@media(max-width:600px){.bar i.dots,.ed .bar #fname{display:none}.ed .bar select{margin-right:auto}.ic{height:34px;min-width:34px;padding:0 8px}.ic .lbl{display:none}.ed .bar{padding:0 8px;gap:6px}}
+.main.free{grid-template-columns:1fr}.main.free .left{display:none}
+.editor{position:relative;display:flex;height:clamp(230px,40vh,400px)}
+@media(min-width:1000px){.editor{height:auto;flex:1;min-height:220px}}
+.gut{white-space:pre;flex:none;width:44px;padding:12px 8px 12px 0;text-align:right;color:#858585;font:500 13.5px/1.65 var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
+.codewrap{position:relative;flex:1;min-width:0}
+.codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 14px;font:500 14px/1.65 var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
+.codewrap pre{color:#d4d4d4;pointer-events:none;overflow:hidden}
+.codewrap textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none;-webkit-text-fill-color:transparent}
+.codewrap textarea::selection{background:rgba(189,147,249,.35);-webkit-text-fill-color:transparent}
+.kw{color:var(--kw)}.ct{color:var(--ctrl)}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--cm);font-style:italic}.fn{color:var(--fn)}.tp{color:var(--teal)}
+.sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line)}
+.sym::-webkit-scrollbar{display:none}
+.sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:38px;border-radius:6px;background:var(--panel2);color:var(--text);font:700 16px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sym button:active{background:var(--purple);color:#1E1E1E}
+.sym button.tabk{font-size:12px;color:var(--muted)}
+@media(min-width:1000px){.sym{display:none}}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.run{background:var(--run);color:#fff;font-size:15px;padding:10px 18px}
+.btn.run:hover,.ic.run:hover,.ic.chk:hover{filter:brightness(1.1)}
+.btn.chk{background:var(--accent);color:#1E1E1E;font-size:15px;padding:10px 16px}
+.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
+.ghost:hover{background:#37373D}
+.ghost.on{border-color:var(--purple);color:var(--white);box-shadow:0 0 0 3px rgba(189,147,249,.18)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+select{font:600 13px var(--sans);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
+.con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column}
+@media(min-width:1000px){.con{height:34%;min-height:170px}}
+.con .bar{height:32px}
+.con .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.con .bar button{margin-left:auto}
+.out{padding:10px 14px;min-height:150px;max-height:300px;overflow:auto;font:500 13.5px/1.6 var(--mono);color:#cccccc;white-space:pre-wrap;word-break:break-word;flex:1}
+@media(min-width:1000px){.out{max-height:none}}
+.out .l{display:block}.out .e{color:var(--err)}.out .i{color:var(--muted)}
+.out .hint{display:block;margin-top:8px;padding:9px 12px;border-radius:6px;background:rgba(189,147,249,.10);border-left:3px solid var(--purple);color:var(--text);font:500 13.5px var(--sans)}
+.out .hint code{color:var(--str)}
+.checks{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.checks div{font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:6px;background:var(--panel2);color:var(--text)}
+.checks .ok{background:rgba(78,201,176,.15);color:var(--ok)}.checks .no{background:rgba(244,135,113,.15);color:var(--err)}
+.win{background:rgba(78,201,176,.15);border:1px solid rgba(78,201,176,.4);color:var(--ok);border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px;margin-top:10px}
+.sol{margin-top:10px}
+.sol pre{background:var(--bg);color:#d4d4d4;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font:500 13px/1.6 var(--mono);overflow:auto;margin-top:8px;white-space:pre}
+dialog{border:1px solid var(--line);border-radius:16px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog img{width:100%;border-radius:8px;border:1px solid var(--line);margin:10px 0}
+dialog p{font-size:14px;line-height:1.5;color:#cccccc}
+dialog b{color:#fff}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+/* ---- трекҳо, таби файлҳо ва пешнамоиш (ҳолати Web) ---- */
+:root{--attr:#9CDCFE;--selc:#D7BA7D;--gray:#808080}
+.at{color:var(--attr)}.pn{color:var(--gray)}.sel{color:var(--selc)}
+.trk{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
+.trk button{all:unset;cursor:pointer;font:700 11px var(--mono);padding:5px 9px;border-radius:6px;color:var(--muted);white-space:nowrap}
+.trk button:hover{color:var(--text)}
+.trk button.on{background:var(--panel2);color:var(--white);box-shadow:inset 0 -2px 0 var(--purple)}
+.main.web .ed .bar i.dots,.main.web .ic .lbl{display:none}
+.main.web .ed .bar{gap:6px;padding:0 8px}.main.web .ed .acts{gap:4px}
+.ftabs{display:none;gap:2px;margin-right:auto;align-self:stretch;align-items:flex-end}
+.main.web .ftabs{display:flex}.main.web #fname{display:none}
+.ftabs button{all:unset;cursor:pointer;font:700 12px var(--mono);padding:8px 12px;border-radius:6px 6px 0 0;color:var(--muted)}
+.ftabs button:hover{color:var(--text)}
+.ftabs button.on{color:var(--white);background:var(--bg);box-shadow:inset 0 -2px 0 var(--purple)}
+.ftabs button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+.pv{display:none;flex-direction:column;min-height:0;background:var(--bg);border-top:1px solid var(--line)}
+.main.web .pv{display:flex}
+.pv .bar{height:32px}
+.pv .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.pv .ic{height:24px;min-width:28px;padding:0 6px;font-size:13px}
+.pvbox{flex:1;min-height:260px;background:var(--panel2);display:flex;justify-content:center}
+.pvbox iframe{border:0;background:#fff;width:100%;height:100%;min-height:260px}
+.pvbox.mob iframe{width:375px;max-width:100%}
+.mnav{display:none}
+@media(min-width:1000px){
+  .main.web .work{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(140px,30vh);grid-template-areas:"ed pv" "ed con";overflow:hidden}
+  .main.web .ed{grid-area:ed;border-right:1px solid var(--line)}
+  .main.web .pv{grid-area:pv;border-top:0}
+  .main.web .con{grid-area:con;height:auto;min-height:0}
+  .main.web .out{min-height:0}
+}
+@media(max-width:999px){
+  .main.web .left,.main.web .work{display:none}
+  .main.web[data-pane=lesson] .left{display:flex}
+  .main.web[data-pane=code] .work,.main.web[data-pane=result] .work{display:flex}
+  .main.web[data-pane=code] .pv,.main.web[data-pane=code] .con{display:none}
+  .main.web[data-pane=result] .ed,.main.web[data-pane=result] .sym{display:none}
+  .main.web[data-pane=result] .pvbox{min-height:55vh}
+  .main.web .editor{height:clamp(280px,58vh,560px)}
+  .main.web .ed .bar{height:auto;min-height:42px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+  .main.web .ed .bar .ftabs{order:5;flex:1 1 100%}
+  body.webmode .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  body.webmode.freemode #mn-lesson{display:none}
+  .mnav button{all:unset;cursor:pointer;flex:1;text-align:center;padding:13px 4px;font:700 13px var(--sans);color:var(--muted);touch-action:manipulation}
+  .mnav button.on{color:var(--white);box-shadow:inset 0 2px 0 var(--purple)}
+  body.webmode .app{padding-bottom:52px}
+}
+</style>
+<style>/* Видео-режим IDE (1280×720 css → 1920×1080) + слайды «VS Code Dark + бунафш» (brand/STYLE.md). Бе субтитр ва бе хати пешрафт: онро худи YouTube мекунад. */
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#fff;
+  --kw:#569CD6;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--teal:#4EC9B0;--cyan:#4FC1FF;--err:#F48771;
+  --purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--box1:#E2B070;--box2:#C8975A}
+*{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+html,body{overflow:hidden;width:1280px;height:720px;background:#1E1E1E}
+#stagewrap{position:fixed;left:0;top:0;width:1280px;height:720px;overflow:hidden;background:#1e1e1e}
+.app{width:1280px;height:720px;min-height:0!important;transform-origin:0 0}
+.main{height:671px!important}
+.tab{font-size:14px!important}
+.codewrap pre,.codewrap textarea{font:500 22px/1.6 var(--mono)!important;padding:14px 18px!important}
+.gut{font:500 22px/1.6 var(--mono)!important;padding:14px 10px 14px 0!important;width:58px!important}
+.out{font:500 20px/1.55 var(--mono)!important;padding:12px 18px!important}
+.out .hint{font:500 17px/1.45 Inter,sans-serif!important}
+.con{height:100px!important;min-height:100px!important}
+.card p,.card li{font-size:15px!important}
+.checks div{font-size:15px!important}
+.win{font-size:15px!important}
+#side button[data-i][style*="1F3F44"]{background:#BD93F9!important;color:#1E1E1E!important;border-color:#BD93F9!important}
+textarea{caret-color:transparent!important}
+canvas#fx{z-index:60}
+
+/* оверлей поверх IDE */
+#ovl{position:fixed;inset:0;pointer-events:none;z-index:70}
+.mk{position:absolute;border:3px solid #BD93F9;border-radius:7px;box-shadow:0 0 0 4px rgba(189,147,249,.18),0 0 24px rgba(189,147,249,.35)}
+.mk.g{border-color:#4ec9b0;box-shadow:0 0 0 4px rgba(78,201,176,.18),0 0 24px rgba(78,201,176,.35)}
+.mk.r{border-color:#f48771;box-shadow:0 0 0 4px rgba(244,135,113,.18),0 0 24px rgba(244,135,113,.35)}
+.mk.c{border-color:#4fc1ff;box-shadow:0 0 0 4px rgba(79,193,255,.18),0 0 24px rgba(79,193,255,.35)}
+.rg{position:absolute;border:3px solid #BD93F9;border-radius:10px;box-shadow:0 0 0 5px rgba(189,147,249,.2),0 0 30px rgba(189,147,249,.4)}
+.rg.g{border-color:#4ec9b0;box-shadow:0 0 0 5px rgba(78,201,176,.2),0 0 30px rgba(78,201,176,.4)}
+.rg.r{border-color:#f48771;box-shadow:0 0 0 5px rgba(244,135,113,.2),0 0 30px rgba(244,135,113,.4)}
+.rg.c{border-color:#4fc1ff;box-shadow:0 0 0 5px rgba(79,193,255,.2),0 0 30px rgba(79,193,255,.4)}
+.mk b,.rg b{position:absolute;display:block;white-space:nowrap;font:800 19px Inter,sans-serif;color:#1e1e1e}
+.mk b{left:50%;bottom:calc(100% + 12px);margin-left:-300px;width:600px;text-align:center;transform-origin:50% 100%}
+.mk.below b{bottom:auto;top:calc(100% + 12px);transform-origin:50% 0}
+.rg b{right:0;bottom:calc(100% + 10px)}
+.rg.below b{bottom:auto;top:calc(100% + 10px)}
+.mk b>i,.rg b>i{font-style:normal;display:inline-block;padding:7px 14px;border-radius:999px;background:linear-gradient(90deg,#BD93F9,#FF79C6);box-shadow:0 6px 18px rgba(0,0,0,.55)}
+.mk.g b>i,.rg.g b>i{background:#4ec9b0}.mk.r b>i,.rg.r b>i{background:#f48771}.mk.c b>i,.rg.c b>i{background:#4fc1ff}
+.caret{position:absolute;width:3px;background:#fff;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6)}
+.chip{position:absolute;left:640px;top:360px;align-items:center;gap:14px;padding:22px 34px;border-radius:18px;background:rgba(37,37,38,.97);border:2px solid #3c3c3c;color:#fff;font:800 34px Inter,sans-serif;box-shadow:0 30px 80px rgba(0,0,0,.65);white-space:nowrap}
+.chip small{display:block;font:600 18px Inter,sans-serif;color:#8b949e;margin-top:6px}
+.chip.card{flex-direction:column;align-items:flex-start;gap:0;border-color:#BD93F9;box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 40px rgba(189,147,249,.25)}
+.chip.side{font-size:24px;padding:14px 22px;border-radius:14px}
+.chip.yel{background:linear-gradient(90deg,#BD93F9,#FF79C6);color:#1e1e1e;border-color:transparent}
+.chip.red{background:#f48771;color:#1e1e1e;border-color:#f48771}
+.chip.grn{background:#4ec9b0;color:#1e1e1e;border-color:#4ec9b0}
+.chip .big{font-size:90px;font-family:var(--mono);color:#BD93F9;line-height:1}
+#ptr{position:absolute;width:30px;height:30px;margin:-3px 0 0 -4px;z-index:5;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+#rip{position:absolute;width:70px;height:70px;border-radius:50%;border:4px solid #fff;z-index:4}
+
+/* ---------- слайды ---------- */
+.scene{position:fixed;left:0;top:0;width:1280px;height:720px;background:#1E1E1E;z-index:50;visibility:hidden;overflow:hidden;color:var(--text);font-family:Inter,sans-serif;transform-origin:50% 50%}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 22%,rgba(189,147,249,.16),transparent 42%),radial-gradient(circle at 12% 88%,rgba(255,121,198,.07),transparent 45%)}
+.scene>*{position:absolute}
+.kicker{left:60px;top:40px;font:800 14px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase}
+.kicker b{background:var(--panel2);color:var(--white);border:1px solid var(--line);border-radius:6px;padding:4px 9px;margin-right:10px}
+.h1{font-weight:900;font-size:96px;letter-spacing:-2px;line-height:1;color:var(--white)}
+.h2{font-weight:900;font-size:46px;letter-spacing:-.5px;line-height:1.05;color:var(--white)}
+.sub{font-weight:600;font-size:26px;color:var(--muted)}
+.acc{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:12px 22px;font:700 22px Inter,sans-serif;white-space:nowrap}
+.pill.accent{background:var(--accent);color:#1E1E1E;border:0}
+.pill.ok{background:rgba(78,201,176,.15);color:var(--teal);border-color:rgba(78,201,176,.4)}
+.pill.err{background:rgba(244,135,113,.15);color:var(--err);border-color:rgba(244,135,113,.4)}
+.codechip{font:700 26px var(--mono);font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 20px;white-space:nowrap}
+.codechip .k{color:var(--kw)}.codechip .s{color:var(--str)}.codechip .n{color:var(--num)}.codechip .f{color:var(--fn)}.codechip .c{color:var(--cm)}.codechip .t{color:var(--teal)}.codechip .e{color:var(--err)}
+.card3{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card3 .emo{font-size:44px}
+.card3 .t{font:800 26px Inter,sans-serif;color:var(--white)}
+.card3 .u{font:600 19px Inter,sans-serif;color:var(--muted);line-height:1.4}
+.card3.hl{border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 30px rgba(189,147,249,.25)}
+.typing::after{content:"|";color:var(--purple);margin-left:2px}
+.t-ok{color:var(--teal)}.t-err{color:var(--err)}
+/* қуттии картонии силсила */
+.box{width:260px;height:270px}
+.box .back{position:absolute;left:0;top:70px;width:260px;height:190px;border-radius:14px;background:#C8975A}
+.box .front{position:absolute;left:0;top:130px;width:260px;height:130px;border-radius:6px 6px 18px 18px;background:linear-gradient(#E2B070,#C8975A);z-index:3;display:flex;align-items:center;justify-content:center}
+.box .tag{background:#fff;border-radius:10px;padding:8px 22px;font:800 34px var(--mono);box-shadow:0 4px 10px rgba(0,0,0,.25);color:#1E1E1E}
+.box .num{position:absolute;left:65px;top:56px;width:130px;height:90px;border-radius:20px;background:var(--panel2);border:2px solid var(--purple);color:#fff;font:900 52px var(--mono);display:flex;align-items:center;justify-content:center;z-index:2}
+/* дарахти қарор */
+.node{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 24px;font:800 30px Inter,sans-serif;color:var(--white);text-align:center}
+.node small{display:block;font:600 18px Inter,sans-serif;color:var(--muted);margin-top:4px}
+.node.yes{border-color:rgba(78,201,176,.6);box-shadow:0 0 30px rgba(78,201,176,.15)}
+.node.no{border-color:rgba(244,135,113,.6);box-shadow:0 0 30px rgba(244,135,113,.15)}
+.node .big{font-size:64px;display:block;line-height:1.1}
+.row{display:flex;align-items:center;gap:22px;height:68px;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 22px}
+.row .op{font:800 34px var(--mono);color:var(--white);min-width:96px;text-align:center;background:var(--panel2);border-radius:10px;padding:6px 10px;font-variant-ligatures:none}
+.row .mean{font:700 24px Inter,sans-serif;color:var(--text);flex:1}
+.row .res{font:800 24px var(--mono);min-width:230px;text-align:right}
+.row.hit{padding:0;border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 26px rgba(189,147,249,.25)}
+body.noide canvas#fx{display:none}
+.rg.rt b{left:auto;right:0}.rg b{left:0;right:auto}
+
+.rg.in b{right:14px;left:auto;bottom:auto;top:10px}
+
+.codewrap pre,.codewrap textarea,.gut,.out,.out .l{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+
+/* рафи рӯйхат (array) */
+.shelf{display:flex;gap:18px}
+.slot{width:190px;text-align:center}
+.slot .idx{font:800 34px var(--mono);color:var(--purple);margin-bottom:10px;height:44px}
+.slot .cell{height:130px;border-radius:16px;background:linear-gradient(#E2B070,#C8975A);display:flex;align-items:center;justify-content:center;font:800 30px Inter,sans-serif;color:#1E1E1E;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.slot.hit .cell{box-shadow:0 0 0 4px #BD93F9,0 0 30px rgba(189,147,249,.5)}
+.tinybox{width:78px;height:60px;border-radius:10px;background:linear-gradient(#E2B070,#C8975A);display:flex;align-items:center;justify-content:center;font:800 17px var(--mono);color:#1E1E1E;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+
+
+.pvbox{justify-content:flex-start!important;overflow:hidden;min-height:0!important}
+.pvbox iframe{width:calc(100% / 1.2)!important;height:calc(100% / 1.2)!important;min-height:0!important;flex:none;transform:scale(1.2);transform-origin:0 0}
+</style></head>
+<body>
+<canvas id="fx"></canvas>
+<dialog id="dlg"><h2 style="font-size:20px;font-weight:800;color:#fff">🎓 Шаҳодатнома</h2><p id="dp"></p><img id="dimg" alt="Шаҳодатнома"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn run" id="dl" download="shahodatnoma.png" style="text-decoration:none">⬇ Зеркашӣ</a><button class="btn ghost" id="dclose">Пӯшидан</button></div></dialog>
+<div id="ovl"><svg id="ptr" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.6L21 11z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg><div id="rip"></div></div><section class="scene" id="s-hook">
+<div class="kicker" data-a="down;0.2"><b>ДАРСИ 11</b>БАРНОМАСОЗӢ АЗ СИФР</div>
+<div class="h1" style="left:60px;top:110px;font-size:100px" data-a="stamp;0.6">ҲАР САЙТ —</div>
+<div class="h1 acc" style="left:60px;top:230px;font-size:100px" data-a="stamp;1.4">СЕ ЗАБОН</div>
+<div style="left:68px;top:430px" data-a="left;5.4"><span class="pill"><span class="mono" style="color:var(--kw)">HTML</span> — сохтор</span></div>
+<div style="left:68px;top:498px" data-a="left;6.8"><span class="pill"><span class="mono" style="color:var(--teal)">CSS</span> — ранг ва намуд</span></div>
+<div style="left:68px;top:566px" data-a="left;8.2"><span class="pill"><span class="mono" style="color:var(--fn)">JavaScript</span> — ҳаракат</span></div>
+<div class="node" style="left:880px;top:140px;width:330px;text-align:left" data-a="pop;2.5"><span class="mono" style="font-size:44px;color:var(--purple)">Салом!</span><small>сохтор (HTML)</small></div>
+<div class="node" style="left:880px;top:290px;width:330px;border-color:var(--purple)" data-a="pop;6.0"><span style="font-size:34px;color:#fff;background:var(--accent);border-radius:12px;padding:6px 18px;color:#1E1E1E">Пахш кун</span><small>ранг (CSS)</small></div>
+<div class="node" style="left:880px;top:440px;width:330px" data-a="pop;8.6"><span class="mono" style="font-size:44px">⚡ click</span><small>ҳаракат (JS)</small></div>
+<div style="left:850px;top:640px" data-a="pop;21.3"><span class="pill accent">🎯 Дар охир: корти профил ва санҷиш</span></div>
+</section><section class="scene" id="s-house">
+<div class="kicker" data-a="down;24.7"><b>01</b>ОБРАЗИ ХОНА</div>
+<div class="node" style="left:70px;top:190px;width:360px" data-a="up;26.9" data-o="52.5" data-ok="fade"><span class="big">🧱</span>Деворҳо<small><span class="mono">HTML</span> — сохтор</small></div>
+<div class="node" style="left:460px;top:190px;width:360px" data-a="up;37.6" data-o="52.5" data-ok="fade"><span class="big">🎨</span>Ранг<small><span class="mono">CSS</span> — намуд</small></div>
+<div class="node yes" style="left:850px;top:190px;width:360px" data-a="up;45.6" data-o="52.5" data-ok="fade"><span class="big">💡</span>Барқ<small><span class="mono">JavaScript</span> — ҳаракат</small></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;52.8" data-o="72.10000000000001" data-ok="fade">Браузер ← сервер</div>
+<div class="node" style="left:60px;top:200px;width:300px" data-a="pop;53.099999999999994" data-o="72.10000000000001" data-ok="fade"><span class="big">☁️</span>сервер</div>
+<div class="node" style="left:900px;top:200px;width:300px" data-a="pop;53.4" data-o="72.10000000000001" data-ok="fade"><span class="big">🖥️</span>браузер</div>
+<div class="codechip" style="left:440px;top:190px" data-a="left;59.1" data-o="72.10000000000001" data-ok="fade">index.html <span style="color:var(--muted)">— сохтор</span></div>
+<div class="codechip" style="left:440px;top:262px" data-a="left;62.5" data-o="72.10000000000001" data-ok="fade">style.css <span style="color:var(--muted)">— намуд</span></div>
+<div class="codechip" style="left:440px;top:334px" data-a="left;65.9" data-o="72.10000000000001" data-ok="fade">script.js <span style="color:var(--muted)">— рафтор</span></div>
+<div style="left:300px;top:470px" data-a="stamp;68.3" data-o="72.10000000000001" data-ok="fade"><span class="pill accent" style="font-size:26px">браузер се файлро якҷоя мехонад</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;72.4" data-o="84.9" data-ok="fade">Се забон — ҳамеша дар як ҷо</div>
+<div style="left:60px;top:230px" data-a="left;75.6" data-o="84.9" data-ok="fade"><span class="pill err">Бе <span class="mono">HTML</span> саҳифа нест</span></div>
+<div style="left:60px;top:310px" data-a="left;77.9" data-o="84.9" data-ok="fade"><span class="pill">Бе <span class="mono">CSS</span> — сафед ва оддӣ</span></div>
+<div style="left:60px;top:390px" data-a="left;81.3" data-o="84.9" data-ok="fade"><span class="pill">Бе <span class="mono">JavaScript</span> — ҳаракат нест</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;85.2">Дар хона ҳам ҳамин тавр</div>
+<div class="node" style="left:70px;top:230px;width:360px" data-a="up;86.9"><span class="big">👷</span>сохтмончӣ<small>деворҳо</small></div>
+<div class="node" style="left:460px;top:230px;width:360px" data-a="up;88.9"><span class="big">🧑‍🎨</span>рассом<small>ранг</small></div>
+<div class="node" style="left:850px;top:230px;width:360px" data-a="up;90.9"><span class="big">🔌</span>барқчӣ<small>чароғ</small></div>
+<div style="left:300px;top:470px" data-a="pop;93.2"><span class="pill accent" style="font-size:26px">се касб — як хона</span></div>
+</section><section class="scene" id="s-box">
+<div class="kicker" data-a="down;388.90000000000003"><b>03</b>ҲАР ЭЛЕМЕНТ — ҚУТТӢ</div>
+<div class="h2" style="left:600px;top:60px;font-size:40px" data-a="up;389.40000000000003">📦 ҳамон қуттии картонӣ аз дарси 1</div>
+<div style="left:240px;top:140px;width:800px;height:500px;border:3px dashed var(--muted);border-radius:22px;background:rgba(139,148,158,.06)" data-a="pop;402.9"></div>
+<div style="left:300px;top:200px;width:680px;height:380px;border:6px solid var(--purple);border-radius:18px;background:var(--panel)" data-a="pop;400.5"></div>
+<div style="left:360px;top:260px;width:560px;height:260px;border:2px dashed #E2B070;border-radius:12px;background:rgba(226,176,112,.12)" data-a="pop;396.3"></div>
+<div class="node" style="left:470px;top:340px;width:340px" data-a="pop;395.6">матн<small>дохил (content)</small></div>
+<div style="left:20px;top:150px" data-a="pop;404.09999999999997"><span class="pill">margin<br><span style="font-size:16px;font-weight:600;color:var(--muted)">масофа аз дигарон</span></span></div>
+<div style="left:20px;top:290px" data-a="pop;401.7"><span class="pill" style="border-color:var(--purple)">border<br><span style="font-size:16px;font-weight:600;color:var(--muted)">худи девор</span></span></div>
+<div style="left:20px;top:430px" data-a="pop;397.5"><span class="pill" style="border-color:#E2B070">padding<br><span style="font-size:16px;font-weight:600;color:var(--muted)">фосила дар дохил</span></span></div>
+</section><section class="scene" id="s-dom">
+<div class="kicker" data-a="down;432.5"><b>04</b>DOM — ДАРАХТИ САҲИФА</div>
+<div class="h2" style="left:60px;top:90px;font-size:44px" data-a="up;432.9" data-o="441.0" data-ok="fade">Браузер саҳифаро чӣ тавр мебинад?</div>
+<div style="left:60px;top:190px" data-a="left;438.2" data-o="441.0" data-ok="fade"><span class="pill accent">HTML → дарахт</span></div>
+<div class="node" style="left:520px;top:110px;width:240px" data-a="pop;441.4"><span class="mono">html</span><small>реша</small></div>
+<div class="node" style="left:300px;top:260px;width:200px" data-a="pop;443.5"><span class="mono">head</span></div>
+<div class="node" style="left:780px;top:260px;width:200px" data-a="pop;444.6"><span class="mono">body</span></div>
+<svg style="left:0;top:0;width:1280px;height:720px" viewBox="0 0 1280 720" fill="none" stroke="#3C3C3C" stroke-width="3" stroke-linecap="round">
+ <path d="M600 215 L420 262" data-a="fade;443.5"/><path d="M680 215 L880 262" data-a="fade;444.6"/>
+ <path d="M850 345 L650 430" data-a="fade;446.4"/><path d="M880 345 L880 430" data-a="fade;447.0"/><path d="M910 345 L1110 430" data-a="fade;447.8"/></svg>
+<div class="node" style="left:540px;top:430px;width:200px" data-a="pop;446.4"><span class="mono">h1</span></div>
+<div class="node" style="left:780px;top:430px;width:200px" data-a="pop;447.0"><span class="mono">p</span></div>
+<div class="node" style="left:1010px;top:430px;width:200px" data-a="pop;447.8"><span class="mono">button</span></div>
+<div style="left:60px;top:150px" data-a="pop;452.4"><span class="pill accent" style="font-size:26px">DOM = дарахт</span></div>
+<div style="left:60px;top:560px" data-a="up;454.3"><span class="pill ok">⚡ JavaScript элементро меёбад ва иваз мекунад</span></div>
+<div style="left:60px;top:630px" data-a="up;462.4"><span class="pill"><span class="mono" style="color:var(--fn)">document</span> — ҳамаи саҳифа</span></div>
+</section><section class="scene" id="s-files">
+<div class="kicker" data-a="down;689.7"><b>05</b>СЕ ФАЙЛ</div>
+<div class="card3" style="left:60px;top:130px;width:370px;height:420px" data-a="up;695.2"><div class="t mono" style="font-size:24px">index.html</div><div class="u">сохтор</div>
+ <div class="codechip" style="font-size:16px;line-height:1.5;white-space:pre-wrap"><span class="k">&lt;head&gt;</span>
+  <span class="k">&lt;link</span> rel=<span class="s">"stylesheet"</span>
+        href=<span class="s">"style.css"</span><span class="k">&gt;</span>
+<span class="k">&lt;/head&gt;</span>
+<span class="k">&lt;body&gt;</span> … 
+  <span class="k">&lt;script</span> src=<span class="s">"script.js"</span><span class="k">&gt;&lt;/script&gt;</span>
+<span class="k">&lt;/body&gt;</span></div></div>
+<div class="card3" style="left:455px;top:130px;width:370px;height:420px" data-a="up;699.0"><div class="t mono" style="font-size:24px">style.css</div><div class="u">намуд</div>
+ <div class="codechip" style="font-size:16px;line-height:1.5;white-space:pre-wrap"><span class="f">h1</span> {
+  <span class="k">color</span>: <span class="s">#BD93F9</span>;
+}
+
+<span class="f">.card</span> {
+  <span class="k">padding</span>: <span class="n">20px</span>;
+}</div></div>
+<div class="card3" style="left:850px;top:130px;width:370px;height:420px" data-a="up;702.5"><div class="t mono" style="font-size:24px">script.js</div><div class="u">рафтор</div>
+ <div class="codechip" style="font-size:16px;line-height:1.5;white-space:pre-wrap"><span class="k">function</span> <span class="f">toggle</span>() {
+  document.body
+    .classList.toggle(<span class="s">"dark"</span>);
+}</div></div>
+<div style="left:60px;top:590px" data-a="stamp;728.0"><span class="pill accent" style="font-size:26px">ҳамон се файл: сервер → браузер</span></div>
+<div style="left:700px;top:590px" data-a="pop;733.8"><span class="pill">📨 дӯстатон ҳам онро мекушояд</span></div>
+</section><section class="scene" id="s-sum">
+<div class="kicker" data-a="down;900.0"><b>08</b>ХУЛОСА</div>
+<div class="h2" style="left:60px;top:90px;font-size:50px" data-a="up;901.3"><span class="mono" style="color:var(--kw)">HTML</span> · <span class="mono" style="color:var(--teal)">CSS</span> · <span class="mono" style="color:var(--fn)">JS</span></div>
+<div class="card3" style="left:60px;top:220px;width:360px;height:260px" data-a="up;901.6"><div class="emo">🧱</div><div class="t">HTML = девор</div><div class="u">сохтори саҳифа</div></div>
+<div class="card3" style="left:460px;top:220px;width:360px;height:260px" data-a="up;905.3"><div class="emo">🎨</div><div class="t">CSS = ранг</div><div class="u">намуд · ҳар элемент — қуттӣ</div></div>
+<div class="card3" style="left:860px;top:220px;width:360px;height:260px" data-a="up;910.5"><div class="emo">⚡</div><div class="t">JS = барқ</div><div class="u">ҳаракат</div></div>
+<div style="left:60px;top:520px" data-a="up;913.8"><span class="pill ok">се забон — як саҳифа 🏠</span></div>
+<div style="left:60px;top:590px" data-a="up;917.5"><span class="pill accent">📘 Шпаргалкаи бепул (PDF) — дар тавсифи видео</span></div>
+</section><section class="scene" id="s-next">
+<div class="kicker" data-a="down;921.7"><b>ДАРСИ 12</b>НАВБАТӢ</div>
+<div class="h1" style="left:60px;top:130px;font-size:150px" data-a="stamp;921.9">AI</div>
+<div class="mono acc" style="left:66px;top:310px;font-size:50px;font-weight:800" data-a="up;922.4">барои барномасоз</div>
+<div class="sub" style="left:68px;top:390px" data-a="up;925.3">бо ёрии AI код менависем ва онро месанҷем</div>
+<div class="codechip" style="left:68px;top:470px;font-size:26px" data-a="up;926.5"><span class="c">// савол</span> → <span class="s">"Тугмаи «Торик» бисоз"</span> → код</div>
+<div style="left:820px;top:170px" data-a="pop;930.1"><span class="pill accent" style="font-size:34px;padding:20px 40px">🔔 Обуна шавед</span></div>
+<div style="left:820px;top:270px" data-a="pop;930.6"><span class="pill" style="font-size:26px;padding:16px 30px">@shahriyor_yunusov</span></div>
+</section><div id="stagewrap"><div class="app">
+  <header class="top">
+    <span class="logo">&lt;/&gt; <b>JS</b></span>
+    <div class="trk" id="trk"></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="progress"><span class="pt" id="pt"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
+  </header>
+  <div class="main">
+    <aside class="left">
+      <div class="card" id="side"></div>
+      <div class="card" id="task" style="display:none"></div>
+    </aside>
+    <section class="work">
+      <div class="ed">
+        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span><div class="ftabs" id="ftabs"></div>
+          <div class="acts"><button class="ic run" id="run" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро">▶</button><button class="ic chk" id="check" title="Санҷиш" aria-label="Санҷиш" style="display:none">✓ <span class="lbl">Санҷиш</span></button><button class="ic" id="reset" title="Аз нав" aria-label="Аз нав">↺</button><button class="ic" id="copy" title="Нусха" aria-label="Нусха">📋</button><button class="ic" id="share" title="Пайванд" aria-label="Пайванд">🔗</button></div></div>
+        <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
+      </div>
+      <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
+      <div class="pv" id="pv"><div class="bar"><span>ПЕШНАМОИШ</span><div class="acts" style="margin-left:auto"><button class="ic" id="pvdev" title="Андозаи телефон" aria-label="Андозаи телефон">📱</button><button class="ic" id="pvopen" title="Дар tab-и нав" aria-label="Дар tab-и нав">↗</button><button class="ic" id="pvdl" title="Зеркашии index.html" aria-label="Зеркашӣ">⬇</button></div></div><div class="pvbox" id="pvbox"><iframe id="pvf" title="Пешнамоиш" sandbox="allow-scripts"></iframe></div></div>
+      <div class="con"><div class="bar"><span id="conlbl">НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
+    </section>
+  </div>
+</div>
+<nav class="mnav" id="mnav" aria-label="Қисмҳо"><button data-p="lesson" id="mn-lesson">📖 Дарс</button><button data-p="code">✏️ Код</button><button data-p="result">👁 Натиҷа</button></nav>
+
+</div>
+<script src="file:///home/user/yunusov.tj/public/ide/lessons/js.js"></script>
+<script src="file:///home/user/yunusov.tj/public/ide/lessons/web.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = "mini-ide-v1";
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(STORE + k); localStorage.setItem(STORE + k, v); } catch (e) { return null; } }
+
+  /* ---------- трекҳо, мисолҳо ва дарсҳо (дарсҳо дар lessons/*.js) ---------- */
+  var TRACKS = { js: { short: "JS", cert: true }, web: { short: "HTML · CSS", cert: false } };
+  var FILES = ["html", "css", "js"], FLABEL = { html: "HTML", css: "CSS", js: "JS" };
+  var DEF_JS = 'console.log("Салом, ҷаҳон!");\n';
+  var DEF_WEB = { html: "<h1>Салом, веб!</h1>\n<p>Ин саҳифаи аввалини ман аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" };
+  var EXAMPLES = {
+    js: window.IDE_EXAMPLES_JS || [["Мисолҳо ▾", ""]],
+    web: [
+      ["Мисолҳо ▾", null],
+      ["Сарлавҳа ва матн", { html: "<h1>Салом, веб!</h1>\n<p>Ин <b>абзац</b> аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" }],
+      ["Рӯйхат ва пайванд", { html: '<h2>Дӯстдоштаҳо</h2>\n<ul>\n  <li>Палав</li>\n  <li>Самбуса</li>\n  <li>Ошташ</li>\n</ul>\n<a href="#x">Пайванд</a>\n', css: "ul {\n  color: #2563eb;\n}\n", js: "" }],
+      ["Корт бо CSS", { html: '<div class="card">\n  <h2>Нигина</h2>\n  <p>Барномасоз</p>\n</div>\n', css: "body {\n  font-family: sans-serif;\n  background: #f3f4f6;\n}\n\n.card {\n  width: 220px;\n  margin: 24px auto;\n  padding: 16px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);\n}\n", js: "" }],
+      ["Тугма ва JS", { html: '<button id="btn">Пахш кунед</button>\n<p id="msg">0 маротиба</p>\n', css: "button {\n  padding: 10px 18px;\n  font-size: 16px;\n}\n", js: 'let count = 0;\nconst btn = document.getElementById("btn");\nconst msg = document.getElementById("msg");\n\nbtn.addEventListener("click", function () {\n  count = count + 1;\n  msg.textContent = count + " маротиба";\n});\n' }]
+    ]
+  };
+  function norm(L) {
+    L.track = L.track || "js";
+    (L.tasks || []).forEach(function (t) {
+      if (t.starter != null && !t.files) t.files = { js: t.starter };
+      t.solFiles = typeof t.solution === "string" ? { js: t.solution } : (t.solution || {});
+    });
+  }
+  var LESSONS = (function () {
+    var all = window.IDE_LESSONS || []; all.forEach(norm);
+    var of = function (tk) { return all.filter(function (L) { return L.track === tk; }); };
+    return [{ id: "free", track: "js", tab: "✏️ Озод", free: true }].concat(of("js"), [{ id: "webfree", track: "web", tab: "✏️ Озод", free: true }], of("web"));
+  })();
+
+  /* ---------- иҷрои код дар Worker ---------- */
+  var WSRC = "var __f=function(v){if(typeof v==='string')return v;if(v===undefined)return 'undefined';if(v===null)return 'null';if(typeof v==='object'){try{return JSON.stringify(v)}catch(e){return String(v)}}return String(v)};" +
+    "var __n=0;function __p(t,a){if(__n++<1000)postMessage({t:t,v:Array.prototype.map.call(a,__f).join(' ')})}" +
+    "console.log=function(){__p('log',arguments)};console.info=console.log;console.warn=function(){__p('warn',arguments)};console.error=function(){__p('err',arguments)};self.alert=console.log;" +
+    "self.onmessage=function(e){try{(new Function(e.data))()}catch(x){var m=(x&&x.stack||'').match(/<anonymous>:(\\d+):(\\d+)/);postMessage({t:'error',name:x&&x.name,msg:String(x&&x.message||x),line:m?Math.max(1,+m[1]-2):null})}postMessage({t:'done'})};";
+  var blobURL = null;
+  function runCode(code, live) {
+    return new Promise(function (resolve) {
+      var res = { out: [], err: null, timeout: false }, w, done = false;
+      try { blobURL = blobURL || URL.createObjectURL(new Blob([WSRC], { type: "text/javascript" })); w = new Worker(blobURL); }
+      catch (e) { res.err = { name: "Хато", msg: "Браузер иҷрои кодро намедиҳад" }; return resolve(res); }
+      function fin() { if (done) return; done = true; clearTimeout(tm); w.terminate(); resolve(res); }
+      var tm = setTimeout(function () { res.timeout = true; if (live) live({ t: "timeout" }); fin(); }, 2500);
+      w.onmessage = function (e) { var m = e.data; if (m.t === "done") return fin(); if (m.t === "error") res.err = m; else res.out.push(m.v); if (live) live(m); };
+      w.onerror = function (e) { res.err = { name: "Error", msg: e.message || "Хато", line: e.lineno ? Math.max(1, e.lineno - 2) : null }; if (live) live({ t: "error", name: "Error", msg: res.err.msg, line: res.err.line }); fin(); };
+      w.postMessage(code);
+    });
+  }
+  function setVar(code, name, val) { var re = new RegExp("\\b(let|const|var)\\s+" + name + "\\s*=\\s*[^;\\n]+"); return re.test(code) ? code.replace(re, "$1 " + name + " = " + val) : "let " + name + " = " + val + ";\n" + code; }
+  var R = { run: function (c) { return runCode(c); }, setVar: setVar };
+
+  function hintFor(name, msg) {
+    var m;
+    if (name === "ReferenceError" && (m = /(\w+) is not defined/.exec(msg))) return "Тағйирёбандаи «" + m[1] + "» муайян нашудааст. Оё <code>let " + m[1] + " = …</code> навишта будед? Имлоро низ санҷед (ҳарфи калон ва хурд фарқ мекунад).";
+    if (/already been declared/.test(msg)) return "Ин ном аллакай ҳаст. Дубора <code>let</code> нанависед: ба ҷои <code>let x = 5</code> фақат <code>x = 5</code> нависед.";
+    if (name === "SyntaxError") return "Хатои навиштан. Қавсҳо <code>( )</code> <code>{ }</code>, нуқтавергул <code>;</code> ва нохунакҳо <code>\"</code>-ро санҷед.";
+    if (name === "TypeError" && /constant/.test(msg)) return "Қимати <code>const</code>-ро иваз кардан мумкин нест. Ба ҷои он <code>let</code> нависед.";
+    return "";
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  /* ---------- редактор ---------- */
+  var ta = $("ta"), hl = $("hl"), gut = $("gut");
+  var KW = /^(let|const|var|function|true|false|null|undefined|new|typeof)$/, CT = /^(if|else|for|while|do|return|break|continue|switch|case)$/;
+  function sp(c, s) { return '<span class="' + c + '">' + s + "</span>"; }
+  function hlJs(src) {
+    var out = "", re = /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?|`(?:[^`\\]|\\.)*`?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += KW.test(m[4]) ? sp("kw", m[4]) : CT.test(m[4]) ? sp("ct", m[4]) : m[4] === "console" ? sp("tp", m[4]) : src.charAt(re.lastIndex) === "(" ? sp("fn", m[4]) : esc(m[4]);
+      else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function hlHtml(src) {
+    var out = "", re = /(<!--[\s\S]*?(?:-->|$))|(<\/?[A-Za-z!][^\s>\/]*)((?:"[^"]*"|'[^']*'|[^>"'])*)(>?)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) {
+        var t = /^(<\/?)(.*)$/.exec(m[2]);
+        out += sp("pn", esc(t[1])) + sp("kw", esc(t[2]));
+        out += m[3].replace(/("[^"]*"?|'[^']*'?)|([\w:-]+)|([\s\S])/g, function (_, s, n, o) { return s ? sp("st", esc(s)) : n ? sp("at", esc(n)) : sp("pn", esc(o)); });
+        if (m[4]) out += sp("pn", "&gt;");
+      } else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function hlCss(src) {
+    var out = "", tp = -1, tc = "", m;
+    var re = /(\/\*[\s\S]*?(?:\*\/|$))|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?)|(#[0-9A-Fa-f]{3,8}\b)|(-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|vh|vw|vmin|vmax|ms|s|deg|fr|ch|%)?)|(@?[A-Za-z_-][\w-]*)|([\s\S])/g;
+    function term(i) { if (i > tp) { var k = i; while (k < src.length && "{;}".indexOf(src.charAt(k)) < 0) k++; tp = k; tc = src.charAt(k); } return tc; }
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += sp("nu", m[4]);
+      else if (m[5]) out += m[5].charAt(0) === "@" ? sp("ct", m[5]) : term(re.lastIndex) === "{" ? sp("sel", m[5]) : /^\s*:/.test(src.substr(re.lastIndex, 12)) ? sp("at", m[5]) : sp("st", m[5]);
+      else out += esc(m[6]);
+    }
+    return out + "\n";
+  }
+  function highlight(src, lang) { return (lang === "html" ? hlHtml : lang === "css" ? hlCss : hlJs)(src); }
+  function paint() {
+    hl.innerHTML = highlight(ta.value, curFile);
+    var n = ta.value.split("\n").length, g = ""; for (var i = 1; i <= n; i++) g += i + "\n"; gut.textContent = g;
+    sync();
+  }
+  function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; }
+  function changed() { paint(); saveFile(); schedulePreview(); }
+  ta.addEventListener("scroll", sync);
+  ta.addEventListener("input", changed);
+  ta.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); doRun(); return; }
+    var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+    if (e.key === "Tab") { e.preventDefault(); ta.value = v.slice(0, s) + "  " + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 2; changed(); }
+    else if (e.key === "Enter") {
+      var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s), ind = /^\s*/.exec(line)[0];
+      if (/[{(\[]\s*$/.test(line)) ind += "  ";
+      e.preventDefault(); ta.value = v.slice(0, s) + "\n" + ind + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 1 + ind.length; changed();
+    }
+  });
+
+  /* ---------- ҳолат ---------- */
+  var cur = ls("tab") || "free", ti = 0, done = {}, files = {}, curFile = "js", pane = "lesson";
+  try { done = JSON.parse(ls("done") || "{}"); } catch (e) { done = {}; }
+  function lesson() { return LESSONS.filter(function (l) { return l.id === cur; })[0] || LESSONS[0]; }
+  function track() { return lesson().track; }
+  function isWeb() { return track() === "web"; }
+  function task() { var L = lesson(); return L.free ? null : L.tasks[ti]; }
+  function fileList() {
+    if (!isWeb()) return ["js"];
+    var t = task(); if (!t) return FILES;
+    return FILES.filter(function (f) { return t.files && f in t.files; });
+  }
+  function baseKey() { var L = lesson(); return L.free ? "code-" + L.id : "code-" + L.id + "-" + ti; }
+  /* JS-трек: калидҳои пештара (code-free, code-l1-0) нигоҳ дошта мешаванд */
+  function fkey(f) { return isWeb() ? baseKey() + "-" + f : baseKey(); }
+  function starter(f) { var t = task(); if (t) return t.files && t.files[f] != null ? t.files[f] : ""; return isWeb() ? DEF_WEB[f] : DEF_JS; }
+  function saveFile() { files[curFile] = ta.value; ls(fkey(curFile), ta.value); }
+  function solText(t) { return fileList().map(function (f) { return (isWeb() ? "/* " + FLABEL[f] + " */\n" : "") + (t.solFiles[f] || ""); }).join("\n"); }
+
+  function drawTrack() {
+    var box = $("trk"), tk = track(); box.innerHTML = "";
+    Object.keys(TRACKS).forEach(function (k) {
+      var b = document.createElement("button"); b.textContent = TRACKS[k].short; b.className = k === tk ? "on" : "";
+      b.onclick = function () {
+        if (k === tk) return;
+        var first = LESSONS.filter(function (l) { return l.track === k; })[0], id = ls("tab-" + k);
+        cur = LESSONS.some(function (l) { return l.id === id && l.track === k; }) ? id : first.id; ti = 0; ls("tab", cur); pane = lesson().free ? "code" : "lesson"; load();
+      };
+      box.appendChild(b);
+    });
+  }
+  function drawTabs() {
+    $("tabs").innerHTML = ""; var tk = track();
+    LESSONS.filter(function (L) { return L.track === tk; }).forEach(function (L) {
+      var b = document.createElement("button"); b.className = "tab" + (L.id === cur ? " on" : "") + (!L.free && L.tasks.every(function (_, i) { return done[L.id + "-" + i]; }) ? " ok" : ""); b.textContent = L.tab;
+      b.onclick = function () { cur = L.id; ti = 0; ls("tab", cur); pane = L.free ? "code" : "lesson"; load(); }; $("tabs").appendChild(b);
+    });
+  }
+  function drawSide() {
+    var L = lesson(), t = task(), s = $("side");
+    if (L.free) {
+      s.innerHTML = isWeb()
+        ? '<span class="tag">ОЗОД</span><h2>Саҳифаи худро созед</h2><p>Дар таби <b>HTML</b> сохтор, дар <b>CSS</b> намуд ва дар <b>JS</b> рафтори саҳифаро нависед. Натиҷа дар тарафи рост бо ҳар тағйир нав мешавад. Мисолҳо дар рӯйхати болои редактор ҳастанд.</p>'
+        : '<span class="tag">ОЗОД</span><h2>Ҳар чизро санҷед</h2><p>Дар ин ҷо ҳар кодро бе маҳдудият менависед. Мисолҳо дар рӯйхати поёни редактор ҳастанд. Барои вазифаҳо ба ҷадвалҳои «1», «2», «3» гузаред.</p>';
+      return;
+    }
+    var h = '<span class="tag">' + L.tag + '</span><h2>Назария</h2><p>' + L.theory + "</p>";
+    h += '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + L.tasks.map(function (_, i) { return '<button data-i="' + i + '" style="padding:6px 12px" class="btn ghost' + (i === ti ? " on" : "") + '">' + (done[L.id + "-" + i] ? "✓ " : "") + (i + 1) + "</button>"; }).join("") + "</div>";
+    s.innerHTML = h;
+    Array.prototype.forEach.call(s.querySelectorAll("button[data-i]"), function (b) { b.onclick = function () { ti = +b.dataset.i; pane = "code"; load(); }; });
+    var tk = $("task"); tk.style.display = "block";
+    tk.innerHTML = "<h2>" + t.title + "</h2><p>" + t.text + '</p><div class="checks" id="checks"></div><div id="winbox"></div><div class="sol"><button class="btn ghost" id="hintb" style="padding:6px 12px">💡 Кӯмак</button> <button class="btn ghost" id="solb" style="padding:6px 12px">🔓 Ҳал</button><div id="solbox"></div></div>';
+    $("hintb").onclick = function () { $("solbox").innerHTML = '<p style="margin-top:6px">💡 ' + esc(t.hint) + "</p>"; };
+    $("solb").onclick = function () { $("solbox").innerHTML = "<pre>" + esc(solText(t)) + "</pre>"; };
+  }
+  function drawFileTabs() {
+    var ft = $("ftabs"); ft.innerHTML = ""; if (!isWeb()) return;
+    fileList().forEach(function (f) {
+      var b = document.createElement("button"); b.textContent = FLABEL[f]; b.className = f === curFile ? "on" : "";
+      b.onclick = function () { saveFile(); curFile = f; ta.value = files[f]; ta.scrollTop = 0; paint(); drawFileTabs(); drawSyms(); };
+      ft.appendChild(b);
+    });
+  }
+  function setPane(p) {
+    pane = p; document.querySelector(".main").setAttribute("data-pane", p);
+    Array.prototype.forEach.call($("mnav").children, function (b) { b.className = b.getAttribute("data-p") === p ? "on" : ""; });
+  }
+  function load() {
+    var L = lesson(), t = task(), web = isWeb(), main = document.querySelector(".main");
+    ls("tab-" + L.track, cur);
+    if (web && L.free && pane === "lesson") pane = "code";
+    main.classList.toggle("free", !!L.free); main.classList.toggle("web", web);
+    document.body.classList.toggle("webmode", web); document.body.classList.toggle("freemode", !!L.free);
+    var fl = fileList(); files = {};
+    fl.forEach(function (f) { var s = ls(fkey(f)); files[f] = s != null ? s : starter(f); });
+    if (fl.indexOf(curFile) < 0) curFile = fl[0];
+    ta.value = files[curFile];
+    $("task").style.display = L.free ? "none" : "block";
+    $("check").style.display = !L.free && (!web || (t && t.checks)) ? "inline-flex" : "none";
+    $("ex").style.display = L.free ? "" : "none";
+    $("ex").innerHTML = EXAMPLES[L.track].map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
+    $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
+    $("out").innerHTML = web ? "" : '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
+    $("conlbl").textContent = web ? "КОНСОЛ" : "НАТИҶА";
+    drawTrack(); drawTabs(); drawSide(); drawFileTabs(); drawSyms(); paint(); drawProgress(); setHash(); setPane(pane);
+    if (web) renderPreview();
+  }
+
+  /* ---------- пешнамоиш (HTML + CSS + JS дар iframe-и ҷудогона) ---------- */
+  var pvTimer = 0, pvToken = 0, pvOnReady = null, pvCheckCb = null;
+  /* Скрипт дар дохили iframe: консол, хатоҳо ва санҷиши DOM-ро ба саҳифаи асосӣ мефиристад */
+  function probe(L0, K) {
+    var P = function (o) { o.ide = 1; o.k = K; try { parent.postMessage(o, "*"); } catch (e) {} };
+    var f = function (v) { if (typeof v === "string") return v; if (v === undefined) return "undefined"; if (v === null) return "null"; if (typeof v === "object") { try { return JSON.stringify(v); } catch (e) { return String(v); } } return String(v); };
+    var n = 0;
+    function p(t, a) { if (n++ < 500) P({ t: t, v: Array.prototype.map.call(a, f).join(" ") }); }
+    console.log = function () { p("log", arguments); }; console.info = console.log;
+    console.warn = function () { p("warn", arguments); }; console.error = function () { p("err", arguments); };
+    window.alert = console.log; window.__lg = 0;
+    window.onerror = function (msg, src, line, col, err) {
+      P({ t: "error", name: (err && err.name) || "Error", msg: (err && err.message) || String(msg), line: line >= L0 ? line - L0 + 1 : null }); return true;
+    };
+    window.addEventListener("unhandledrejection", function (e) { P({ t: "error", name: "Error", msg: String(e.reason && e.reason.message || e.reason), line: null }); });
+    document.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+      var h = a.getAttribute("href"); if (h.charAt(0) === "#") return;
+      e.preventDefault(); p("warn", ["(Пайванд дар пешнамоиш кушода намешавад: " + h + ")"]);
+    }, true);
+    document.addEventListener("submit", function (e) { e.preventDefault(); p("warn", ["(Фиристодани форма дар пешнамоиш кор намекунад)"]); }, true);
+    function ck(c) {
+      if (c.click) { var cb = document.querySelector(c.click); if (cb) cb.click(); }
+      var els = document.querySelectorAll(c.sel);
+      if (c.none) return els.length === 0;
+      if (c.count != null) { if (els.length !== c.count) return false; if (c.count === 0) return true; } else if (els.length < (c.min || 1)) return false;
+      var el = els[0], k, v, w;
+      if (c.text != null) { var tx = (el.textContent || "").trim(); if (c.text instanceof RegExp ? !c.text.test(tx) : tx !== c.text) return false; }
+      if (c.attr) for (k in c.attr) { v = el.getAttribute(k); w = c.attr[k]; if (v == null || (w instanceof RegExp ? !w.test(v) : v !== w)) return false; }
+      if (c.css) {
+        var cs = getComputedStyle(el);
+        for (k in c.css) { var tmp = document.createElement("div"); tmp.style.setProperty(k, c.css[k]); document.body.appendChild(tmp); w = getComputedStyle(tmp).getPropertyValue(k); document.body.removeChild(tmp); if (cs.getPropertyValue(k) !== w) return false; }
+      }
+      return true;
+    }
+    window.addEventListener("message", function (e) {
+      var m = e.data; if (!m || m.ide !== 1 || m.t !== "check" || m.k !== K) return;
+      P({ t: "checked", res: m.checks.map(function (c) { try { return ck(c); } catch (x) { return false; } }) });
+    });
+    window.addEventListener("DOMContentLoaded", function () { setTimeout(function () { P({ t: "ready" }); }, 30); });
+  }
+  /* Ҳимоя аз давраи беохир: ҳисобкунаки умумӣ дар ибтидои ҳар for/while */
+  function guardLoops(s) { return s.replace(/\b(for|while)\s*\(((?:[^()]|\([^()]*\))*)\)\s*\{/g, function (m) { return m + " if(++window.__lg>1e6){throw new Error('Давр хотима наёфт (♾️)')}"; }); }
+  function buildDoc(f, token) {
+    var js = guardLoops(f.js || "").replace(/<\/script/gi, "<\\/script"), css = (f.css || "").replace(/<\/style/gi, "<\\/style");
+    var csp = "default-src 'none'; style-src 'unsafe-inline' https:; script-src 'unsafe-inline'; img-src data: https:; media-src data: https:; font-src data: https:";
+    var a = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="' + csp + '">' +
+      "<script>(" + probe.toString() + ")(@@L0@@," + token + ")<\/script><style>" + css + "</style></head><body>" + (f.html || "") + "\n<script>\n";
+    return a.replace("@@L0@@", a.split("\n").length) + js + "\n<\/script></body></html>";
+  }
+  /* Саҳифаи тозаи тайёр (барои зеркашӣ ва кушодан дар tab-и нав) */
+  function cleanDoc(f) {
+    var h = f.html || "", css = f.css || "", js = f.js || "";
+    if (/<html[\s>]/i.test(h)) {
+      if (css) h = /<\/head>/i.test(h) ? h.replace(/<\/head>/i, function () { return "<style>\n" + css + "</style>\n</head>"; }) : "<style>\n" + css + "</style>\n" + h;
+      if (js) h = /<\/body>/i.test(h) ? h.replace(/<\/body>/i, function () { return "<script>\n" + js + "<\/script>\n</body>"; }) : h + "<script>\n" + js + "<\/script>";
+      return h;
+    }
+    return '<!doctype html>\n<html lang="tg">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Саҳифаи ман</title>\n' + (css ? "<style>\n" + css + "</style>\n" : "") + "</head>\n<body>\n" + h + (js ? "<script>\n" + js + "<\/script>\n" : "") + "</body>\n</html>\n";
+  }
+  function renderPreview(cb) {
+    clearTimeout(pvTimer); if (!isWeb()) return;
+    $("out").innerHTML = ""; pvOnReady = cb || null; pvToken++;
+    $("pvf").srcdoc = buildDoc(files, pvToken);
+  }
+  function schedulePreview() { if (!isWeb()) return; clearTimeout(pvTimer); pvTimer = setTimeout(function () { renderPreview(); }, 350); }
+  function runWebChecks(checks) {
+    return new Promise(function (resolve) {
+      var tm = setTimeout(function () { pvOnReady = pvCheckCb = null; resolve(null); }, 5000);
+      pvCheckCb = function (res) { clearTimeout(tm); resolve(res); };
+      renderPreview(function () { try { $("pvf").contentWindow.postMessage({ ide: 1, t: "check", k: pvToken, checks: checks }, "*"); } catch (x) {} });
+    });
+  }
+  addEventListener("message", function (e) {
+    var m = e.data;
+    if (!m || m.ide !== 1 || e.source !== $("pvf").contentWindow || m.k !== pvToken) return;
+    if (m.t === "ready") { var f = pvOnReady; pvOnReady = null; if (f) f(); }
+    else if (m.t === "checked") { var g = pvCheckCb; pvCheckCb = null; if (g) g(m.res); }
+    else show(m);
+  });
+  function saveBlob(blob, name) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $("pvdev").onclick = function () { var on = $("pvbox").classList.toggle("mob"); this.textContent = on ? "🖥" : "📱"; this.title = on ? "Дар паҳнои пурра" : "Андозаи телефон"; };
+  $("pvopen").onclick = function () {
+    /* саҳифа дар iframe-и sandbox мегузорем, то код ба маълумоти IDE дастрас набошад */
+    var w = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Натиҷа</title><style>html,body{margin:0;height:100%;background:#fff}iframe{border:0;width:100%;height:100%;display:block}</style><iframe sandbox="allow-scripts allow-modals" srcdoc="' + cleanDoc(files).replace(/&/g, "&amp;").replace(/"/g, "&quot;") + '"></iframe>';
+    window.open(URL.createObjectURL(new Blob([w], { type: "text/html" })), "_blank");
+  };
+  $("pvdl").onclick = function () { saveBlob(new Blob([cleanDoc(files)], { type: "text/html" }), "index.html"); };
+
+  /* ---------- иҷро ---------- */
+  function line(cls, html) { var d = document.createElement("span"); d.className = "l " + cls; d.innerHTML = html; $("out").appendChild(d); $("out").scrollTop = 1e9; }
+  function show(m) {
+    if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
+    else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg) || (/Давр хотима наёфт/.test(m.msg) ? "Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?" : ""); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
+    else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
+  }
+  function doRun() {
+    if (isWeb()) { renderPreview(); setPane("result"); return; }
+    $("out").innerHTML = ""; $("run").disabled = true; var any = false;
+    runCode(ta.value, function (m) { any = true; show(m); }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
+  }
+  $("run").onclick = doRun;
+  $("clr").onclick = function () { $("out").innerHTML = ""; };
+  $("reset").onclick = function () {
+    if (!confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) return;
+    Object.keys(files).forEach(function (f) { files[f] = starter(f); ls(fkey(f), files[f]); });
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
+  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋"; }, 1500); }); };
+  $("ex").onchange = function () {
+    var e = EXAMPLES[track()][+this.value], c = e && e[1]; this.value = 0; if (!c) return;
+    if (isWeb()) Object.keys(files).forEach(function (f) { files[f] = c[f] || ""; ls(fkey(f), files[f]); }); else { files.js = c; ls(fkey("js"), c); }
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
+  $("mnav").onclick = function (e) { var p = e.target.getAttribute && e.target.getAttribute("data-p"); if (p) setPane(p); };
+
+  $("check").onclick = function () {
+    var t = task(), L = lesson(); if (!t) return; $("check").disabled = true;
+    var p = isWeb()
+      ? runWebChecks(t.checks).then(function (res) { return res ? t.checks.map(function (c, i) { return [c.label, !!res[i]]; }) : [["Саҳифа бор нашуд — дубора кӯшиш кунед", false]]; })
+      : t.check(ta.value, R);
+    p.then(function (rs) {
+      var all = rs.every(function (r) { return r[1]; });
+      $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + esc(r[0]) + "</div>"; }).join("");
+      if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); drawProgress(); }
+      else $("winbox").innerHTML = "";
+      $("check").disabled = false;
+      if (isWeb()) { setPane("lesson"); $("task").scrollIntoView({ block: "nearest" }); }
+    });
+  };
+
+  /* ---------- конфетти ---------- */
+  var cv = $("fx"), cx = cv.getContext("2d"), parts = [], on = false;
+  function fit() { cv.width = innerWidth; cv.height = innerHeight; } addEventListener("resize", fit); fit();
+  function confetti() { return; var c = ["#BD93F9", "#FF79C6", "#4EC9B0", "#DCDCAA"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
+  function tick() { cx.clearRect(0, 0, cv.width, cv.height); parts = parts.filter(function (p) { return p.y < cv.height + 20; }); parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); }); if (parts.length) requestAnimationFrame(tick); else { on = false; cx.clearRect(0, 0, cv.width, cv.height); } }
+
+
+  /* ---------- пешравӣ ва шаҳодатнома ---------- */
+  function totals(tk) { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free && L.track === tk) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
+  function drawProgress() {
+    var tk = track(), t = totals(tk), pct = t[1] ? Math.round(100 * t[0] / t[1]) : 0;
+    $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = pct + "%";
+    $("cert").style.display = TRACKS[tk].cert ? "" : "none";
+    $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
+    $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома" : "🎓 Шаҳодатнома гиред!";
+  }
+  function makeCert(name) {
+    var cv2 = document.createElement("canvas"); cv2.width = 1600; cv2.height = 1130; var x = cv2.getContext("2d");
+    var g = function (x0, x1) { var k = x.createLinearGradient(x0, 0, x1, 0); k.addColorStop(0, "#BD93F9"); k.addColorStop(1, "#FF79C6"); return k; };
+    x.fillStyle = "#1E1E1E"; x.fillRect(0, 0, 1600, 1130);
+    var gl = x.createRadialGradient(1250, 280, 0, 1250, 280, 640); gl.addColorStop(0, "rgba(189,147,249,.18)"); gl.addColorStop(1, "rgba(189,147,249,0)"); x.fillStyle = gl; x.fillRect(0, 0, 1600, 1130);
+    x.strokeStyle = g(40, 1560); x.lineWidth = 8; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#3C3C3C"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
+    x.textAlign = "center"; var F = "Inter, 'DejaVu Sans', Arial, sans-serif";
+    x.fillStyle = "#BD93F9"; x.font = "800 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
+    x.fillStyle = "#FFFFFF"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
+    x.font = "600 38px " + F; x.fillStyle = "#8B949E"; x.fillText("Ин шаҳодатнома ба", 800, 450);
+    x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillStyle = g(800 - x.measureText(nm).width / 2, 800 + x.measureText(nm).width / 2); x.fillText(nm, 800, 580);
+    x.fillStyle = "#3C3C3C"; x.fillRect(420, 615, 760, 4);
+    x.fillStyle = "#D4D4D4"; x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
+    x.font = "800 36px " + F; x.fillStyle = "#4EC9B0"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
+    x.fillStyle = "#8B949E"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
+    x.fillStyle = "#FFFFFF"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
+    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = g(1330, 1470); x.fill(); x.fillStyle = "#1E1E1E"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
+    return cv2.toDataURL("image/png");
+  }
+  $("cert").onclick = function () {
+    var nm = ls("name") || ""; var v = prompt("Номи худро нависед (барои шаҳодатнома):", nm); if (v === null) return; v = v.trim(); ls("name", v);
+    var url = makeCert(v); $("dimg").src = url; $("dl").href = url;
+    $("dp").innerHTML = "Офарин! 🎉 Шаҳодатномаро зеркашӣ кунед ва ба <b>сторис</b> гузоред: <b>@shahriyor_yunusov</b>-ро қайд кунед!"; $("dlg").showModal(); confetti();
+  };
+  $("dclose").onclick = function () { $("dlg").close(); };
+
+  /* ---------- пайвандҳо ба дарс ва нусхаи код ---------- */
+  function setHash() {
+    var L = lesson(), h = L.free ? (L.track === "web" ? "#web" : "#free") : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
+    try { history.replaceState(null, "", h); } catch (e) {}
+  }
+  function b64u(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64u(b) { b = b.replace(/-/g, "+").replace(/_/g, "/"); while (b.length % 4) b += "="; return decodeURIComponent(escape(atob(b))); }
+  function parseHash() {
+    var h = location.hash || "", m;
+    if ((m = /^#code=(.+)$/.exec(h))) { try { cur = "free"; ls("code-free", unb64u(m[1])); return; } catch (e) {} }
+    if ((m = /^#web=(.+)$/.exec(h))) {
+      try { var o = JSON.parse(unb64u(m[1])); cur = "webfree"; pane = "code"; FILES.forEach(function (f) { if (typeof o[f] === "string") ls("code-webfree-" + f, o[f]); }); return; } catch (e) {}
+    }
+    if ((m = /^#dars-(\d+)(?:-(\d+))?$/.exec(h))) { var id = "l" + m[1]; if (LESSONS.some(function (L) { return L.id === id; })) { cur = id; ti = Math.max(0, (+m[2] || 1) - 1); var L = lesson(); if (ti >= L.tasks.length) ti = 0; ls("tab", cur); return; } }
+    if (h === "#free") cur = "free";
+    if (h === "#web") { cur = "webfree"; pane = "code"; }
+  }
+  $("share").onclick = function () {
+    var b = this, u = location.href.split("#")[0] + (isWeb() ? "#web=" + b64u(JSON.stringify({ html: files.html || "", css: files.css || "", js: files.js || "" })) : "#code=" + b64u(ta.value));
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗"; }, 1800); });
+  };
+
+  /* ---------- аломатҳои зуд (барои телефон) ---------- */
+  var SYMS = {
+    js: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]],
+    html: [["⇥", "  ", "tab"], ["<", "<"], [">", ">"], ["</", "</"], ["/>", "/>"], ["=", "="], ['"', '""'], ["#", "#"], [".", "."], ["-", "-"], ["!", "!"], ["&", "&"], [";", ";"]],
+    css: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], [":", ":"], [";", ";"], ["#", "#"], [".", "."], ["%", "%"], ["(", "()"], [")", ")"], [",", ","], ['"', '""'], ["-", "-"], ["/", "/"], ["*", "*"]]
+  };
+  function drawSyms() {
+    var box = $("sym"); box.innerHTML = "";
+    SYMS[curFile].forEach(function (sy) {
+      var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
+        ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
+        var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
+        ta.focus(); ta.selectionStart = ta.selectionEnd = pos; changed();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  window.__ide = { cur: function () { return curFile; }, setFile: function (f) { saveFile(); curFile = f; ta.value = files[f]; ta.scrollTop = 0; paint(); drawFileTabs(); drawSyms(); }, setFileCode: function (f, c) { files[f] = c; if (f === curFile) { ta.value = c; paint(); } }, renderPreview: renderPreview, lessons: LESSONS, setCode: function (c, f) { f = f || curFile; files[f] = c; if (f === curFile) { ta.value = c; paint(); } schedulePreview(); }, goto: function (id, i) { cur = id; ti = i || 0; pane = "code"; load(); } };
+  pane = "lesson"; parseHash(); if (lesson().free) pane = "code"; load();
+  addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
+})();
+</script>
+<script>window.TL={"end": 935.25, "scenes": [{"id": "s-hook", "t0": 0, "t1": 24.7}, {"id": "s-house", "t0": 24.7, "t1": 104.2}, {"id": "ide", "t0": 104.2, "t1": 388.8}, {"id": "s-box", "t0": 388.8, "t1": 407.6}, {"id": "ide", "t0": 407.6, "t1": 432.4}, {"id": "s-dom", "t0": 432.4, "t1": 466.5}, {"id": "ide", "t0": 466.5, "t1": 689.6}, {"id": "s-files", "t0": 689.6, "t1": 752.9}, {"id": "ide", "t0": 752.9, "t1": 899.8}, {"id": "s-sum", "t0": 899.8, "t1": 921.6}, {"id": "s-next", "t0": 921.6, "t1": 936.25}], "ide": [{"t": 104.2, "op": "set", "file": "html", "code": ""}, {"t": 104.2, "op": "set", "file": "css", "code": ""}, {"t": 104.2, "op": "set", "file": "js", "code": ""}, {"t": 104.2, "op": "clear"}, {"t": 104.5, "op": "file", "file": "html"}, {"t": 126.9, "op": "type", "file": "html", "dur": 0.8, "from": "", "to": "<h1>"}, {"t": 127.8, "op": "type", "file": "html", "dur": 1.2, "from": "<h1>", "to": "<h1>Салом!"}, {"t": 131.8, "op": "type", "file": "html", "dur": 1.8, "from": "<h1>Салом!", "to": "<h1>Салом!</h1>"}, {"t": 164.6, "op": "type", "file": "html", "dur": 2.6, "from": "<h1>Салом!</h1>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>"}, {"t": 168.7, "op": "type", "file": "html", "dur": 2.3, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>"}, {"t": 177.0, "op": "type", "file": "html", "dur": 7.0, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>"}, {"t": 187.0, "op": "type", "file": "html", "dur": 9.0, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>"}, {"t": 202.5, "op": "type", "file": "html", "dur": 7.5, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">"}, {"t": 239.2, "op": "type", "file": "html", "dur": 6.0, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">"}, {"t": 246.0, "op": "type", "file": "html", "dur": 2.0, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</body>\n</html>"}, {"t": 286.5, "op": "file", "file": "css"}, {"t": 294.8, "op": "type", "file": "css", "dur": 0.4, "from": "", "to": "h1 "}, {"t": 298.1, "op": "type", "file": "css", "dur": 0.8, "from": "h1 ", "to": "h1 {\n\n}"}, {"t": 300.0, "op": "type", "file": "css", "dur": 1.3, "from": "h1 {\n\n}", "to": "h1 {\n  color\n}"}, {"t": 303.8, "op": "type", "file": "css", "dur": 0.4, "from": "h1 {\n  color\n}", "to": "h1 {\n  color:\n}"}, {"t": 305.5, "op": "type", "file": "css", "dur": 1.0, "from": "h1 {\n  color:\n}", "to": "h1 {\n  color: purple\n}"}, {"t": 307.8, "op": "type", "file": "css", "dur": 0.3, "from": "h1 {\n  color: purple\n}", "to": "h1 {\n  color: purple;\n}"}, {"t": 322.0, "op": "type", "file": "css", "dur": 3.5, "from": "h1 {\n  color: purple;\n}", "to": "h1 {\n  color: purple;\n}\n\np {\n  font-size: 20px;\n}"}, {"t": 326.4, "op": "type", "file": "css", "dur": 9.0, "from": "h1 {\n  color: purple;\n}\n\np {\n  font-size: 20px;\n}", "to": "h1 {\n  color: purple;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}"}, {"t": 340.8, "op": "type", "file": "css", "dur": 0.7, "from": "h1 {\n  color: purple;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}", "to": "h1 {\n  color: red;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}"}, {"t": 343.8, "op": "type", "file": "css", "dur": 1.6, "from": "h1 {\n  color: red;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}"}, {"t": 346.5, "op": "type", "file": "css", "dur": 2.2, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}", "to": "h1 {\n  color: rgb(189, 147, 249);\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}"}, {"t": 351.0, "op": "type", "file": "css", "dur": 1.2, "from": "h1 {\n  color: rgb(189, 147, 249);\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}"}, {"t": 359.0, "op": "type", "file": "css", "dur": 4.5, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}"}, {"t": 378.0, "op": "file", "file": "html"}, {"t": 380.0, "op": "type", "file": "html", "dur": 2.4, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n\n</body>\n</html>"}, {"t": 383.0, "op": "type", "file": "html", "dur": 1.0, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>"}, {"t": 383.4, "op": "file", "file": "css"}, {"t": 384.6, "op": "type", "file": "css", "dur": 1.2, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n}"}, {"t": 408.5, "op": "type", "file": "css", "dur": 7.0, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n  padding: 20px;\n  margin: 20px;\n  border: 2px solid #BD93F9;\n  border-radius: 16px;\n}"}, {"t": 467.9, "op": "file", "file": "js"}, {"t": 471.9, "op": "type", "file": "js", "dur": 1.2, "from": "", "to": "function greet() {\n}"}, {"t": 474.2, "op": "type", "file": "js", "dur": 10.0, "from": "function greet() {\n}", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}"}, {"t": 486.8, "op": "file", "file": "html"}, {"t": 488.6, "op": "type", "file": "html", "dur": 2.6, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>"}, {"t": 503.8, "op": "type", "file": "html", "dur": 7.5, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<input id=\"name\" placeholder=\"Номи шумо\">\n<button onclick=\"hello()\">Салом</button>\n<p id=\"out\"></p>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>"}, {"t": 511.4, "op": "file", "file": "js"}, {"t": 511.5, "op": "type", "file": "js", "dur": 1.0, "from": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n}"}, {"t": 512.8, "op": "type", "file": "js", "dur": 7.5, "from": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n}", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n}"}, {"t": 525.0, "op": "type", "file": "js", "dur": 3.8, "from": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n}", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}"}, {"t": 538.3, "op": "file", "file": "html"}, {"t": 538.5, "op": "type", "file": "html", "dur": 1.6, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<input id=\"name\" placeholder=\"Номи шумо\">\n<button onclick=\"hello()\">Салом</button>\n<p id=\"out\"></p>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<input id=\"name\" placeholder=\"Номи шумо\">\n<button onclick=\"hello()\">Салом</button>\n<p id=\"out\"></p>\n<button onclick=\"toggle()\">Торик</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>"}, {"t": 540.2, "op": "file", "file": "css"}, {"t": 540.4, "op": "type", "file": "css", "dur": 5.4, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n  padding: 20px;\n  margin: 20px;\n  border: 2px solid #BD93F9;\n  border-radius: 16px;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n  padding: 20px;\n  margin: 20px;\n  border: 2px solid #BD93F9;\n  border-radius: 16px;\n}\n\nbody.dark {\n  background: #1E1E1E;\n  color: #fff;\n}"}, {"t": 546.1, "op": "file", "file": "js"}, {"t": 547.4, "op": "type", "file": "js", "dur": 6.6, "from": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}"}, {"t": 571.8, "op": "file", "file": "html"}, {"t": 572.0, "op": "type", "file": "html", "dur": 5.8, "from": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<input id=\"name\" placeholder=\"Номи шумо\">\n<button onclick=\"hello()\">Салом</button>\n<p id=\"out\"></p>\n<button onclick=\"toggle()\">Торик</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>", "to": "<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n<div class=\"card\">\n<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>\n<button onclick=\"greet()\">Пахш кун</button>\n<input id=\"name\" placeholder=\"Номи шумо\">\n<button onclick=\"hello()\">Салом</button>\n<p id=\"out\"></p>\n<button onclick=\"toggle()\">Торик</button>\n<h2 id=\"num\">0</h2>\n<button onclick=\"add()\">+1</button>\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n<a href=\"https://yunusovshahriyor.github.io/yunusov.tj/ide/\">Мини-IDE</a>\n<img src=\"photo.jpg\" alt=\"Сурат\">\n</div>\n</body>\n</html>"}, {"t": 578.3, "op": "file", "file": "js"}, {"t": 579.7, "op": "type", "file": "js", "dur": 2.6, "from": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}", "to": "let count = 0;\n\nfunction greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}"}, {"t": 583.9, "op": "type", "file": "js", "dur": 12.0, "from": "let count = 0;\n\nfunction greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}", "to": "let count = 0;\n\nfunction greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}\n\nfunction add() {\n  count = count + 1;\n  document.getElementById(\"num\").textContent = count;\n}"}, {"t": 622.4, "op": "type", "file": "js", "dur": 2.4, "from": "let count = 0;\n\nfunction greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}\n\nfunction add() {\n  count = count + 1;\n  document.getElementById(\"num\").textContent = count;\n}", "to": "let count = 0;\n\nfunction greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n\nfunction hello() {\n  let name = document.getElementById(\"name\").value;\n  document.getElementById(\"out\").textContent = \"Салом, \" + name + \"!\";\n}\n\nfunction toggle() {\n  document.body.classList.toggle(\"dark\");\n}\n\nfunction add() {\n  count = count + 1;\n  console.log(count);\n  document.getElementById(\"num\").textContent = count;\n}"}, {"t": 642.2, "op": "file", "file": "html"}, {"t": 662.6, "op": "file", "file": "css"}, {"t": 663.8, "op": "type", "file": "css", "dur": 4.5, "from": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n  padding: 20px;\n  margin: 20px;\n  border: 2px solid #BD93F9;\n  border-radius: 16px;\n}\n\nbody.dark {\n  background: #1E1E1E;\n  color: #fff;\n}", "to": "h1 {\n  color: #BD93F9;\n}\n\np {\n  font-size: 20px;\n}\n\nbutton {\n  background: #BD93F9;\n  color: #1E1E1E;\n  border-radius: 8px;\n  padding: 10px 20px;\n}\n\nbutton:hover {\n  background: #FF79C6;\n}\n\n.card {\n  background: #252526;\n  color: #fff;\n  padding: 20px;\n  margin: 20px;\n  border: 2px solid #BD93F9;\n  border-radius: 16px;\n}\n\nbody.dark {\n  background: #1E1E1E;\n  color: #fff;\n}"}, {"t": 674.3, "op": "file", "file": "js"}, {"t": 754.1, "op": "set", "file": "html", "code": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>"}, {"t": 754.1, "op": "set", "file": "css", "code": "h1 {\n  color: #BD93F9;\n}"}, {"t": 754.1, "op": "set", "file": "js", "code": ""}, {"t": 754.3, "op": "file", "file": "html"}, {"t": 755.6, "op": "type", "file": "html", "dur": 1.4, "from": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>", "to": "<h1>Салом!\n<p>Ман барномасоз мешавам.</p>"}, {"t": 764.2, "op": "type", "file": "html", "dur": 1.2, "from": "<h1>Салом!\n<p>Ман барномасоз мешавам.</p>", "to": "<h1>Салом!</h1>\n<p>Ман барномасоз мешавам.</p>"}, {"t": 766.4, "op": "file", "file": "css"}, {"t": 766.9, "op": "type", "file": "css", "dur": 1.6, "from": "h1 {\n  color: #BD93F9;\n}", "to": "h1 {\n  color #BD93F9;\n}"}, {"t": 776.2, "op": "type", "file": "css", "dur": 1.0, "from": "h1 {\n  color #BD93F9;\n}", "to": "h1 {\n  color: #BD93F9;\n}"}, {"t": 780.0, "op": "file", "file": "js"}, {"t": 780.7, "op": "type", "file": "js", "dur": 3.0, "from": "", "to": "document.querySelector(\"h2\").textContent = \"x\";"}, {"t": 834.1999999999999, "op": "click", "sel": "#tabs .tab:nth-child(3)"}, {"t": 834.25, "op": "set", "file": "html", "code": "<!-- сарлавҳа ва сархат -->\n"}, {"t": 834.25, "op": "set", "file": "css", "code": ""}, {"t": 834.25, "op": "set", "file": "js", "code": ""}, {"t": 834.4, "op": "file", "file": "html"}, {"t": 839.3, "op": "type", "file": "html", "dur": 5.2, "from": "<!-- сарлавҳа ва сархат -->\n", "to": "<h1>Нигина</h1>\n<p>Ман барномасоз мешавам.</p>\n"}, {"t": 845.9, "op": "click", "sel": "#side button[data-i=\"1\"]"}, {"t": 845.9200000000001, "op": "set", "file": "html", "code": "<h1>Нигина</h1>\n<p>Ман барномасоз мешавам.</p>\n<button>Пахш кун</button>\n"}, {"t": 845.9200000000001, "op": "set", "file": "css", "code": "/* h1 { ... } button { ... } */\n"}, {"t": 845.9200000000001, "op": "set", "file": "js", "code": ""}, {"t": 846.1, "op": "file", "file": "css"}, {"t": 846.8, "op": "type", "file": "css", "dur": 4.4, "from": "/* h1 { ... } button { ... } */\n", "to": "h1 {\n  color: red;\n}\n\nbutton {\n  background: #BD93F9;\n}\n"}, {"t": 851.8, "op": "click", "sel": "#side button[data-i=\"2\"]"}, {"t": 851.82, "op": "set", "file": "html", "code": "<h1>Нигина</h1>\n<button onclick=\"greet()\">Пахш кун</button>\n"}, {"t": 851.82, "op": "set", "file": "css", "code": ""}, {"t": 851.82, "op": "set", "file": "js", "code": "function greet() {\n  // матни h1-ро иваз кунед\n}\n"}, {"t": 852.0, "op": "file", "file": "js"}, {"t": 852.6, "op": "type", "file": "js", "dur": 3.8, "from": "function greet() {\n  // матни h1-ро иваз кунед\n}\n", "to": "function greet() {\n  document.querySelector(\"h1\").textContent = \"Салом, Нигина!\";\n}\n"}, {"t": 857.4, "op": "check", "sel": "#check"}], "marks": [{"t0": 127.10000000000001, "t1": 130.5, "line": 0, "c0": 0, "c1": 4, "text": "▶ кушодан", "color": "c", "pos": "above"}, {"t0": 130.7, "t1": 135.5, "line": 0, "c0": 10, "c1": 15, "text": "■ пӯшидан", "color": "g", "pos": "above"}, {"t0": 143.7, "t1": 148.9, "line": 0, "c0": 0, "c1": 15, "text": "📦 мисли қуттӣ: сарпӯш", "color": "y", "pos": "below"}, {"t0": 165.0, "t1": 168.4, "line": 1, "c0": 0, "c1": 3, "text": "сархат", "color": "c", "pos": "below"}, {"t0": 169.0, "t1": 173.0, "line": 2, "c0": 0, "c1": 8, "text": "тугма", "color": "c", "pos": "below"}, {"t0": 177.6, "t1": 182.0, "line": 3, "c0": 0, "c1": 4, "text": "рӯйхат", "color": "c", "pos": "below"}, {"t0": 179.5, "t1": 185.5, "line": 4, "c0": 2, "c1": 6, "text": "хат", "color": "g", "pos": "below"}, {"t0": 190.8, "t1": 193.5, "line": 8, "c0": 3, "c1": 7, "text": "суроға", "color": "y", "pos": "above"}, {"t0": 203.6, "t1": 208.5, "line": 9, "c0": 5, "c1": 8, "text": "суроғаи сурат", "color": "c", "pos": "below"}, {"t0": 206.0, "t1": 209.2, "line": 9, "c0": 21, "c1": 24, "text": "матни ивазкунанда", "color": "g", "pos": "below"}, {"t0": 241.5, "t1": 246.5, "line": 1, "c0": 0, "c1": 6, "text": "маълумоти саҳифа", "color": "c", "pos": "below"}, {"t0": 246.8, "t1": 251.8, "line": 4, "c0": 0, "c1": 6, "text": "он чизе, ки мебинем", "color": "g", "pos": "below"}, {"t0": 294.6, "t1": 298.0, "line": 0, "c0": 0, "c1": 2, "text": "интихобкунанда", "color": "c", "pos": "above"}, {"t0": 300.2, "t1": 303.7, "line": 1, "c0": 2, "c1": 7, "text": "хусусият", "color": "y", "pos": "below"}, {"t0": 305.6, "t1": 307.7, "line": 1, "c0": 9, "c1": 15, "text": "қимат", "color": "g", "pos": "below"}, {"t0": 322.4, "t1": 326.0, "line": 5, "c0": 2, "c1": 11, "text": "андозаи ҳарф", "color": "c", "pos": "below"}, {"t0": 327.5, "t1": 330.5, "line": 9, "c0": 2, "c1": 12, "text": "замина", "color": "y", "pos": "below"}, {"t0": 331.0, "t1": 333.0, "line": 11, "c0": 2, "c1": 15, "text": "гирдкунӣ", "color": "c", "pos": "below"}, {"t0": 333.6, "t1": 336.5, "line": 12, "c0": 2, "c1": 9, "text": "фосила дар дохил", "color": "g", "pos": "below"}, {"t0": 341.6, "t1": 343.5, "line": 1, "c0": 9, "c1": 12, "text": "ном", "color": "y", "pos": "above"}, {"t0": 345.5, "t1": 346.4, "line": 1, "c0": 9, "c1": 16, "text": "рамз", "color": "c", "pos": "above"}, {"t0": 348.8, "t1": 350.9, "line": 1, "c0": 9, "c1": 27, "text": "се рақам", "color": "g", "pos": "above"}, {"t0": 361.9, "t1": 365.0, "line": 15, "c0": 6, "c1": 12, "text": "мушро овардан", "color": "y", "pos": "below"}, {"t0": 380.3, "t1": 383.0, "line": 5, "c0": 5, "c1": 17, "text": "класс", "color": "c", "pos": "below"}, {"t0": 384.7, "t1": 388.5, "line": 19, "c0": 0, "c1": 5, "text": "нуқта = класс", "color": "c", "pos": "below"}, {"t0": 409.0, "t1": 411.0, "line": 20, "c0": 2, "c1": 15, "text": "padding", "color": "y", "pos": "below"}, {"t0": 474.9, "t1": 478.5, "line": 1, "c0": 2, "c1": 30, "text": "саҳифа, сарлавҳаро ёб", "color": "c", "pos": "below"}, {"t0": 481.3, "t1": 486.5, "line": 1, "c0": 31, "c1": 42, "text": "матнро иваз кун", "color": "g", "pos": "below"}, {"t0": 488.7, "t1": 494.5, "line": 8, "c0": 8, "c1": 25, "text": "пахш кунанд → greet", "color": "y", "pos": "below"}, {"t0": 504.0, "t1": 507.4, "line": 9, "c0": 0, "c1": 6, "text": "майдони ном", "color": "c", "pos": "below"}, {"t0": 518.0, "t1": 523.5, "line": 5, "c0": 45, "c1": 50, "text": "навиштаи корбар", "color": "y", "pos": "below"}, {"t0": 521.5, "t1": 524.0, "line": 5, "c0": 2, "c1": 10, "text": "📦 қуттӣ (дарси 1)", "color": "c", "pos": "above"}, {"t0": 529.0, "t1": 532.2, "line": 6, "c0": 47, "c1": 69, "text": "матн + матн (дарси 1)", "color": "g", "pos": "below"}, {"t0": 541.7, "t1": 545.5, "line": 26, "c0": 0, "c1": 9, "text": "класс «dark»", "color": "c", "pos": "below"}, {"t0": 548.9, "t1": 553.8, "line": 10, "c0": 16, "c1": 40, "text": "ҳолатро иваз кун", "color": "g", "pos": "below"}, {"t0": 580.2, "t1": 583.8, "line": 0, "c0": 0, "c1": 14, "text": "📦 ҳамон қуттӣ", "color": "c", "pos": "above"}, {"t0": 642.6, "t1": 645.3, "line": 5, "c0": 0, "c1": 18, "text": "корт", "color": "c", "pos": "below"}, {"t0": 645.6, "t1": 654.5, "line": 15, "c0": 0, "c1": 4, "text": "малакаҳо", "color": "g", "pos": "below"}, {"t0": 657.0, "t1": 660.8, "line": 9, "c0": 0, "c1": 6, "text": "input + «Салом»", "color": "y", "pos": "below"}, {"t0": 661.0, "t1": 662.6, "line": 12, "c0": 0, "c1": 27, "text": "«Торик»", "color": "c", "pos": "below"}, {"t0": 664.0, "t1": 668.5, "line": 20, "c0": 2, "c1": 22, "text": "корт торик", "color": "y", "pos": "below"}, {"t0": 675.6, "t1": 679.0, "line": 6, "c0": 0, "c1": 16, "text": "ду функсия", "color": "c", "pos": "below"}, {"t0": 676.5, "t1": 679.5, "line": 11, "c0": 0, "c1": 17, "text": "", "color": "g", "pos": "below"}, {"t0": 765.0, "t1": 766.0, "line": 0, "c0": 10, "c1": 15, "text": "мепӯшем", "color": "g", "pos": "above"}, {"t0": 768.5, "t1": 776.0, "line": 1, "c0": 2, "c1": 15, "text": "ду нуқта нест!", "color": "r", "pos": "below"}, {"t0": 783.0, "t1": 786.5, "line": 0, "c0": 23, "c1": 27, "text": "h2 дар саҳифа нест", "color": "r", "pos": "below"}], "rings": [{"t0": 109.9, "t1": 114.5, "sel": "#ftabs", "text": "се равзана", "color": "y", "pad": 6}, {"t0": 115.1, "t1": 118.0, "sel": "#pvf", "text": "натиҷа — фавран", "color": "c", "pad": 4}, {"t0": 135.7, "t1": 138.5, "sel": "#pvf", "text": "саҳифа фавран пайдо шуд!", "color": "g", "pad": 4}, {"t0": 308.9, "t1": 311.5, "sel": "#pvf", "text": "сарлавҳа бунафш шуд!", "color": "g", "pad": 4}, {"t0": 336.0, "t1": 338.0, "sel": "#pvf", "text": "тугма зебо шуд", "color": "g", "pad": 4}, {"t0": 366.4, "t1": 371.5, "sel": "#pvf", "text": "муш болои тугма — ранг иваз шуд", "color": "g", "pad": 4}, {"t0": 416.0, "t1": 421.5, "sel": "#pvf", "text": "корт пайдо шуд", "color": "g", "pad": 4}, {"t0": 495.3, "t1": 499.0, "sel": "#pvf", "text": "сарлавҳа иваз шуд!", "color": "g", "pad": 4}, {"t0": 535.3, "t1": 538.4, "sel": "#pvf", "text": "саҳифа ҷавоб медиҳад!", "color": "g", "pad": 4}, {"t0": 554.5, "t1": 556.7, "sel": "#pvf", "text": "саҳифа торик", "color": "g", "pad": 4}, {"t0": 557.0, "t1": 560.0, "sel": "#pvf", "text": "боз — равшан", "color": "c", "pad": 4}, {"t0": 598.5, "t1": 608.0, "sel": "#pvf", "text": "рақам ҳар бор калон мешавад", "color": "g", "pad": 4}, {"t0": 628.0, "t1": 634.5, "sel": "#out", "text": "console.log — дар сайт", "color": "c", "pad": 4}, {"t0": 668.5, "t1": 672.5, "sel": "#pvf", "text": "корт торик шуд", "color": "g", "pad": 4}, {"t0": 679.8, "t1": 688.5, "sel": "#pvf", "text": "корт кор мекунад!", "color": "g", "pad": 4}, {"t0": 758.5, "t1": 764.0, "sel": "#pvf", "text": "матн ба сарлавҳа даромад", "color": "r", "pad": 4}, {"t0": 770.5, "t1": 776.0, "sel": "#pvf", "text": "ранг кор намекунад", "color": "r", "pad": 4}, {"t0": 786.0, "t1": 793.5, "sel": "#out", "text": "null: элемент ёфт нашуд", "color": "r", "pad": 4}, {"t0": 836.9, "t1": 838.1999999999999, "sel": "#side", "text": "📘 назария", "color": "c", "pad": 4}, {"t0": 838.3, "t1": 845.5, "sel": "#task", "text": "Вазифаи 1", "color": "y", "pad": 4}, {"t0": 846.4, "t1": 851.4, "sel": "#task", "text": "Вазифаи 2", "color": "y", "pad": 4}, {"t0": 852.3, "t1": 856.8, "sel": "#task", "text": "Вазифаи 3", "color": "y", "pad": 4}, {"t0": 856.6, "t1": 857.8, "sel": "#check", "text": "✓ Санҷиш", "color": "c", "pad": 6}, {"t0": 858.5, "t1": 863.6, "sel": "#checks", "text": "", "color": "g", "pad": 4}], "ptr": [{"t": 104.5, "sel": "#ftabs button:nth-child(1)"}, {"t": 286.5, "sel": "#ftabs button:nth-child(2)"}, {"t": 378.0, "sel": "#ftabs button:nth-child(1)"}, {"t": 383.4, "sel": "#ftabs button:nth-child(2)"}, {"t": 467.9, "sel": "#ftabs button:nth-child(3)"}, {"t": 486.8, "sel": "#ftabs button:nth-child(1)"}, {"t": 511.4, "sel": "#ftabs button:nth-child(3)"}, {"t": 538.3, "sel": "#ftabs button:nth-child(1)"}, {"t": 540.2, "sel": "#ftabs button:nth-child(2)"}, {"t": 546.1, "sel": "#ftabs button:nth-child(3)"}, {"t": 571.8, "sel": "#ftabs button:nth-child(1)"}, {"t": 578.3, "sel": "#ftabs button:nth-child(3)"}, {"t": 642.2, "sel": "#ftabs button:nth-child(1)"}, {"t": 662.6, "sel": "#ftabs button:nth-child(2)"}, {"t": 674.3, "sel": "#ftabs button:nth-child(3)"}, {"t": 754.3, "sel": "#ftabs button:nth-child(1)"}, {"t": 766.4, "sel": "#ftabs button:nth-child(2)"}, {"t": 780.0, "sel": "#ftabs button:nth-child(3)"}, {"t": 834.1999999999999, "sel": "#tabs .tab:nth-child(3)"}, {"t": 834.4, "sel": "#ftabs button:nth-child(1)"}, {"t": 845.9, "sel": "#side button[data-i=\"1\"]"}, {"t": 846.1, "sel": "#ftabs button:nth-child(2)"}, {"t": 851.8, "sel": "#side button[data-i=\"2\"]"}, {"t": 852.0, "sel": "#ftabs button:nth-child(3)"}, {"t": 857.4, "sel": "#check"}], "chips": [{"t0": 104.3, "t1": 106.4, "html": "<span>💻</span><div>Майдони озмоиш<small>02 · HTML · CSS · JS + натиҷа</small></div>", "cls": "card", "style": ""}, {"t0": 106.3, "t1": 109.7, "html": "🔗 yunusovshahriyor.github.io/yunusov.tj/ide", "cls": "side yel", "style": "top:90px"}, {"t0": 149.4, "t1": 163.0, "html": "<div>h1 <span style=\"color:var(--muted)\">калонтарин</span> · h2 · h3 · h4 · h5 · h6 <span style=\"color:var(--muted)\">хурдтарин</span><small>h1 — як маротиба · h2 — барои қисмҳо</small></div>", "cls": "card", "style": "top:420px"}, {"t0": 209.3, "t1": 213.5, "html": "img: <b style=\"color:var(--teal)\">ҷуфт надорад</b> — пӯшидан лозим нест", "cls": "side yel", "style": "top:90px"}, {"t0": 213.8, "t1": 236.5, "html": "<div><span class=\"mono\">h</span> = heading · <span class=\"mono\">p</span> = paragraph · <span class=\"mono\">a</span> = anchor<small><span class=\"mono\">ul</span> = unordered list · <span class=\"mono\">li</span> = list item · <span class=\"mono\">button</span></small></div>", "cls": "card", "style": "top:430px"}, {"t0": 262.4, "t1": 284.0, "html": "<span>📄</span><div>index.html<small>Блокнот → «.html» → ду маротиба пахш → браузер</small></div>", "cls": "card", "style": ""}, {"t0": 284.9, "t1": 286.8, "html": "<span>🎨</span><div>CSS: ранг ва намуд<small>03 · интихобкунанда · хусусият · қимат</small></div>", "cls": "card", "style": ""}, {"t0": 354.0, "t1": 358.4, "html": "<div>20<span style=\"color:var(--muted)\">px</span> · 16<span style=\"color:var(--muted)\">px</span><small>андоза бо пиксел</small></div>", "cls": "side yel", "style": "top:90px"}, {"t0": 466.5, "t1": 468.4, "html": "<span>⚡</span><div>JavaScript: ҳаракат<small>04 · function + DOM</small></div>", "cls": "card", "style": ""}, {"t0": 608.2, "t1": 617.0, "html": "<div>тағйирёбанда <span style=\"color:var(--muted)\">(дарси 1)</span> + функсия <span style=\"color:var(--muted)\">(дарси 5)</span> + саҳифа</div>", "cls": "card", "style": "top:560px"}, {"t0": 626.9, "t1": 637.5, "html": "<span class=\"big\">F12</span><div>Консол<small>абзорҳои барномасоз</small></div>", "cls": "card", "style": "top:250px"}, {"t0": 638.1, "t1": 641.5, "html": "<span>🪪</span><div>Лоиҳа: корти профил<small>05 · ҳамааш якҷоя</small></div>", "cls": "card", "style": ""}, {"t0": 753.0, "t1": 755.3, "html": "<span>🐞</span><div>Се хатои маъмул<small>06 · ҳама хато мекунанд — ин муқаррарӣ аст</small></div>", "cls": "card", "style": ""}, {"t0": 754.7, "t1": 757.0, "html": "Хатои 1 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 766.0, "t1": 768.5, "html": "Хатои 2 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 779.8, "t1": 782.6, "html": "Хатои 3 / 3", "cls": "side red", "style": "top:70px;left:1090px"}, {"t0": 793.9, "t1": 809.0, "html": "<span class=\"big\">F12</span><div>Console — хатои сурхро бихонед<small>абзорҳои барномасоз дар браузер</small></div>", "cls": "card", "style": "top:260px"}, {"t0": 830.9, "t1": 833.2, "html": "<span>🎯</span><div>Вазифаҳо барои шумо<small>07 · ҷадвали «11 · HTML, CSS, JS»</small></div>", "cls": "card", "style": ""}, {"t0": 865.5, "t1": 881.85, "html": "<span class=\"big\">❓</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>сарлавҳа · ранги сабз · пахши тугма — видеоро пауза кунед ✍️</small></div>", "cls": "card", "style": ""}, {"t0": 882.17, "t1": 882.77, "html": "<span class=\"big\">5</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 883.17, "t1": 883.77, "html": "<span class=\"big\">4</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 884.17, "t1": 884.77, "html": "<span class=\"big\">3</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 885.17, "t1": 885.77, "html": "<span class=\"big\">2</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 886.17, "t1": 886.77, "html": "<span class=\"big\">1</span><div>Кадоме <b style=\"color:var(--kw)\">HTML</b>, <b style=\"color:var(--teal)\">CSS</b>, <b style=\"color:var(--fn)\">JS</b>?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 888.7, "t1": 899.5, "html": "<span style=\"font-size:44px\">🏷️</span><div>сарлавҳа → <b style=\"color:var(--kw)\">HTML</b></div>", "cls": "card", "style": "top:190px"}, {"t0": 891.8, "t1": 899.5, "html": "<span style=\"font-size:44px\">🎨</span><div>ранги сабз → <b style=\"color:var(--teal)\">CSS</b></div>", "cls": "card", "style": "top:360px"}, {"t0": 894.0, "t1": 899.5, "html": "<span style=\"font-size:44px\">⚡</span><div>пахши тугма → <b style=\"color:var(--fn)\">JavaScript</b></div>", "cls": "card", "style": "top:530px"}], "zooms": [], "caps": [], "chapters": [{"t": 0, "title": "Хук"}, {"t": 24.7, "title": "Образи хона ва браузер"}, {"t": 104.2, "title": "HTML: сохтор"}, {"t": 284.9, "title": "CSS: ранг, намуд ва «қуттӣ»"}, {"t": 432.4, "title": "JavaScript: ҳаракат"}, {"t": 638.1, "title": "Лоиҳа: корти профил"}, {"t": 752.9, "title": "Хатогиҳои маъмул ва F12"}, {"t": 830.9, "title": "Вазифаҳо ва санҷиш"}, {"t": 899.8, "title": "Хулоса"}], "cd": [882.15], "pv": [{"t": 366.0, "kind": "hover", "sel": "button", "value": null}, {"t": 371.5, "kind": "unhover", "sel": "button", "value": null}, {"t": 495.2, "kind": "click", "sel": "button", "value": null}, {"t": 532.4, "kind": "fill", "sel": "#name", "value": "Фарҳод"}, {"t": 534.1, "kind": "click", "sel": "button[onclick=\"hello()\"]", "value": null}, {"t": 554.4, "kind": "click", "sel": "button[onclick=\"toggle()\"]", "value": null}, {"t": 556.9, "kind": "click", "sel": "button[onclick=\"toggle()\"]", "value": null}, {"t": 598.3, "kind": "click", "sel": "button[onclick=\"add()\"]", "value": null}, {"t": 600.0, "kind": "click", "sel": "button[onclick=\"add()\"]", "value": null}, {"t": 600.8, "kind": "click", "sel": "button[onclick=\"add()\"]", "value": null}, {"t": 627.5, "kind": "click", "sel": "button[onclick=\"add()\"]", "value": null}, {"t": 682.0, "kind": "fill", "sel": "#name", "value": "Нигина"}, {"t": 683.2, "kind": "click", "sel": "button[onclick=\"hello()\"]", "value": null}]};</script><script>// Детерминированный движок кадра: window.frame(t) приводит страницу (IDE + слайды + оверлеи) к моменту t.
+(function () {
+  "use strict";
+  var TL = window.TL, $ = function (s) { return document.querySelector(s); };
+  var clamp = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+  var easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  var easeIO = function (p) { return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  var back = function (p) { var c = 1.7, c3 = c + 1; return 1 + c3 * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+
+  /* ---------- слайды ---------- */
+  var animEls = [].slice.call(document.querySelectorAll("[data-a]")).map(function (el) {
+    var a = el.dataset.a.split(";"); return { el: el, k: a[0], t: +a[1], o: el.dataset.o != null ? +el.dataset.o : null, ok: el.dataset.ok || "fade" };
+  });
+  function animate(t) {
+    animEls.forEach(function (A) {
+      var p = clamp((t - A.t) / (A.k === "stamp" ? .35 : A.k === "drop" ? .6 : .5)), op = clamp(p * 2.5), tr = "";
+      if (A.k === "up") tr = "translateY(" + (1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "down") tr = "translateY(" + -(1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "left") tr = "translateX(" + -(1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "right") tr = "translateX(" + (1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "pop") tr = "scale(" + (p ? back(p) : 0) + ")";
+      else if (A.k === "stamp") { tr = "scale(" + (2.2 - 1.2 * easeOut(p)) + ") rotate(" + (-4 * (1 - p)) + "deg)"; op = clamp(p * 3); }
+      else if (A.k === "drop") { var d = p < .7 ? -260 * (1 - easeOut(p / .7)) : 14 * Math.sin((p - .7) / .3 * Math.PI) * (1 - p) * 3; tr = "translateY(" + d + "px)"; op = clamp(p * 6); }
+      if (A.o != null && t >= A.o) {
+        var q = clamp((t - A.o) / .45);
+        if (A.ok === "flyout") tr += " translateY(" + -easeIO(q) * 300 + "px) rotate(" + q * 25 + "deg)";
+        if (A.ok === "shrink") tr += " scale(" + (1 - q) + ")";
+        op *= 1 - q;
+      }
+      A.el.style.opacity = op; A.el.style.transform = tr;
+    });
+    document.querySelectorAll("[data-cnt]").forEach(function (el) {
+      var c = el.dataset.cnt.split(";"), a = +c[0], b = +c[1], p = easeIO(clamp((t - +c[2]) / +c[3]));
+      el.textContent = Math.round(a + (b - a) * p).toLocaleString("ru-RU");
+    });
+    document.querySelectorAll("[data-tw]").forEach(function (el) {
+      var c = el.dataset.tw.split(";"), s = el.dataset.text, n = Math.floor(s.length * clamp((t - +c[0]) / +c[1]));
+      el.textContent = s.slice(0, n); el.classList.toggle("typing", n > 0 && n < s.length);
+    });
+  }
+  function scenes(t) {
+    TL.scenes.forEach(function (S) {
+      var el = document.getElementById(S.id); if (!el) return;
+      var op = Math.min(clamp((t - S.t0) / .35), 1 - clamp((t - S.t1) / .35));
+      el.style.opacity = op; el.style.visibility = op > 0 ? "visible" : "hidden";
+      el.style.transform = "scale(" + (1 + .025 * clamp((t - S.t0) / (S.t1 - S.t0))) + ")";
+    });
+  }
+  function inIde(t) { return TL.scenes.some(function (S) { return S.id === "ide" && t >= S.t0 && t < S.t1; }); }
+
+  /* ---------- редактор ---------- */
+  var ta = document.getElementById("ta"), hl = document.getElementById("hl");
+  var FILES = ["html", "css", "js"], cache = {}, dirty = false;
+  function stateAt(f, t) {
+    var op = null;
+    TL.ide.forEach(function (o) { if ((o.op === "set" || o.op === "type") && (o.file || "js") === f && o.t <= t) op = o; });
+    if (!op) return { code: null };
+    if (op.op === "set") return { code: op.code, caret: null };
+    var A = op.from, B = op.to, pre = 0; while (pre < A.length && pre < B.length && A[pre] === B[pre]) pre++;
+    var suf = 0; while (suf < A.length - pre && suf < B.length - pre && A[A.length - 1 - suf] === B[B.length - 1 - suf]) suf++;
+    var mA = A.slice(pre, A.length - suf), mB = B.slice(pre, B.length - suf);
+    var p = clamp((t - op.t) / op.dur), del = mA.length ? Math.min(.35, mA.length * .06 / op.dur) : 0, mid;
+    if (p < del) mid = mA.slice(0, Math.ceil(mA.length * (1 - p / del)));
+    else mid = mB.slice(0, Math.floor(mB.length * clamp((p - del) / (1 - del))));
+    return { code: A.slice(0, pre) + mid + A.slice(A.length - suf), caret: t < op.t + op.dur + 1.2 ? pre + mid.length : null, opT: op.t, opDur: op.dur };
+  }
+  function applyCode(t) {
+    var changed = false, cs = { code: null }, cur = window.__ide.cur();
+    FILES.forEach(function (f) {
+      var s = stateAt(f, t);
+      if (s.code != null && cache[f] !== s.code) { cache[f] = s.code; window.__ide.setFileCode(f, s.code); changed = true; }
+      if (f === cur) cs = s;
+    });
+    if (changed) dirty = true;
+    return { cs: cs, changed: changed };
+  }
+  function lastChange(t) {
+    var m = -1; TL.ide.forEach(function (o) { if ((o.op === "set" || o.op === "type") && o.t <= t) m = Math.max(m, o.op === "type" ? Math.min(t, o.t + o.dur) : o.t); });
+    return m;
+  }
+  // прямоугольник символов [c0, c1) строки line в подсвеченном коде
+  function charRect(line, c0, c1) {
+    var lines = ta.value.split("\n"), off = 0;
+    for (var i = 0; i < line; i++) { if (lines[i] === undefined) return null; off += lines[i].length + 1; }
+    var a = off + c0, b = off + c1, w = document.createTreeWalker(hl, NodeFilter.SHOW_TEXT), n, pos = 0, r = document.createRange(), sa = 0, sb = 0;
+    while ((n = w.nextNode())) {
+      var L = n.nodeValue.length;
+      if (!sa && a <= pos + L) { r.setStart(n, a - pos); sa = 1; }
+      if (!sb && b <= pos + L) { r.setEnd(n, b - pos); sb = 1; break; }
+      pos += L;
+    }
+    if (!sa || !sb) return null;
+    var rs = r.getClientRects(); if (!rs.length) return null;
+    var R = { left: 1e9, top: 1e9, right: -1e9, bottom: -1e9 };
+    [].forEach.call(rs, function (q) { R.left = Math.min(R.left, q.left); R.top = Math.min(R.top, q.top); R.right = Math.max(R.right, q.right); R.bottom = Math.max(R.bottom, q.bottom); });
+    return R;
+  }
+  function caretRect(idx) {
+    var v = ta.value.slice(0, idx).split("\n"), line = v.length - 1, col = v[line].length;
+    var lr = charRect(line, 0, Math.max(col, 0));
+    var lh = parseFloat(getComputedStyle(hl).lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth;
+    if (lr && col > 0) return { x: lr.right, y: lr.top, h: lr.bottom - lr.top };
+    return { x: hr.left + 14 * z, y: hr.top + (12 + line * lh) * z, h: lh * z };
+  }
+
+  /* ---------- оверлеи ---------- */
+  var ov = document.getElementById("ovl");
+  function pool(cls, n) { var a = []; for (var i = 0; i < n; i++) { var d = document.createElement("div"); d.className = cls; ov.appendChild(d); a.push(d); } return a; }
+  var markEls = pool("mk", 6), ringEls = pool("rg", 4), chipEls = pool("chip", 3);
+  var caret = pool("caret", 1)[0], ptr = document.getElementById("ptr"), rip = document.getElementById("rip");
+  function elRect(sel) { var e = document.querySelector(sel); return e ? e.getBoundingClientRect() : null; }
+  function overlays(t, cs, ide) {
+    var mi = 0;
+    if (ide) TL.marks.forEach(function (m) {
+      if (t < m.t0 || t > m.t1 + .3 || mi >= markEls.length) return;
+      var r = charRect(m.line, m.c0, m.c1); if (!r) return;
+      var el = markEls[mi++], p = clamp((t - m.t0) / .4), q = clamp((t - m.t1) / .3);
+      el.className = "mk " + (m.color || "y") + (m.pos === "below" ? " below" : "");
+      el.innerHTML = m.text ? '<b style="transform:scale(' + (p ? back(p) : 0) + ')"><i>' + m.text + "</i></b>" : "";
+      el.style.cssText = "display:block;left:" + (r.left - 6) + "px;top:" + (r.top - 4) + "px;width:" + (r.right - r.left + 12) + "px;height:" + (r.bottom - r.top + 8) + "px;opacity:" + clamp(p * 2) * (1 - q);
+    });
+    for (; mi < markEls.length; mi++) markEls[mi].style.display = "none";
+    var ri = 0;
+    if (ide) TL.rings.forEach(function (g) {
+      if (t < g.t0 || t > g.t1 + .3 || ri >= ringEls.length) return;
+      var r = elRect(g.sel); if (!r || !r.width) return;
+      var el = ringEls[ri++], p = clamp((t - g.t0) / .35), q = clamp((t - g.t1) / .3), pad = g.pad != null ? g.pad : 6;
+      el.className = "rg " + (g.color || "y");
+      el.innerHTML = g.text ? "<b><i>" + g.text + "</i></b>" : "";
+      if (g.text && r.top < 150) el.classList.add("below");
+      if (r.left > 640) el.classList.add("rt"); if (r.width > 800 || g.sel === "#task" || g.sel === "#checks") el.classList.add("in");
+      el.style.cssText = "display:block;left:" + (r.left - pad) + "px;top:" + (r.top - pad) + "px;width:" + (r.width + 2 * pad) + "px;height:" + (r.height + 2 * pad) + "px;opacity:" + p * (1 - q) + ";transform:scale(" + (1.15 - .15 * easeOut(p)) + ")";
+    });
+    for (; ri < ringEls.length; ri++) ringEls[ri].style.display = "none";
+    var ci = 0;
+    TL.chips.forEach(function (c) {
+      if (t < c.t0 || t > c.t1 + .3 || ci >= chipEls.length) return;
+      var el = chipEls[ci++], p = clamp((t - c.t0) / .45), q = clamp((t - c.t1) / .3);
+      el.className = "chip " + (c.cls || ""); el.innerHTML = c.html;
+      el.style.cssText = "display:flex;opacity:" + clamp(p * 2) * (1 - q) + ";transform:translate(-50%,-50%) scale(" + (p ? back(p) : 0) * (1 - .1 * q) + ")" + (c.style ? ";" + c.style : "");
+    });
+    for (; ci < chipEls.length; ci++) chipEls[ci].style.display = "none";
+    // каретка
+    if (ide && cs.caret != null) { var cr = caretRect(cs.caret); caret.style.cssText = "display:block;left:" + cr.x + "px;top:" + cr.y + "px;height:" + cr.h + "px;opacity:" + (Math.floor(t * 2.2) % 2 && cs.typingDone ? 0 : 1); }
+    else caret.style.display = "none";
+    // указатель
+    var P = TL.ptr, k = -1; for (var i = 0; i < P.length; i++) if (P[i].t - .7 <= t) k = i;
+    var pp = window.__pvPtr;
+    if (ide && pp && t >= pp.t && (k < 0 || pp.t > P[k].t)) {
+      ptr.style.cssText = "display:block;left:" + pp.x + "px;top:" + pp.y + "px";
+      var q = clamp((t - pp.t) / .5);
+      if (q < 1) rip.style.cssText = "display:block;left:" + pp.x + "px;top:" + pp.y + "px;opacity:" + (1 - q) + ";transform:translate(-50%,-50%) scale(" + (.3 + q * 1.4) + ")"; else rip.style.display = "none";
+      return;
+    }
+    if (!ide || k < 0 || !P[k].sel) { ptr.style.display = "none"; rip.style.display = "none"; return; }
+    function ctr(sel) { var r = elRect(sel); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : { x: 640, y: 360 }; }
+    var to = ctr(P[k].sel), pos = to;
+    if (t < P[k].t && k > 0 && P[k - 1].sel) { var fr = ctr(P[k - 1].sel), e = easeIO(clamp((t - (P[k].t - .7)) / .7)); pos = { x: fr.x + (to.x - fr.x) * e, y: fr.y + (to.y - fr.y) * e }; }
+    else if (t < P[k].t) { var e2 = easeOut(clamp((t - (P[k].t - .7)) / .7)); pos = { x: to.x + 120 * (1 - e2), y: to.y + 160 * (1 - e2) }; }
+    ptr.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px";
+    var cl = null; TL.ide.forEach(function (o) { if (o.sel && o.t <= t && t < o.t + .5) cl = o; });
+    if (cl) { var rp = clamp((t - cl.t) / .5); rip.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px;opacity:" + (1 - rp) + ";transform:translate(-50%,-50%) scale(" + (.3 + rp * 1.4) + ")"; }
+    else rip.style.display = "none";
+  }
+
+  /* ---------- камера (зум в IDE) ---------- */
+  var app = document.querySelector(".app");
+  function camera(t) {
+    var s = 1, x = 640, y = 360;
+    TL.zooms.forEach(function (z) {
+      if (t < z.t0 - .7 || t > z.t1 + .7) return;
+      var p = t < z.t0 ? easeIO(clamp((t - z.t0 + .7) / .7)) : t > z.t1 ? 1 - easeIO(clamp((t - z.t1) / .7)) : 1;
+      s = 1 + (z.s - 1) * p; x = 640 + (z.x - 640) * p; y = 360 + (z.y - 360) * p;
+    });
+    // фокус (x,y) переходит в центр кадра, края не выходят за экран
+    var tx = Math.min(0, Math.max(1280 - 1280 * s, 640 - x * s)), ty = Math.min(0, Math.max(720 - 720 * s, 360 - y * s));
+    app.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
+  }
+
+  /* ---------- реальные действия в IDE ---------- */
+  var done = 0, real = TL.ide.filter(function (o) { return o.op === "run" || o.op === "check" || o.op === "click" || o.op === "goto" || o.op === "clear" || o.op === "file"; });
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  window.frame = async function (t) {
+    while (done < real.length && real[done].t <= t) {
+      var o = real[done++]; applyCode(o.t);
+      if (o.op === "goto") window.__ide.goto(o.lesson, o.i || 0);
+      else if (o.op === "run") document.getElementById("run").click();
+      else if (o.op === "check") document.getElementById("check").click();
+      else if (o.op === "clear") document.getElementById("out").innerHTML = "";
+      else if (o.op === "click") document.querySelector(o.sel).click();
+      else if (o.op === "file") window.__ide.setFile(o.file);
+      await sleep(o.op === "goto" ? 120 : (o.wait || 260));
+    }
+    var ide = inIde(t), ac = applyCode(t), cs = ac.cs;
+    var needRender = dirty; dirty = false;
+    if (needRender) await new Promise(function (r) { var d = 0, f = function () { if (!d) { d = 1; r(); } }; window.__ide.renderPreview(f); setTimeout(f, 1500); });
+    var last = null; TL.ide.forEach(function (o) { if (o.op === "type" && o.t <= t && (o.file || "js") === window.__ide.cur()) last = o; });
+    cs.typingDone = !last || t > last.t + last.dur;
+    scenes(t); animate(t); camera(t); overlays(t, cs, ide);
+    document.body.classList.toggle("noide", !ide);
+    return { reloaded: needRender, tc: lastChange(t) };
+  };
+})();
+</script></body>
+</html>
