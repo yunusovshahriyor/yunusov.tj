@@ -17,7 +17,8 @@ def N(nt): return round(V(nt), 3)          # время повествовани
 def I(phrase, after=0): return find(phrase, after)
 PAUSE = 5.0
 # вырез: неверная фраза «Дар дарси гузашта дидем, ки браузер саҳифаро аз сервер мегирад.» (52.83–56.83); оставляем паузу 0.28 с (сдвиг = 3.80 с = 114 кадров)
-CUTS = [(52.79, 56.87, 0.28)]
+# 2-юм вырез: «ки дар дарси гузашта дидем:» (дар ҷумлаи «Ва ин ҳамон се файл аст, ки дар дарси гузашта дидем: сервер…»)
+CUTS = [(52.79, 56.87, 0.28), (729.31, 731.25, 0.15)]
 for c0, c1, p in CUTS: GAPS.append((c0, p - (c1 - c0)))
 GAP_Q = W[I('фикр кунед.', I('Ва санҷиши нав')) + 1]['t1'] + 0.05; GAPS.append((GAP_Q, PAUSE))
 END = round(V(NARR_END) + 0.8, 2)
@@ -65,7 +66,7 @@ def A(kind, t, o=None, ok='fade'):
 
 # ---------- границы сцен (время повествования) ----------
 T_HOUSE = N(24.7); T_IDE = N(104.2); T_BOX = N(388.8); T_BOXEND = N(407.6); T_DOM = N(432.4); T_IDE2 = N(466.5)
-T_FILES = N(689.6); T_ERR = N(752.9); T_SUM = N(894.8); T_NEXT = N(916.6)
+T_SV0 = N(262.2); T_SV1 = N(284.7); T_FILES = N(689.6); T_ERR = N(752.9); T_SUM = N(894.8); T_NEXT = N(916.6)
 
 # ---------- 0. Хук ----------
 slides.append(f'''<section class="scene" id="s-hook">
@@ -109,7 +110,7 @@ slides.append(f'''<section class="scene" id="s-house">
 S('s-house', T_HOUSE, T_IDE)
 
 # ---------- 2. IDE: HTML ----------
-S('ide', T_IDE, T_BOX)
+S('ide', T_IDE, T_SV0)
 setc(T_IDE, '', 'html'); setc(T_IDE, '', 'css'); setc(T_IDE, '', 'js'); clear(T_IDE)
 FS(T_IDE + .3, 'html')
 chip(T_IDE + .1, T_IDE + 2.2, '<span>💻</span><div>Майдони озмоиш<small>02 · HTML · CSS · JS + натиҷа</small></div>', 'card')
@@ -142,7 +143,36 @@ HD0 = '<html>\n<head>\n  <title>Саҳифаи ман</title>\n</head>\n<body>\n
 typ(N(239.2), HD0, 6.0, 'html')
 typ(N(246.0), doc(H_I), 2.0, 'html')
 MK(N(241.5), N(246.5), 'html', '<head>', 'маълумоти саҳифа', 'c', 'below'); MK(N(246.8), N(251.8), 'html', '<body>', 'он чизе, ки мебинем', 'g', 'below')
-chip(N(262.4), N(284.0), '<span>📄</span><div>index.html<small>Блокнот → «.html» → ду маротиба пахш → браузер</small></div>', 'card')
+# --- слайд «файлро дар компютер мемонем» (мисолҳо бо қадамҳо) ---
+_win = 'background:#F3F3F3;color:#1b1b1b;border-radius:10px;overflow:hidden;font:600 14px Inter,sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.4)'
+_tb = 'background:#E4E4E4;padding:6px 10px;font:600 13px Inter,sans-serif;color:#333'
+slides.append(f'''<section class="scene" id="s-save">
+<div class="kicker" {A('down', T_SV0 + .1)}><b>02</b>ФАЙЛРО ДАР КОМПЮТЕРИ ХУД МЕСОЗЕМ</div>
+<div class="card3" style="left:40px;top:120px;width:275px;height:330px" {A('up', N(266.6))}><div class="t" style="font-size:22px">1 · Дар Блокнот менависем</div>
+ <div style="{_win}"><div style="{_tb}">Бе ном — Блокнот</div><div style="padding:12px;height:96px;background:#fff"><span style="font:600 16px var(--mono);color:#111" data-tw="{N(267.4)};1.9" data-text="&lt;h1&gt;Салом!&lt;/h1&gt;"></span></div></div>
+ <div class="u" style="font-size:16px">ё дар ҳар муҳаррири матн</div></div>
+<div class="card3" style="left:335px;top:120px;width:275px;height:330px" {A('up', N(270.4))}><div class="t" style="font-size:22px">2 · Нигоҳ медорем</div>
+ <div style="{_win}"><div style="{_tb}">Нигоҳ доштан ҳамчун…</div><div style="padding:10px 12px;background:#fff;line-height:1.9">
+  <div style="font-size:12px;color:#666">Номи файл:</div><div style="border:2px solid #BD93F9;border-radius:6px;padding:2px 8px;font:700 15px var(--mono)"><span data-tw="{N(271.3)};1.9" data-text="index.html"></span></div>
+  <div style="font-size:12px;color:#666">Намуд:</div><div style="border:1px solid #bbb;border-radius:6px;padding:2px 8px;font-size:13px">Ҳамаи файлҳо (*.*)</div></div></div>
+ <div class="u" style="font-size:16px">охираш <b style="color:var(--teal)">.html</b>, на .txt</div></div>
+<div class="card3" style="left:630px;top:120px;width:275px;height:330px" {A('up', N(273.4))}><div class="t" style="font-size:22px">3 · Файл дар папка</div>
+ <div style="text-align:center;margin-top:14px"><div style="font-size:84px;line-height:1">📄</div><div style="font:700 20px var(--mono);color:#fff;margin-top:8px">index.html</div></div>
+ <div class="u" style="font-size:16px;text-align:center">дар Мизи корӣ ё ҳар папка</div></div>
+<div class="card3 hl" style="left:925px;top:120px;width:315px;height:330px" {A('up', N(274.6))}><div class="t" style="font-size:22px">4 · Ду маротиба пахш</div>
+ <div style="{_win}"><div style="{_tb}">🌐 index.html</div><div style="padding:14px 16px;height:104px;background:#fff"><div style="font:700 30px Georgia,serif;color:#111">Салом!</div></div></div>
+ <div class="u" style="font-size:16px">браузер файлро мекушояд</div></div>
+<div class="mono" style="left:318px;top:260px;font-size:34px;color:var(--purple)" {A('pop', N(270.6))}>→</div>
+<div class="mono" style="left:613px;top:260px;font-size:34px;color:var(--purple)" {A('pop', N(273.5))}>→</div>
+<div class="mono" style="left:908px;top:260px;font-size:34px;color:var(--purple)" {A('pop', N(274.7))}>→</div>
+<div style="left:40px;top:490px" {A('pop', N(272.2))}><span class="pill ok mono">✓ index.html</span></div>
+<div style="left:290px;top:490px" {A('pop', N(272.9))}><span class="pill ok mono">✓ sayt.html</span></div>
+<div style="left:540px;top:490px" {A('pop', N(275.8))}><span class="pill err mono">✗ index.txt</span></div>
+<div style="left:790px;top:490px" {A('pop', N(277.0))}><span class="pill err mono">✗ index.html.txt</span></div>
+<div style="left:40px;top:590px" {A('stamp', N(280.2))}><span class="pill accent" style="font-size:26px">фақат Блокнот + браузер — интернет лозим нест</span></div>
+</section>''')
+S('s-save', T_SV0, T_SV1)
+S('ide', T_SV1, T_BOX)
 
 # ---------- 3. CSS ----------
 FS(N(286.5), 'css'); chip(N(284.9), N(286.8), '<span>🎨</span><div>CSS: ранг ва намуд<small>03 · интихобкунанда · хусусият · қимат</small></div>', 'card')

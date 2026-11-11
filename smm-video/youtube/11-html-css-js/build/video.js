@@ -62,7 +62,7 @@
     var p = clamp((t - op.t) / op.dur), del = mA.length ? Math.min(.35, mA.length * .06 / op.dur) : 0, mid;
     if (p < del) mid = mA.slice(0, Math.ceil(mA.length * (1 - p / del)));
     else mid = mB.slice(0, Math.floor(mB.length * clamp((p - del) / (1 - del))));
-    return { code: A.slice(0, pre) + mid + A.slice(A.length - suf), caret: t < op.t + op.dur + 1.2 ? pre + mid.length : null, opT: op.t, opDur: op.dur };
+    return { end: pre + mB.length, code: A.slice(0, pre) + mid + A.slice(A.length - suf), caret: t < op.t + op.dur + 1.2 ? pre + mid.length : null, opT: op.t, opDur: op.dur };
   }
   function applyCode(t) {
     var changed = false, cs = { code: null }, cur = window.__ide.cur();
@@ -95,12 +95,35 @@
     [].forEach.call(rs, function (q) { R.left = Math.min(R.left, q.left); R.top = Math.min(R.top, q.top); R.right = Math.max(R.right, q.right); R.bottom = Math.max(R.bottom, q.bottom); });
     return R;
   }
+  var gut = document.getElementById("gut"), codewrap = ta.parentNode, G = { key: null, acc: [] };
+  ta.setAttribute("wrap", "soft");
+  // каретка с учётом переноса строк и прокрутки
   function caretRect(idx) {
-    var v = ta.value.slice(0, idx).split("\n"), line = v.length - 1, col = v[line].length;
-    var lr = charRect(line, 0, Math.max(col, 0));
-    var lh = parseFloat(getComputedStyle(hl).lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth;
-    if (lr && col > 0) return { x: lr.right, y: lr.top, h: lr.bottom - lr.top };
-    return { x: hr.left + 14 * z, y: hr.top + (12 + line * lh) * z, h: lh * z };
+    var all = ta.value.split("\n"), v = ta.value.slice(0, idx).split("\n"), line = v.length - 1, col = v[line].length, r = null;
+    if (col > 0) { r = charRect(line, col - 1, col); if (r) return { x: r.right, y: r.top, h: r.bottom - r.top }; }
+    else if (all[line] && all[line].length) { r = charRect(line, 0, 1); if (r) return { x: r.left, y: r.top, h: r.bottom - r.top }; }
+    var cs = getComputedStyle(hl), lh = parseFloat(cs.lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth;
+    var rb = G.acc[line] != null ? G.acc[line] : line * lh;
+    return { x: hr.left + parseFloat(cs.paddingLeft) * z, y: hr.top + (parseFloat(cs.paddingTop) + rb - hl.scrollTop) * z, h: lh * z };
+  }
+  // номери сатрҳо бо назардошти «ба сатри нав гузаштан» + прокрутка то каретка
+  function layoutEditor(cs) {
+    hl.scrollTop = 0; ta.scrollTop = 0; gut.scrollTop = 0;
+    var lines = ta.value.split("\n"), lh = parseFloat(getComputedStyle(hl).lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth || 1;
+    var key = ta.value + "|" + Math.round(hr.width / z);
+    if (G.key !== key || !gut.firstElementChild) {
+      var acc = [], a = 0, html = "";
+      for (var i = 0; i < lines.length; i++) {
+        var h = lh, r = lines[i].length ? charRect(i, 0, lines[i].length) : null;
+        if (r) h = Math.max(lh, Math.round((r.bottom - r.top) / z / lh) * lh);
+        acc.push(a); a += h; html += '<div style="height:' + h + 'px">' + (i + 1) + "</div>";
+      }
+      gut.innerHTML = html; G.key = key; G.acc = acc;
+    }
+    var idx = cs.caret != null ? cs.caret : (cs.end != null ? cs.end : 0);
+    var cr = caretRect(idx), pt = (cr.y - hr.top) / z, ch = cr.h / z, H = codewrap.clientHeight;
+    var target = Math.max(0, pt + ch + 44 - H);
+    hl.scrollTop = target; ta.scrollTop = target; gut.scrollTop = target;
   }
 
   /* ---------- оверлеи ---------- */
@@ -114,6 +137,7 @@
     if (ide) TL.marks.forEach(function (m) {
       if (t < m.t0 || t > m.t1 + .3 || mi >= markEls.length) return;
       var r = charRect(m.line, m.c0, m.c1); if (!r) return;
+      var cw = codewrap.getBoundingClientRect(); if (r.bottom > cw.bottom + 2 || r.top < cw.top - 2) return;
       var el = markEls[mi++], p = clamp((t - m.t0) / .4), q = clamp((t - m.t1) / .3);
       el.className = "mk " + (m.color || "y") + (m.pos === "below" ? " below" : "");
       el.innerHTML = m.text ? '<b style="transform:scale(' + (p ? back(p) : 0) + ')"><i>' + m.text + "</i></b>" : "";
@@ -149,7 +173,7 @@
     if (ide && pp && t >= pp.t && (k < 0 || pp.t > P[k].t)) {
       ptr.style.cssText = "display:block;left:" + pp.x + "px;top:" + pp.y + "px";
       var q = clamp((t - pp.t) / .5);
-      if (q < 1) rip.style.cssText = "display:block;left:" + pp.x + "px;top:" + pp.y + "px;opacity:" + (1 - q) + ";transform:translate(-50%,-50%) scale(" + (.3 + q * 1.4) + ")"; else rip.style.display = "none";
+      if (q < 1 && !pp.hover) rip.style.cssText = "display:block;left:" + pp.x + "px;top:" + pp.y + "px;opacity:" + (1 - q) + ";transform:translate(-50%,-50%) scale(" + (.3 + q * 1.4) + ")"; else rip.style.display = "none";
       return;
     }
     if (!ide || k < 0 || !P[k].sel) { ptr.style.display = "none"; rip.style.display = "none"; return; }
@@ -196,6 +220,7 @@
     if (needRender) await new Promise(function (r) { var d = 0, f = function () { if (!d) { d = 1; r(); } }; window.__ide.renderPreview(f); setTimeout(f, 1500); });
     var last = null; TL.ide.forEach(function (o) { if (o.op === "type" && o.t <= t && (o.file || "js") === window.__ide.cur()) last = o; });
     cs.typingDone = !last || t > last.t + last.dur;
+    if (ide) layoutEditor(cs);
     scenes(t); animate(t); camera(t); overlays(t, cs, ide);
     document.body.classList.toggle("noide", !ide);
     return { reloaded: needRender, tc: lastChange(t) };

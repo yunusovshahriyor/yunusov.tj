@@ -108,3 +108,8 @@ body.noide canvas#fx{display:none}
 
 .pvbox{justify-content:flex-start!important;overflow:hidden;min-height:0!important}
 .pvbox iframe{width:calc(100% / 1.2)!important;height:calc(100% / 1.2)!important;min-height:0!important;flex:none;transform:scale(1.2);transform-origin:0 0}
+
+/* код переходит на новую строку, а не уходит под предпросмотр */
+.codewrap pre,.codewrap textarea{white-space:pre-wrap!important;overflow-wrap:anywhere!important;overflow:hidden!important}
+.gut{overflow:hidden!important}
+.gut div{box-sizing:border-box}
