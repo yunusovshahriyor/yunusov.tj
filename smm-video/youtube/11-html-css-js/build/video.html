@@ -159,8 +159,8 @@ html,body{overflow:hidden;width:1280px;height:720px;background:#1E1E1E}
 .app{width:1280px;height:720px;min-height:0!important;transform-origin:0 0}
 .main{height:671px!important}
 .tab{font-size:14px!important}
-.codewrap pre,.codewrap textarea{font:500 22px/1.6 var(--mono)!important;padding:14px 18px!important}
-.gut{font:500 22px/1.6 var(--mono)!important;padding:14px 10px 14px 0!important;width:58px!important}
+.codewrap pre,.codewrap textarea{font:500 20px/1.6 var(--mono)!important;padding:14px 18px!important}
+.gut{font:500 20px/1.6 var(--mono)!important;padding:14px 10px 14px 0!important;width:58px!important}
 .out{font:500 20px/1.55 var(--mono)!important;padding:12px 18px!important}
 .out .hint{font:500 17px/1.45 Inter,sans-serif!important}
 .con{height:100px!important;min-height:100px!important}
@@ -981,7 +981,7 @@ body.noide canvas#fx{display:none}
     }
     var idx = cs.caret != null ? cs.caret : (cs.end != null ? cs.end : 0);
     var cr = caretRect(idx), pt = (cr.y - hr.top) / z, ch = cr.h / z, H = codewrap.clientHeight;
-    var target = Math.max(0, pt + ch + 44 - H);
+    var target = Math.max(0, pt + ch + 30 - H); if (target > 0) target = 14 + Math.ceil((target - 14) / lh) * lh;
     hl.scrollTop = target; ta.scrollTop = target; gut.scrollTop = target;
   }
 

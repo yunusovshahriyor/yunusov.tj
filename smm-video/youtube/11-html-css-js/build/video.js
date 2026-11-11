@@ -122,7 +122,7 @@
     }
     var idx = cs.caret != null ? cs.caret : (cs.end != null ? cs.end : 0);
     var cr = caretRect(idx), pt = (cr.y - hr.top) / z, ch = cr.h / z, H = codewrap.clientHeight;
-    var target = Math.max(0, pt + ch + 44 - H);
+    var target = Math.max(0, pt + ch + 30 - H); if (target > 0) target = 14 + Math.ceil((target - 14) / lh) * lh;
     hl.scrollTop = target; ta.scrollTop = target; gut.scrollTop = target;
   }
 
