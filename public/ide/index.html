@@ -4,34 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>JS IDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
 <meta name="description" content="Редактори код дар браузер: код нависед, иҷро кунед ва вазифаҳои дарсҳои тағйирёбанда, шарт ва давро санҷед.">
 <style>
-:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#FFFFFF;--kw:#569CD6;--cyan:#4FC1FF;--teal:#4EC9B0;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--ctrl:#C586C0;--ok:#4EC9B0;--err:#F48771;--warn:#DCDCAA;--run:#2EA043;--purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;--mono:"JetBrains Mono","SF Mono","DejaVu Sans Mono",ui-monospace,Consolas,monospace}
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--bar:#181818;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#FFFFFF;--kw:#569CD6;--cyan:#4FC1FF;--teal:#4EC9B0;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--ctrl:#C586C0;--ok:#4EC9B0;--err:#F48771;--warn:#DCDCAA;--run:#2EA043;--purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--attr:#9CDCFE;--selc:#D7BA7D;--gray:#808080;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;--mono:"JetBrains Mono","SF Mono","DejaVu Sans Mono",ui-monospace,Consolas,monospace}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
-body{font-family:var(--sans);background:radial-gradient(circle at 78% 0,rgba(189,147,249,.10),transparent 40%),radial-gradient(circle at 10% 100%,rgba(255,121,198,.05),transparent 45%),var(--bg) fixed;color:var(--text);-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
 .app{display:flex;flex-direction:column;min-height:100%}
-.top{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-.logo{font:800 14px var(--mono);color:var(--white);letter-spacing:.5px}
+/* ---- ҳамаи скроллбарҳо мисли VS Code ---- */
+*{scrollbar-width:thin;scrollbar-color:#424242 transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#424242;border-radius:5px;border:2px solid transparent;background-clip:content-box}::-webkit-scrollbar-thumb:hover{background:#5a5a5a;background-clip:content-box;border:2px solid transparent}::-webkit-scrollbar-corner{background:transparent}
+/* ---- сарлавҳа ---- */
+.top{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;padding:6px 12px;background:var(--bar);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+@media(min-width:900px){.top{height:45px;flex-wrap:nowrap;padding:0 12px}}
+.logo{font:800 14px var(--mono);color:var(--white);letter-spacing:.5px;white-space:nowrap}
 .logo b{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.trk{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
+.trk button{all:unset;cursor:pointer;font:700 11px var(--mono);padding:5px 9px;border-radius:6px;color:var(--muted);white-space:nowrap}
+.trk button:hover{color:var(--text)}
+.trk button.on{background:var(--panel2);color:var(--white);box-shadow:inset 0 -2px 0 var(--purple)}
 .tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 100%;min-width:0;order:3}
 @media(min-width:900px){.tabs{order:0;flex:1 1 0}}
 .tabs::-webkit-scrollbar{display:none}
-.tab{all:unset;cursor:pointer;flex:none;padding:7px 12px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.tab{all:unset;cursor:pointer;flex:none;padding:6px 11px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
 .tab:hover{color:var(--text);background:var(--panel2)}
-.tab.on{color:var(--white);background:var(--bg);border-bottom-color:var(--purple)}
+.tab.on{color:var(--white);background:var(--panel2);box-shadow:inset 0 -2px 0 var(--purple)}
 .tab.ok::after{content:" ✓";color:var(--ok);font-weight:900}
 .progress{display:flex;align-items:center;gap:10px;margin-left:auto}
 .progress .pt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
-.pbar{width:90px;height:6px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar{width:80px;height:5px;background:var(--line);border-radius:4px;overflow:hidden}
 .pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
 .cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 12px;border-radius:999px;background:var(--accent);color:#1E1E1E;white-space:nowrap}
 .cert[disabled]{opacity:.35;pointer-events:none;background:var(--line);color:var(--muted)}
+/* ---- сохтор ---- */
 .main{display:grid;grid-template-columns:1fr;flex:1;min-height:0}
-@media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 49px)}.left,.work{overflow:auto}}
-.left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line)}
+@media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 45px)}.left,.work{overflow:auto}}
+.left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line);background:var(--bg)}
 @media(min-width:1000px){.left{border-right:1px solid var(--line);border-bottom:0}}
-.work{display:flex;flex-direction:column;min-width:0}
+.work{display:flex;flex-direction:column;min-width:0;min-height:0}
+.main.free{grid-template-columns:1fr}.main.free .left{display:none}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
 .card h2{font-size:16px;font-weight:800;color:var(--white);margin-bottom:6px}
 .card p,.card li{font-size:14px;line-height:1.6;color:#cccccc}
@@ -39,51 +52,88 @@ body{font-family:var(--sans);background:radial-gradient(circle at 78% 0,rgba(189
 .tag{display:inline-block;font:800 11px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:8px}
 code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--str);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
 .card b{color:var(--white)}
+/* ---- редактор: мисли VS Code ---- */
 .ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
-.bar{display:flex;align-items:center;gap:6px;padding:0 12px;height:34px;background:var(--panel);border-bottom:1px solid var(--line)}
-.bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57;flex:none}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
-.bar span{font:500 12px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ed .bar{height:42px;gap:8px}
-.ed .bar #fname{margin-right:auto}
-.ed .bar select{max-width:130px;padding:5px 8px;font-size:12px}
-.acts{display:flex;gap:6px;flex:none}
-.ic{all:unset;cursor:pointer;height:30px;min-width:32px;padding:0 9px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:14px;font-weight:700;background:var(--panel2);border:1px solid var(--line);color:var(--text);user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.ic:hover{background:#37373D}.ic:active{transform:scale(.95)}
-.ic.run{background:var(--run);border-color:var(--run);color:#fff}.ic.chk{background:var(--accent);border:0;color:#1E1E1E;font-size:13px;font-weight:800}
-.ic:focus-visible,.btn:focus-visible,.tab:focus-visible,.sym button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.etabs{display:flex;align-items:stretch;height:38px;background:var(--panel);border-bottom:1px solid var(--bar);flex:none}
+.ftabs{display:flex;align-items:stretch;min-width:0;overflow-x:auto;scrollbar-width:none}
+.ftabs::-webkit-scrollbar{display:none}
+.ftab,.ftabs button{all:unset;cursor:pointer;position:relative;display:flex;align-items:center;gap:7px;padding:0 13px;font:500 13px var(--sans);color:#9d9d9d;background:var(--panel2);border-right:1px solid var(--panel);white-space:nowrap;flex:none}
+.ftabs button:hover{color:#fff}
+.ftab.on,.ftabs button.on{color:#fff;background:var(--bg);cursor:default}
+.ftab.on::before,.ftabs button.on::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--accent)}
+.ftabs button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+.main:not(.web) .ftabs,.main.web #fname{display:none}
+.fi{font:800 9px/1 var(--mono);font-style:normal;padding:3px 4px;border-radius:3px;background:rgba(255,255,255,.07)}
+.fi.html{color:#e8834a}.fi.css{color:#5aa9e6}.fi.js{color:#e5c64d}
+.eacts{display:flex;align-items:center;gap:4px;margin-left:auto;padding:0 8px;flex:none}
+.etabs select{font:500 12px var(--sans);padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--text);max-width:120px;margin-right:4px}
+.etabs select option{background:var(--panel2)}
+.ic{all:unset;cursor:pointer;position:relative;height:28px;min-width:28px;padding:0 7px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:600 12px var(--sans);color:#c5c5c5;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ic:hover{background:rgba(255,255,255,.09);color:#fff}.ic:active{transform:scale(.94)}
+.ic.run{background:var(--run);color:#fff;padding:0 11px}.ic.run:hover{filter:brightness(1.12);background:var(--run)}
+.ic.chk{background:var(--accent);color:#1E1E1E;padding:0 11px;font-weight:800}.ic.chk:hover{filter:brightness(1.08);background:var(--accent)}
+.ic.on{background:rgba(189,147,249,.2);color:var(--purple)}
+.ic:focus-visible,.btn:focus-visible,.tab:focus-visible,.sym button:focus-visible,.status button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
 .ic[disabled]{opacity:.5;pointer-events:none}
-@media(max-width:600px){.bar i.dots,.ed .bar #fname{display:none}.ed .bar select{margin-right:auto}.ic{height:34px;min-width:34px;padding:0 8px}.ic .lbl{display:none}.ed .bar{padding:0 8px;gap:6px}}
-.main.free{grid-template-columns:1fr}.main.free .left{display:none}
+.svg{flex:none}
+.main.web .ic .lbl{display:none}
+.ftabs .sh{display:none}
+@media(min-width:1000px) and (max-width:1299px){.ftabs .lg{display:none}.ftabs .sh{display:inline}.ftabs button{padding:0 10px}.main.web #copy{display:none}}
+@media(min-width:1000px) and (max-width:1149px){.ftabs .fi{display:none}}
+@media(min-width:1500px){.main.web .ic .lbl{display:inline}}
 .editor{position:relative;display:flex;height:clamp(230px,40vh,400px)}
 @media(min-width:1000px){.editor{height:auto;flex:1;min-height:220px}}
-.gut{white-space:pre;flex:none;width:44px;padding:12px 8px 12px 0;text-align:right;color:#858585;font:500 13.5px/1.65 var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
+.gut{white-space:pre;flex:none;width:54px;padding:12px 14px 12px 0;text-align:right;color:#6e7681;font:500 14px/22px var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
+.gut b{color:#c6c6c6;font-weight:500}
 .codewrap{position:relative;flex:1;min-width:0}
-.codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 14px;font:500 14px/1.65 var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
+.curline{position:absolute;left:0;right:0;top:0;height:22px;background:rgba(255,255,255,.05);pointer-events:none;opacity:0}
+.codewrap:focus-within .curline{opacity:1}
+.codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 16px;font:500 14px/22px var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
 .codewrap pre{color:#d4d4d4;pointer-events:none;overflow:hidden}
 .codewrap textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none;-webkit-text-fill-color:transparent}
 .codewrap textarea::selection{background:rgba(189,147,249,.35);-webkit-text-fill-color:transparent}
 .kw{color:var(--kw)}.ct{color:var(--ctrl)}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--cm);font-style:italic}.fn{color:var(--fn)}.tp{color:var(--teal)}
+.at{color:var(--attr)}.pn{color:var(--gray)}.sel{color:var(--selc)}
+.status{display:flex;align-items:center;gap:16px;height:24px;padding:0 12px;background:var(--bar);border-top:1px solid var(--line);font:500 11px var(--mono);color:var(--muted);flex:none;white-space:nowrap;overflow:hidden}
+.status .sp{margin-left:auto}
+.status button{all:unset;cursor:pointer;color:var(--muted);padding:2px 6px;border-radius:4px}
+.status button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.status button.on{color:var(--purple)}
+#st-msg{color:var(--ok)}
 .sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line)}
 .sym::-webkit-scrollbar{display:none}
 .sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:38px;border-radius:6px;background:var(--panel2);color:var(--text);font:700 16px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .sym button:active{background:var(--purple);color:#1E1E1E}
 .sym button.tabk{font-size:12px;color:var(--muted)}
 @media(min-width:1000px){.sym{display:none}}
+@media(max-width:999px){.status{display:none}}
+/* ---- тугмаҳо ва майдонҳо ---- */
 .btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
 .btn.run{background:var(--run);color:#fff;font-size:15px;padding:10px 18px}
-.btn.run:hover,.ic.run:hover,.ic.chk:hover{filter:brightness(1.1)}
-.btn.chk{background:var(--accent);color:#1E1E1E;font-size:15px;padding:10px 16px}
+.btn.run:hover{filter:brightness(1.1)}
 .ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
 .ghost:hover{background:#37373D}
 .ghost.on{border-color:var(--purple);color:var(--white);box-shadow:0 0 0 3px rgba(189,147,249,.18)}
 .btn[disabled]{opacity:.5;pointer-events:none}
 select{font:600 13px var(--sans);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
-.con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column}
+/* ---- панелҳо: пешнамоиш ва консол ---- */
+.phead{display:flex;align-items:center;gap:6px;height:36px;padding:0 8px 0 14px;background:var(--panel);border-bottom:1px solid var(--bar);flex:none}
+.phead .lb{font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.phead .ic{height:26px;min-width:26px;padding:0 6px}
+.vsep{width:1px;height:16px;background:var(--line);margin:0 4px}
+.pv{display:none;flex-direction:column;min-height:0;background:var(--bg)}
+.main.web .pv{display:flex}
+.pvbox{flex:1;min-height:260px;background:var(--panel2);display:flex;justify-content:center}
+.pvbox iframe{border:0;background:#fff;width:100%;height:100%;min-height:260px}
+.pvbox.mob iframe{width:375px;max-width:100%}
+.bdg{position:absolute;top:-3px;right:-3px;min-width:15px;height:15px;border-radius:8px;font:700 9px var(--mono);display:none;align-items:center;justify-content:center;padding:0 4px;color:#1E1E1E;pointer-events:none}
+.bdg.err{display:flex;background:var(--err);animation:pop .3s}.bdg.log{display:flex;background:var(--muted)}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+.con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
 @media(min-width:1000px){.con{height:34%;min-height:170px}}
-.con .bar{height:32px}
-.con .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
-.con .bar button{margin-left:auto}
+.main:not(.web) #conx{display:none}
+.main.web .con{display:none}.main.web.con-open .con{display:flex}
 .out{padding:10px 14px;min-height:150px;max-height:300px;overflow:auto;font:500 13.5px/1.6 var(--mono);color:#cccccc;white-space:pre-wrap;word-break:break-word;flex:1}
 @media(min-width:1000px){.out{max-height:none}}
 .out .l{display:block}.out .e{color:var(--err)}.out .i{color:var(--muted)}
@@ -101,35 +151,15 @@ dialog img{width:100%;border-radius:8px;border:1px solid var(--line);margin:10px
 dialog p{font-size:14px;line-height:1.5;color:#cccccc}
 dialog b{color:#fff}
 canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
-/* ---- трекҳо, таби файлҳо ва пешнамоиш (ҳолати Web) ---- */
-:root{--attr:#9CDCFE;--selc:#D7BA7D;--gray:#808080}
-.at{color:var(--attr)}.pn{color:var(--gray)}.sel{color:var(--selc)}
-.trk{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
-.trk button{all:unset;cursor:pointer;font:700 11px var(--mono);padding:5px 9px;border-radius:6px;color:var(--muted);white-space:nowrap}
-.trk button:hover{color:var(--text)}
-.trk button.on{background:var(--panel2);color:var(--white);box-shadow:inset 0 -2px 0 var(--purple)}
-.main.web .ed .bar i.dots,.main.web .ic .lbl{display:none}
-.main.web .ed .bar{gap:6px;padding:0 8px}.main.web .ed .acts{gap:4px}
-.ftabs{display:none;gap:2px;margin-right:auto;align-self:stretch;align-items:flex-end}
-.main.web .ftabs{display:flex}.main.web #fname{display:none}
-.ftabs button{all:unset;cursor:pointer;font:700 12px var(--mono);padding:8px 12px;border-radius:6px 6px 0 0;color:var(--muted)}
-.ftabs button:hover{color:var(--text)}
-.ftabs button.on{color:var(--white);background:var(--bg);box-shadow:inset 0 -2px 0 var(--purple)}
-.ftabs button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
-.pv{display:none;flex-direction:column;min-height:0;background:var(--bg);border-top:1px solid var(--line)}
-.main.web .pv{display:flex}
-.pv .bar{height:32px}
-.pv .bar span{margin:0;font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
-.pv .ic{height:24px;min-width:28px;padding:0 6px;font-size:13px}
-.pvbox{flex:1;min-height:260px;background:var(--panel2);display:flex;justify-content:center}
-.pvbox iframe{border:0;background:#fff;width:100%;height:100%;min-height:260px}
-.pvbox.mob iframe{width:375px;max-width:100%}
 .mnav{display:none}
+/* ---- ҳолати Web: редактор | пешнамоиш (консол бо пахши нишона мекушояд) ---- */
 @media(min-width:1000px){
-  .main.web .work{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(140px,30vh);grid-template-areas:"ed pv" "ed con";overflow:hidden}
+  .main.web:not(.free){grid-template-columns:minmax(280px,330px) 1fr}
+  .main.web .work{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"ed pv";overflow:hidden}
+  .main.web.con-open .work{grid-template-rows:minmax(0,1fr) minmax(150px,32vh);grid-template-areas:"ed pv" "ed con"}
   .main.web .ed{grid-area:ed;border-right:1px solid var(--line)}
-  .main.web .pv{grid-area:pv;border-top:0}
-  .main.web .con{grid-area:con;height:auto;min-height:0}
+  .main.web .pv{grid-area:pv}
+  .main.web .con{grid-area:con;height:auto}
   .main.web .out{min-height:0}
 }
 @media(max-width:999px){
@@ -140,13 +170,16 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   .main.web[data-pane=result] .ed,.main.web[data-pane=result] .sym{display:none}
   .main.web[data-pane=result] .pvbox{min-height:55vh}
   .main.web .editor{height:clamp(280px,58vh,560px)}
-  .main.web .ed .bar{height:auto;min-height:42px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
-  .main.web .ed .bar .ftabs{order:5;flex:1 1 100%}
-  body.webmode .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  body.webmode .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
   body.webmode.freemode #mn-lesson{display:none}
-  .mnav button{all:unset;cursor:pointer;flex:1;text-align:center;padding:13px 4px;font:700 13px var(--sans);color:var(--muted);touch-action:manipulation}
+  .mnav button{all:unset;cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;font:600 11px var(--sans);color:var(--muted);touch-action:manipulation}
   .mnav button.on{color:var(--white);box-shadow:inset 0 2px 0 var(--purple)}
-  body.webmode .app{padding-bottom:52px}
+  body.webmode .app{padding-bottom:56px}
+}
+@media(max-width:600px){
+  .ic .lbl{display:none}.ic{height:32px;min-width:32px}
+  .ftab,.ftabs button{padding:0 11px;font-size:12px}
+  .etabs select{max-width:92px}
 }
 </style>
 </head>
@@ -158,7 +191,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     <span class="logo">&lt;/&gt; <b>JS</b></span>
     <div class="trk" id="trk"></div>
     <nav class="tabs" id="tabs"></nav>
-    <div class="progress"><span class="pt" id="pt"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
+    <div class="progress"><span class="pt" id="pt" title="Вазифаҳои ҳалшуда"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
   </header>
   <div class="main">
     <aside class="left">
@@ -167,17 +200,35 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     </aside>
     <section class="work">
       <div class="ed">
-        <div class="bar"><i class="dots"></i><i class="dots"></i><i class="dots"></i><select id="ex" aria-label="Мисолҳо"></select><span id="fname">main.js</span><div class="ftabs" id="ftabs"></div>
-          <div class="acts"><button class="ic run" id="run" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро">▶</button><button class="ic chk" id="check" title="Санҷиш" aria-label="Санҷиш" style="display:none">✓ <span class="lbl">Санҷиш</span></button><button class="ic" id="reset" title="Аз нав" aria-label="Аз нав">↺</button><button class="ic" id="copy" title="Нусха" aria-label="Нусха">📋</button><button class="ic" id="share" title="Пайванд" aria-label="Пайванд">🔗</button></div></div>
-        <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
+        <div class="etabs">
+          <span class="ftab on" id="fname"></span><div class="ftabs" id="ftabs"></div>
+          <div class="eacts">
+            <select id="ex" aria-label="Мисолҳо"></select>
+            <button class="ic run" id="run" data-ic="play" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро"><span class="lbl">Иҷро</span></button>
+            <button class="ic chk" id="check" data-ic="check" title="Санҷиш" aria-label="Санҷиш" style="display:none"><span class="lbl">Санҷиш</span></button>
+            <button class="ic" id="reset" data-ic="reset" title="Аз нав оғоз кардан" aria-label="Аз нав"></button>
+            <button class="ic" id="copy" data-ic="copy" title="Нусха кардани код" aria-label="Нусха"></button>
+            <button class="ic" id="share" data-ic="link" title="Пайванд барои мубодила" aria-label="Пайванд"></button>
+          </div>
+        </div>
+        <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><div class="curline" id="curline"></div><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
+        <div class="status" id="status"><span id="st-pos">Сатр 1, сутун 1</span><span>Фосила: 2</span><span>UTF-8</span><span id="st-lang">JavaScript</span><span id="st-msg"></span><span class="sp"></span><button id="st-auto" title="Бастани худкори қавс, нохунак ва теғҳо">Авто-ҷуфт</button></div>
       </div>
       <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
-      <div class="pv" id="pv"><div class="bar"><span>ПЕШНАМОИШ</span><div class="acts" style="margin-left:auto"><button class="ic" id="pvdev" title="Андозаи телефон" aria-label="Андозаи телефон">📱</button><button class="ic" id="pvopen" title="Дар tab-и нав" aria-label="Дар tab-и нав">↗</button><button class="ic" id="pvdl" title="Зеркашии index.html" aria-label="Зеркашӣ">⬇</button></div></div><div class="pvbox" id="pvbox"><iframe id="pvf" title="Пешнамоиш" sandbox="allow-scripts"></iframe></div></div>
-      <div class="con"><div class="bar"><span id="conlbl">НАТИҶА</span><button class="btn ghost" id="clr" style="padding:3px 9px;font-size:12px">тоза</button></div><div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div></div>
+      <div class="pv" id="pv">
+        <div class="phead"><span class="lb">ПЕШНАМОИШ</span>
+          <div class="eacts"><button class="ic" id="pvdev" data-ic="phone" title="Андозаи телефон" aria-label="Андозаи телефон"></button><button class="ic" id="pvopen" data-ic="ext" title="Дар tab-и нав" aria-label="Дар tab-и нав"></button><button class="ic" id="pvdl" data-ic="dl" title="Зеркашии index.html" aria-label="Зеркашӣ"></button><span class="vsep"></span><button class="ic" id="pvcon" data-ic="term" title="Консол (натиҷа ва хатоҳо)" aria-label="Консол"><span class="bdg" id="pvbdg"></span></button></div></div>
+        <div class="pvbox" id="pvbox"><iframe id="pvf" title="Пешнамоиш" sandbox="allow-scripts"></iframe></div>
+      </div>
+      <div class="con">
+        <div class="phead"><span class="lb" id="conlbl">НАТИҶА</span>
+          <div class="eacts"><button class="ic" id="clr" data-ic="trash" title="Тоза кардан" aria-label="Тоза кардан"></button><button class="ic" id="conx" data-ic="x" title="Пӯшидани консол" aria-label="Пӯшидан"></button></div></div>
+        <div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div>
+      </div>
     </section>
   </div>
 </div>
-<nav class="mnav" id="mnav" aria-label="Қисмҳо"><button data-p="lesson" id="mn-lesson">📖 Дарс</button><button data-p="code">✏️ Код</button><button data-p="result">👁 Натиҷа</button></nav>
+<nav class="mnav" id="mnav" aria-label="Қисмҳо"><button data-p="lesson" id="mn-lesson" data-ic="book"><span>Дарс</span></button><button data-p="code" data-ic="code"><span>Код</span></button><button data-p="result" data-ic="eye"><span>Натиҷа</span></button></nav>
 
 <script src="lessons/js.js"></script>
 <script src="lessons/web.js"></script>
@@ -187,6 +238,26 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   var $ = function (id) { return document.getElementById(id); };
   var STORE = "mini-ide-v1";
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(STORE + k); localStorage.setItem(STORE + k, v); } catch (e) { return null; } }
+
+  /* ---------- нишонаҳо (SVG, мисли Lucide) ---------- */
+  var IC = {
+    play: '<polygon points="6 3 20 12 6 21 6 3" fill="currentColor"/>', check: '<path d="M20 6 9 17l-5-5"/>',
+    reset: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    phone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>', monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    ext: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+    dl: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+    term: '<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>', x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>', eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+  };
+  function icon(n, sz) { return '<svg class="svg" viewBox="0 0 24 24" width="' + (sz || 16) + '" height="' + (sz || 16) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IC[n] + "</svg>"; }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ic]"), function (el) { el.insertAdjacentHTML("afterbegin", icon(el.getAttribute("data-ic"), el.classList.contains("ic") ? 16 : 20)); });
+  function flash(b) { var o = b.innerHTML; b.innerHTML = icon("check"); setTimeout(function () { b.innerHTML = o; }, 1500); }
+  var FNAME = { html: "index.html", css: "style.css", js: "script.js" }, LANGN = { html: "HTML", css: "CSS", js: "JavaScript" };
+  function fi(l) { return '<i class="fi ' + l + '">' + (l === "html" ? "&lt;&gt;" : l === "css" ? "#" : "JS") + "</i>"; }
 
   /* ---------- трекҳо, мисолҳо ва дарсҳо (дарсҳо дар lessons/*.js) ---------- */
   var TRACKS = { js: { short: "JS", cert: true }, web: { short: "HTML · CSS", cert: false } };
@@ -213,7 +284,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   var LESSONS = (function () {
     var all = window.IDE_LESSONS || []; all.forEach(norm);
     var of = function (tk) { return all.filter(function (L) { return L.track === tk; }); };
-    return [{ id: "free", track: "js", tab: "✏️ Озод", free: true }].concat(of("js"), [{ id: "webfree", track: "web", tab: "✏️ Озод", free: true }], of("web"));
+    return [{ id: "free", track: "js", tab: "Озод", free: true }].concat(of("js"), [{ id: "webfree", track: "web", tab: "Озод", free: true }], of("web"));
   })();
 
   /* ---------- иҷрои код дар Worker ---------- */
@@ -290,23 +361,99 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     return out + "\n";
   }
   function highlight(src, lang) { return (lang === "html" ? hlHtml : lang === "css" ? hlCss : hlJs)(src); }
-  function paint() {
-    hl.innerHTML = highlight(ta.value, curFile);
-    var n = ta.value.split("\n").length, g = ""; for (var i = 1; i <= n; i++) g += i + "\n"; gut.textContent = g;
-    sync();
+  var LH = 22, lastLine = 0, lastN = 0;
+  function placeCur() { $("curline").style.transform = "translateY(" + (12 + (lastLine - 1) * LH - ta.scrollTop) + "px)"; }
+  /* рақами сатр ва сатри ҷорӣ, ҷойгиршавии курсор дар сатри ҳолат */
+  function upd() {
+    var v = ta.value, s = ta.selectionStart, pre = v.slice(0, s), line = pre.split("\n").length, col = s - pre.lastIndexOf("\n"), n = v.split("\n").length, sel = ta.selectionEnd - s;
+    if (n !== lastN || line !== lastLine) {
+      var g = ""; for (var i = 1; i <= n; i++) g += (i === line ? "<b>" + i + "</b>" : i) + "\n";
+      gut.innerHTML = g; lastN = n; lastLine = line;
+    }
+    placeCur();
+    $("st-pos").textContent = "Сатр " + line + ", сутун " + col + (sel ? " (" + sel + " интихоб)" : "");
+    $("st-lang").textContent = LANGN[curFile];
   }
-  function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; }
+  function paint() { hl.innerHTML = highlight(ta.value, curFile); upd(); sync(); }
+  function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; placeCur(); }
   function changed() { paint(); saveFile(); schedulePreview(); }
   ta.addEventListener("scroll", sync);
   ta.addEventListener("input", changed);
+  ["keyup", "mouseup", "focus", "click"].forEach(function (ev) { ta.addEventListener(ev, upd); });
+  document.addEventListener("selectionchange", function () { if (document.activeElement === ta) upd(); });
+
+  /* ---------- амалҳои IDE: ҷуфтшавии худкор, indent, шарҳ ---------- */
+  var AUTO = ls("auto") !== "0", PAIRS = { "(": ")", "[": "]", "{": "}", '"': '"', "'": "'", "`": "`" }, CLOSERS = ")]}", VOID = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i;
+  function drawAuto() { $("st-auto").className = AUTO ? "on" : ""; $("st-auto").textContent = "Авто-ҷуфт: " + (AUTO ? "фаъол" : "хомӯш"); }
+  $("st-auto").onclick = function () { AUTO = !AUTO; ls("auto", AUTO ? "1" : "0"); drawAuto(); ta.focus(); };
+  var msgTm = 0;
+  function statusMsg(t) { $("st-msg").textContent = t; clearTimeout(msgTm); msgTm = setTimeout(function () { $("st-msg").textContent = ""; }, 1600); }
+  /* матнро бо execCommand ворид мекунем, то Ctrl+Z кор кунад; back — курсорро чанд аломат ба қафо мебарем */
+  function ins(text, back) {
+    ta.focus(); var ok = false;
+    try { ok = document.execCommand("insertText", false, text); } catch (e) {}
+    if (!ok) { var s = ta.selectionStart, en = ta.selectionEnd; ta.value = ta.value.slice(0, s) + text + ta.value.slice(en); ta.selectionStart = ta.selectionEnd = s + text.length; changed(); }
+    if (back) { var p = ta.selectionEnd - back; ta.setSelectionRange(p, p); }
+    upd();
+  }
+  function editLines(fn) {
+    var v = ta.value, s = ta.selectionStart, en = ta.selectionEnd, a = v.lastIndexOf("\n", s - 1) + 1, e2 = en > s && v.charAt(en - 1) === "\n" ? en - 1 : en, z = v.indexOf("\n", e2);
+    if (z < 0) z = v.length;
+    var t = v.slice(a, z), nt = fn(t); if (nt === t) return;
+    ta.setSelectionRange(a, z); ins(nt); ta.setSelectionRange(a, a + nt.length); upd();
+  }
+  function toggleComment() {
+    var o = curFile === "html" ? ["<!-- ", " -->"] : curFile === "css" ? ["/* ", " */"] : ["// ", ""], q = function (x) { return x.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&"); };
+    var re = new RegExp("^(\\s*)" + q(o[0].trim()) + " ?(.*?)" + (o[1] ? " ?" + q(o[1].trim()) : "") + "$");
+    editLines(function (t) {
+      var rows = t.split("\n"), all = rows.some(function (l) { return l.trim(); }) && rows.every(function (l) { return !l.trim() || re.test(l); });
+      return rows.map(function (l) { return !l.trim() ? l : all ? l.replace(re, function (_, a, b) { return a + b; }) : l.replace(/^(\s*)(.*)$/, function (_, a, b) { return a + o[0] + b + o[1]; }); }).join("\n");
+    });
+  }
   ta.addEventListener("keydown", function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); doRun(); return; }
-    var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
-    if (e.key === "Tab") { e.preventDefault(); ta.value = v.slice(0, s) + "  " + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 2; changed(); }
-    else if (e.key === "Enter") {
+    var k = e.key, mod = e.ctrlKey || e.metaKey;
+    if (mod && k === "Enter") { e.preventDefault(); doRun(); return; }
+    if (mod && (k === "s" || k === "S")) { e.preventDefault(); statusMsg("Ҳифз шуд ✓"); return; }
+    if (mod && k === "/") { e.preventDefault(); toggleComment(); return; }
+    if (mod || e.altKey) return;
+    var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value, prev = v.charAt(s - 1), next = v.charAt(en);
+    if (k === "Tab") {
+      e.preventDefault();
+      if (e.shiftKey) editLines(function (t) { return t.replace(/^( {1,2}|\t)/gm, ""); });
+      else if (v.slice(s, en).indexOf("\n") >= 0) editLines(function (t) { return t.replace(/^/gm, "  "); });
+      else ins("  ");
+      return;
+    }
+    if (k === "Enter") {
+      e.preventDefault();
       var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s), ind = /^\s*/.exec(line)[0];
-      if (/[{(\[]\s*$/.test(line)) ind += "  ";
-      e.preventDefault(); ta.value = v.slice(0, s) + "\n" + ind + v.slice(en); ta.selectionStart = ta.selectionEnd = s + 1 + ind.length; changed();
+      var om = curFile === "html" ? /<([a-z][\w-]*)(?:\s[^<>]*)?>\s*$/i.exec(line) : null;
+      var opens = /[{(\[]\s*$/.test(line) || (om && !VOID.test(om[1]) && !/\/>\s*$/.test(line));
+      var between = (prev === "{" && next === "}") || (prev === "(" && next === ")") || (prev === "[" && next === "]") || (om && prev === ">" && next === "<");
+      if (opens && between) ins("\n" + ind + "  \n" + ind, ind.length + 1); else ins("\n" + ind + (opens ? "  " : ""));
+      return;
+    }
+    if (!AUTO) return;
+    if (k === "Backspace" && s === en && prev && PAIRS[prev] === next) {
+      e.preventDefault(); ta.setSelectionRange(s - 1, s + 1);
+      var ok = false; try { ok = document.execCommand("delete"); } catch (x) {}
+      if (!ok) { ta.value = v.slice(0, s - 1) + v.slice(s + 1); ta.selectionStart = ta.selectionEnd = s - 1; changed(); }
+      return;
+    }
+    if (k.length !== 1) return;
+    if (PAIRS[k]) {
+      var close = PAIRS[k];
+      if (en > s) { e.preventDefault(); ins(k + v.slice(s, en) + close); ta.setSelectionRange(s + 1, en + 1); upd(); return; }
+      if (k === close) {
+        if (next === k) { e.preventDefault(); ta.setSelectionRange(s + 1, s + 1); upd(); return; }
+        if (/\w/.test(prev)) return;
+      } else if (/\w/.test(next)) return;
+      e.preventDefault(); ins(k + close, 1); return;
+    }
+    if (CLOSERS.indexOf(k) >= 0 && s === en && next === k) { e.preventDefault(); ta.setSelectionRange(s + 1, s + 1); upd(); return; }
+    if (k === ">" && curFile === "html" && s === en) {
+      var tm = /<([A-Za-z][\w-]*)(?:\s[^<>]*)?$/.exec(v.slice(0, s));
+      if (tm && !VOID.test(tm[1]) && prev !== "/" && (tm[0].match(/"/g) || []).length % 2 === 0 && v.substr(s, tm[1].length + 3) !== "</" + tm[1] + ">") { e.preventDefault(); ins("></" + tm[1] + ">", tm[1].length + 3); }
     }
   });
 
@@ -336,7 +483,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
       b.onclick = function () {
         if (k === tk) return;
         var first = LESSONS.filter(function (l) { return l.track === k; })[0], id = ls("tab-" + k);
-        cur = LESSONS.some(function (l) { return l.id === id && l.track === k; }) ? id : first.id; ti = 0; ls("tab", cur); pane = lesson().free ? "code" : "lesson"; load();
+        cur = LESSONS.some(function (l) { return l.id === id && l.track === k; }) ? id : first.id; ti = 0; curFile = k === "web" ? "html" : "js"; ls("tab", cur); pane = lesson().free ? "code" : "lesson"; load();
       };
       box.appendChild(b);
     });
@@ -368,7 +515,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   function drawFileTabs() {
     var ft = $("ftabs"); ft.innerHTML = ""; if (!isWeb()) return;
     fileList().forEach(function (f) {
-      var b = document.createElement("button"); b.textContent = FLABEL[f]; b.className = f === curFile ? "on" : "";
+      var b = document.createElement("button"); b.innerHTML = fi(f) + '<span class="lg">' + FNAME[f] + '</span><span class="sh">' + FLABEL[f] + "</span>"; b.className = f === curFile ? "on" : "";
       b.onclick = function () { saveFile(); curFile = f; ta.value = files[f]; ta.scrollTop = 0; paint(); drawFileTabs(); drawSyms(); };
       ft.appendChild(b);
     });
@@ -391,9 +538,10 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     $("check").style.display = !L.free && (!web || (t && t.checks)) ? "inline-flex" : "none";
     $("ex").style.display = L.free ? "" : "none";
     $("ex").innerHTML = EXAMPLES[L.track].map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
-    $("fname").textContent = L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js";
+    $("fname").innerHTML = fi("js") + (L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js");
+    document.querySelector(".main").classList.toggle("con-open", conOpen); $("pvcon").classList.toggle("on", conOpen);
     $("out").innerHTML = web ? "" : '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
-    $("conlbl").textContent = web ? "КОНСОЛ" : "НАТИҶА";
+    $("conlbl").textContent = web ? "КОНСОЛ" : "НАТИҶА"; drawAuto();
     drawTrack(); drawTabs(); drawSide(); drawFileTabs(); drawSyms(); paint(); drawProgress(); setHash(); setPane(pane);
     if (web) renderPreview();
   }
@@ -460,7 +608,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   }
   function renderPreview(cb) {
     clearTimeout(pvTimer); if (!isWeb()) return;
-    $("out").innerHTML = ""; pvOnReady = cb || null; pvToken++;
+    clearCon(); pvOnReady = cb || null; pvToken++;
     $("pvf").srcdoc = buildDoc(files, pvToken);
   }
   function schedulePreview() { if (!isWeb()) return; clearTimeout(pvTimer); pvTimer = setTimeout(function () { renderPreview(); }, 350); }
@@ -479,7 +627,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     else show(m);
   });
   function saveBlob(blob, name) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
-  $("pvdev").onclick = function () { var on = $("pvbox").classList.toggle("mob"); this.textContent = on ? "🖥" : "📱"; this.title = on ? "Дар паҳнои пурра" : "Андозаи телефон"; };
+  $("pvdev").onclick = function () { var on = $("pvbox").classList.toggle("mob"); this.innerHTML = icon(on ? "monitor" : "phone"); this.title = on ? "Дар паҳнои пурра" : "Андозаи телефон"; };
   $("pvopen").onclick = function () {
     /* саҳифа дар iframe-и sandbox мегузорем, то код ба маълумоти IDE дастрас набошад */
     var w = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Натиҷа</title><style>html,body{margin:0;height:100%;background:#fff}iframe{border:0;width:100%;height:100%;display:block}</style><iframe sandbox="allow-scripts allow-modals" srcdoc="' + cleanDoc(files).replace(/&/g, "&amp;").replace(/"/g, "&quot;") + '"></iframe>';
@@ -489,7 +637,14 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
 
   /* ---------- иҷро ---------- */
   function line(cls, html) { var d = document.createElement("span"); d.className = "l " + cls; d.innerHTML = html; $("out").appendChild(d); $("out").scrollTop = 1e9; }
+  var conOpen = ls("con") === "1", conErr = 0, conLog = 0;
+  function badge() { var b = $("pvbdg"); b.className = "bdg" + (conErr ? " err" : conLog ? " log" : ""); b.textContent = conErr || conLog || ""; }
+  function clearCon() { $("out").innerHTML = ""; conErr = conLog = 0; badge(); }
+  function toggleCon(open) { conOpen = open == null ? !conOpen : open; document.querySelector(".main").classList.toggle("con-open", conOpen); $("pvcon").classList.toggle("on", conOpen); ls("con", conOpen ? "1" : "0"); }
+  $("pvcon").onclick = function () { toggleCon(); };
+  $("conx").onclick = function () { toggleCon(false); };
   function show(m) {
+    if (isWeb()) { if (m.t === "error" || m.t === "err") conErr++; else if (m.t === "log" || m.t === "warn") conLog++; badge(); }
     if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
     else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg) || (/Давр хотима наёфт/.test(m.msg) ? "Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?" : ""); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
     else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
@@ -500,19 +655,19 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     runCode(ta.value, function (m) { any = true; show(m); }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
   }
   $("run").onclick = doRun;
-  $("clr").onclick = function () { $("out").innerHTML = ""; };
+  $("clr").onclick = clearCon;
   $("reset").onclick = function () {
     if (!confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) return;
     Object.keys(files).forEach(function (f) { files[f] = starter(f); ls(fkey(f), files[f]); });
     ta.value = files[curFile]; paint(); schedulePreview();
   };
-  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { ta.select(); try { document.execCommand("copy"); b.textContent = "✓"; } catch (e) {} }).then(function () { setTimeout(function () { b.textContent = "📋"; }, 1500); }); };
+  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { flash(b); }, function () { ta.select(); try { document.execCommand("copy"); flash(b); } catch (e) {} }); };
   $("ex").onchange = function () {
     var e = EXAMPLES[track()][+this.value], c = e && e[1]; this.value = 0; if (!c) return;
     if (isWeb()) Object.keys(files).forEach(function (f) { files[f] = c[f] || ""; ls(fkey(f), files[f]); }); else { files.js = c; ls(fkey("js"), c); }
     ta.value = files[curFile]; paint(); schedulePreview();
   };
-  $("mnav").onclick = function (e) { var p = e.target.getAttribute && e.target.getAttribute("data-p"); if (p) setPane(p); };
+  $("mnav").onclick = function (e) { var b = e.target.closest && e.target.closest("button[data-p]"); if (b) setPane(b.getAttribute("data-p")); };
 
   $("check").onclick = function () {
     var t = task(), L = lesson(); if (!t) return; $("check").disabled = true;
@@ -540,7 +695,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   function totals(tk) { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free && L.track === tk) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
   function drawProgress() {
     var tk = track(), t = totals(tk), pct = t[1] ? Math.round(100 * t[0] / t[1]) : 0;
-    $("pt").textContent = "✓ " + t[0] + " аз " + t[1] + " вазифа"; $("pf").style.width = pct + "%";
+    $("pt").textContent = "✓ " + t[0] + " / " + t[1]; $("pf").style.width = pct + "%";
     $("cert").style.display = TRACKS[tk].cert ? "" : "none";
     $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
     $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома" : "🎓 Шаҳодатнома гиред!";
@@ -590,7 +745,7 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
   }
   $("share").onclick = function () {
     var b = this, u = location.href.split("#")[0] + (isWeb() ? "#web=" + b64u(JSON.stringify({ html: files.html || "", css: files.css || "", js: files.js || "" })) : "#code=" + b64u(ta.value));
-    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { b.textContent = "✓"; }, function () { prompt("Пайвандро нусха кунед:", u); }).then(function () { setTimeout(function () { b.textContent = "🔗"; }, 1800); });
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { flash(b); }, function () { prompt("Пайвандро нусха кунед:", u); });
   };
 
   /* ---------- аломатҳои зуд (барои телефон) ---------- */
@@ -604,17 +759,14 @@ canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
     SYMS[curFile].forEach(function (sy) {
       var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
       b.addEventListener("pointerdown", function (e) {
-        e.preventDefault(); var s0 = ta.selectionStart, e0 = ta.selectionEnd, ins = sy[1];
-        ta.value = ta.value.slice(0, s0) + ins + ta.value.slice(e0);
-        var pos = s0 + (ins.length === 2 && ins !== "  " && /[\{\(\[\"]/.test(ins[0]) ? 1 : ins.length);
-        ta.focus(); ta.selectionStart = ta.selectionEnd = pos; changed();
+        e.preventDefault(); var t = sy[1]; ins(t, t.length === 2 && t !== "  " && /[\{\(\[\"]/.test(t[0]) ? 1 : 0);
       });
       box.appendChild(b);
     });
   }
 
   window.__ide = { lessons: LESSONS, setCode: function (c, f) { f = f || curFile; files[f] = c; if (f === curFile) { ta.value = c; paint(); } schedulePreview(); }, goto: function (id, i) { cur = id; ti = i || 0; pane = "code"; load(); } };
-  pane = "lesson"; parseHash(); if (lesson().free) pane = "code"; load();
+  pane = "lesson"; parseHash(); if (lesson().free) pane = "code"; if (isWeb()) curFile = "html"; load();
   addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
 })();
 </script>
