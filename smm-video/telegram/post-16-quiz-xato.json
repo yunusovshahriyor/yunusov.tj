@@ -1,0 +1,8 @@
+{
+  "type": "quiz",
+  "question": "🧠 Санҷиш: чӣ чоп мешавад?\n\nlet age = 15;\nif (age = 18) { console.log(\"Калон\"); }",
+  "options": ["Калон", "Ҳеҷ чиз", "Хато (error)", "Хурд"],
+  "correct_option_id": 0,
+  "explanation": "Як баробар (=) қимат мегузорад: age ба 18 табдил шуд, ва 18 — «ҳақиқат» аст. Барои муқоиса === лозим аст.",
+  "is_anonymous": true
+}
