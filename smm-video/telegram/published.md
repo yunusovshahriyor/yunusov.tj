@@ -22,3 +22,4 @@
 | 2026-11-13 | 2037–2038 | Reels 7: 3 хатои рӯзи аввал — бо тавсифи ислоҳшуда (2037 — видео + конспект `post-11-3-xato.html`, блокҳои код бе emoji ва бе номи забон; 2038 — муқова ҳамчун файл); паёмҳои 2035–2036 ва 1999–2001 кӯҳна | `../reels/extra-01-3-xato/reel-3-xato.mp4`, `send_3_xato.js` |
 | 2026-11-13 | 2039–2040 | Reels 8: Хатогӣ ва дебаг (2039 — видео + конспект `post-15-debug.html`, блокҳои код бе emoji; 2040 — муқова `cover.jpg` ҳамчун файл) | `../reels/08-debug/reel-debug.mp4`, `../reels/08-debug/cover.jpg`, `send_debug.js` |
 | 2026-11-13 | 2041 | Quiz: дарси 7 (`if (age = 18)` — чоп мешавад «Калон», ҷавоб: Калон) | `post-16-quiz-xato.json`, `send_quiz.js` |
+| 2026-11-15 | 2052 | Reels 8: тавсифи Instagram (`reels/08-debug/caption.txt`) ҳамчун паёми нусхашаванда; видео ва конспект — 2039–2040 | `../reels/08-debug/caption.txt` |
