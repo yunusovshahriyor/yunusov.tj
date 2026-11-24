@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="tg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JS IDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<meta name="description" content="Редактори код дар браузер: код нависед, иҷро кунед ва вазифаҳои дарсҳои тағйирёбанда, шарт ва давро санҷед.">
+<style>
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--bar:#181818;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#FFFFFF;--kw:#569CD6;--cyan:#4FC1FF;--teal:#4EC9B0;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--ctrl:#C586C0;--ok:#4EC9B0;--err:#F48771;--warn:#DCDCAA;--run:#2EA043;--purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--attr:#9CDCFE;--selc:#D7BA7D;--gray:#808080;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;--mono:"JetBrains Mono","SF Mono","DejaVu Sans Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+.app{display:flex;flex-direction:column;min-height:100%}
+/* ---- ҳамаи скроллбарҳо мисли VS Code ---- */
+*{scrollbar-width:thin;scrollbar-color:#424242 transparent}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#424242;border-radius:5px;border:2px solid transparent;background-clip:content-box}::-webkit-scrollbar-thumb:hover{background:#5a5a5a;background-clip:content-box;border:2px solid transparent}::-webkit-scrollbar-corner{background:transparent}
+/* ---- сарлавҳа ---- */
+.top{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;padding:6px 12px;background:var(--bar);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+@media(min-width:900px){.top{height:45px;flex-wrap:nowrap;padding:0 12px}}
+.logo{font:800 14px var(--mono);color:var(--white);letter-spacing:.5px;white-space:nowrap}
+.logo b{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.trk{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
+.trk button{all:unset;cursor:pointer;font:700 11px var(--mono);padding:5px 9px;border-radius:6px;color:var(--muted);white-space:nowrap}
+.trk button:hover{color:var(--text)}
+.trk button.on{background:var(--panel2);color:var(--white);box-shadow:inset 0 -2px 0 var(--purple)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 100%;min-width:0;order:3}
+@media(min-width:900px){.tabs{order:0;flex:1 1 0}}
+.tabs::-webkit-scrollbar{display:none}
+.tab{all:unset;cursor:pointer;flex:none;padding:6px 11px;border-radius:6px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
+.tab:hover{color:var(--text);background:var(--panel2)}
+.tab.on{color:var(--white);background:var(--panel2);box-shadow:inset 0 -2px 0 var(--purple)}
+.tab.ok::after{content:" ✓";color:var(--ok);font-weight:900}
+.progress{display:flex;align-items:center;gap:10px;margin-left:auto}
+.progress .pt{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
+.pbar{width:80px;height:5px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.cert{all:unset;cursor:pointer;font:700 12px var(--mono);padding:6px 12px;border-radius:999px;background:var(--accent);color:#1E1E1E;white-space:nowrap}
+.cert[disabled]{opacity:.35;pointer-events:none;background:var(--line);color:var(--muted)}
+/* ---- сохтор ---- */
+.main{display:grid;grid-template-columns:1fr;flex:1;min-height:0}
+@media(min-width:1000px){.main{grid-template-columns:minmax(300px,380px) 1fr;height:calc(100vh - 45px)}.left,.work{overflow:auto}}
+.left{display:flex;flex-direction:column;gap:12px;padding:12px;border-bottom:1px solid var(--line);background:var(--bg)}
+@media(min-width:1000px){.left{border-right:1px solid var(--line);border-bottom:0}}
+.work{display:flex;flex-direction:column;min-width:0;min-height:0}
+.main.free{grid-template-columns:1fr}.main.free .left{display:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.card h2{font-size:16px;font-weight:800;color:var(--white);margin-bottom:6px}
+.card p,.card li{font-size:14px;line-height:1.6;color:#cccccc}
+.card ul{padding-left:18px}
+.tag{display:inline-block;font:800 11px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:8px}
+code{font-family:var(--mono);font-variant-ligatures:none;background:var(--bg);color:var(--str);padding:1px 6px;border-radius:4px;font-size:.9em;border:1px solid var(--line)}
+.card b{color:var(--white)}
+/* ---- редактор: мисли VS Code ---- */
+.ed{background:var(--bg);display:flex;flex-direction:column;min-height:0;flex:1}
+.etabs{display:flex;align-items:stretch;height:38px;background:var(--panel);border-bottom:1px solid var(--bar);flex:none}
+.ftabs{display:flex;align-items:stretch;min-width:0;overflow-x:auto;scrollbar-width:none}
+.ftabs::-webkit-scrollbar{display:none}
+.ftab,.ftabs button{all:unset;cursor:pointer;position:relative;display:flex;align-items:center;gap:7px;padding:0 13px;font:500 13px var(--sans);color:#9d9d9d;background:var(--panel2);border-right:1px solid var(--panel);white-space:nowrap;flex:none}
+.ftabs button:hover{color:#fff}
+.ftab.on,.ftabs button.on{color:#fff;background:var(--bg);cursor:default}
+.ftab.on::before,.ftabs button.on::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--accent)}
+.ftabs button:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+.main:not(.web) .ftabs,.main.web #fname{display:none}
+.fi{font:800 9px/1 var(--mono);font-style:normal;padding:3px 4px;border-radius:3px;background:rgba(255,255,255,.07)}
+.fi.html{color:#e8834a}.fi.css{color:#5aa9e6}.fi.js{color:#e5c64d}
+.eacts{display:flex;align-items:center;gap:4px;margin-left:auto;padding:0 8px;flex:none}
+.etabs select{font:500 12px var(--sans);padding:4px 6px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--text);max-width:120px;margin-right:4px}
+.etabs select option{background:var(--panel2)}
+.ic{all:unset;cursor:pointer;position:relative;height:28px;min-width:28px;padding:0 7px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:600 12px var(--sans);color:#c5c5c5;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ic:hover{background:rgba(255,255,255,.09);color:#fff}.ic:active{transform:scale(.94)}
+.ic.run{background:var(--run);color:#fff;padding:0 11px}.ic.run:hover{filter:brightness(1.12);background:var(--run)}
+.ic.chk{background:var(--accent);color:#1E1E1E;padding:0 11px;font-weight:800}.ic.chk:hover{filter:brightness(1.08);background:var(--accent)}
+.ic.on{background:rgba(189,147,249,.2);color:var(--purple)}
+.ic:focus-visible,.btn:focus-visible,.tab:focus-visible,.sym button:focus-visible,.status button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.ic[disabled]{opacity:.5;pointer-events:none}
+.svg{flex:none}
+.main.web .ic .lbl{display:none}
+.ftabs .sh{display:none}
+@media(min-width:1000px) and (max-width:1299px){.ftabs .lg{display:none}.ftabs .sh{display:inline}.ftabs button{padding:0 10px}.main.web #copy{display:none}}
+@media(min-width:1000px) and (max-width:1149px){.ftabs .fi{display:none}}
+@media(min-width:1500px){.main.web .ic .lbl{display:inline}}
+.editor{position:relative;display:flex;height:clamp(230px,40vh,400px)}
+@media(min-width:1000px){.editor{height:auto;flex:1;min-height:220px}}
+.gut{white-space:pre;flex:none;width:54px;padding:12px 14px 12px 0;text-align:right;color:#6e7681;font:500 14px/22px var(--mono);user-select:none;overflow:hidden;background:var(--bg)}
+.gut b{color:#c6c6c6;font-weight:500}
+.codewrap{position:relative;flex:1;min-width:0}
+.curline{position:absolute;left:0;right:0;top:0;height:22px;background:rgba(255,255,255,.05);pointer-events:none;opacity:0}
+.codewrap:focus-within .curline{opacity:1}
+.codewrap pre,.codewrap textarea{position:absolute;inset:0;margin:0;padding:12px 16px;font:500 14px/22px var(--mono);white-space:pre;overflow:auto;border:0;tab-size:2;letter-spacing:0;font-variant-ligatures:none}
+.codewrap pre{color:#d4d4d4;pointer-events:none;overflow:hidden}
+.codewrap textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none;-webkit-text-fill-color:transparent}
+.codewrap textarea::selection{background:rgba(189,147,249,.35);-webkit-text-fill-color:transparent}
+.kw{color:var(--kw)}.ct{color:var(--ctrl)}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--cm);font-style:italic}.fn{color:var(--fn)}.tp{color:var(--teal)}
+.at{color:var(--attr)}.pn{color:var(--gray)}.sel{color:var(--selc)}
+.status{display:flex;align-items:center;gap:16px;height:24px;padding:0 12px;background:var(--bar);border-top:1px solid var(--line);font:500 11px var(--mono);color:var(--muted);flex:none;white-space:nowrap;overflow:hidden}
+.status .sp{margin-left:auto}
+.status button{all:unset;cursor:pointer;color:var(--muted);padding:2px 6px;border-radius:4px}
+.status button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.status button.on{color:var(--purple)}
+#st-msg{color:var(--ok)}
+.sym{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 10px;background:var(--panel);border-top:1px solid var(--line)}
+.sym::-webkit-scrollbar{display:none}
+.sym button{all:unset;cursor:pointer;flex:none;min-width:40px;height:38px;border-radius:6px;background:var(--panel2);color:var(--text);font:700 16px var(--mono);display:flex;align-items:center;justify-content:center;padding:0 10px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sym button:active{background:var(--purple);color:#1E1E1E}
+.sym button.tabk{font-size:12px;color:var(--muted)}
+@media(min-width:1000px){.sym{display:none}}
+@media(max-width:999px){.status{display:none}}
+/* ---- тугмаҳо ва майдонҳо ---- */
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;font-weight:700;font-size:14px;padding:9px 14px;transition:filter .1s,transform .1s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.run{background:var(--run);color:#fff;font-size:15px;padding:10px 18px}
+.btn.run:hover{filter:brightness(1.1)}
+.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13px;padding:8px 11px}
+.ghost:hover{background:#37373D}
+.ghost.on{border-color:var(--purple);color:var(--white);box-shadow:0 0 0 3px rgba(189,147,249,.18)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+select{font:600 13px var(--sans);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);color:var(--text);max-width:100%}
+/* ---- панелҳо: пешнамоиш ва консол ---- */
+.phead{display:flex;align-items:center;gap:6px;height:36px;padding:0 8px 0 14px;background:var(--panel);border-bottom:1px solid var(--bar);flex:none}
+.phead .lb{font:700 11px var(--mono);letter-spacing:1.5px;color:var(--muted)}
+.phead .ic{height:26px;min-width:26px;padding:0 6px}
+.vsep{width:1px;height:16px;background:var(--line);margin:0 4px}
+.pv{display:none;flex-direction:column;min-height:0;background:var(--bg)}
+.main.web .pv{display:flex}
+.pvbox{flex:1;min-height:260px;background:var(--panel2);display:flex;justify-content:center}
+.pvbox iframe{border:0;background:#fff;width:100%;height:100%;min-height:260px}
+.pvbox.mob iframe{width:375px;max-width:100%}
+.bdg{position:absolute;top:-3px;right:-3px;min-width:15px;height:15px;border-radius:8px;font:700 9px var(--mono);display:none;align-items:center;justify-content:center;padding:0 4px;color:#1E1E1E;pointer-events:none}
+.bdg.err{display:flex;background:var(--err);animation:pop .3s}.bdg.log{display:flex;background:var(--muted)}
+@keyframes pop{from{transform:scale(.4)}to{transform:scale(1)}}
+.con{background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+@media(min-width:1000px){.con{height:34%;min-height:170px}}
+.main:not(.web) #conx{display:none}
+.main.web .con{display:none}.main.web.con-open .con{display:flex}
+.out{padding:10px 14px;min-height:150px;max-height:300px;overflow:auto;font:500 13.5px/1.6 var(--mono);color:#cccccc;white-space:pre-wrap;word-break:break-word;flex:1}
+@media(min-width:1000px){.out{max-height:none}}
+.out .l{display:block}.out .e{color:var(--err)}.out .i{color:var(--muted)}
+.out .hint{display:block;margin-top:8px;padding:9px 12px;border-radius:6px;background:rgba(189,147,249,.10);border-left:3px solid var(--purple);color:var(--text);font:500 13.5px var(--sans)}
+.out .hint code{color:var(--str)}
+.checks{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.checks div{font-size:13.5px;font-weight:600;padding:8px 11px;border-radius:6px;background:var(--panel2);color:var(--text)}
+.checks .ok{background:rgba(78,201,176,.15);color:var(--ok)}.checks .no{background:rgba(244,135,113,.15);color:var(--err)}
+.win{background:rgba(78,201,176,.15);border:1px solid rgba(78,201,176,.4);color:var(--ok);border-radius:10px;padding:10px 12px;font-weight:700;font-size:14px;margin-top:10px}
+.sol{margin-top:10px}
+.sol pre{background:var(--bg);color:#d4d4d4;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font:500 13px/1.6 var(--mono);overflow:auto;margin-top:8px;white-space:pre}
+dialog{border:1px solid var(--line);border-radius:16px;padding:18px;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog img{width:100%;border-radius:8px;border:1px solid var(--line);margin:10px 0}
+dialog p{font-size:14px;line-height:1.5;color:#cccccc}
+dialog b{color:#fff}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:60}
+.mnav{display:none}
+/* ---- ҳолати Web: редактор | пешнамоиш (консол бо пахши нишона мекушояд) ---- */
+@media(min-width:1000px){
+  .main.web:not(.free){grid-template-columns:minmax(280px,330px) 1fr}
+  .main.web .work{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"ed pv";overflow:hidden}
+  .main.web.con-open .work{grid-template-rows:minmax(0,1fr) minmax(150px,32vh);grid-template-areas:"ed pv" "ed con"}
+  .main.web .ed{grid-area:ed;border-right:1px solid var(--line)}
+  .main.web .pv{grid-area:pv}
+  .main.web .con{grid-area:con;height:auto}
+  .main.web .out{min-height:0}
+}
+@media(max-width:999px){
+  .main.web .left,.main.web .work{display:none}
+  .main.web[data-pane=lesson] .left{display:flex}
+  .main.web[data-pane=code] .work,.main.web[data-pane=result] .work{display:flex}
+  .main.web[data-pane=code] .pv,.main.web[data-pane=code] .con{display:none}
+  .main.web[data-pane=result] .ed,.main.web[data-pane=result] .sym{display:none}
+  .main.web[data-pane=result] .pvbox{min-height:55vh}
+  .main.web .editor{height:clamp(280px,58vh,560px)}
+  body.webmode .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  body.webmode.freemode #mn-lesson{display:none}
+  .mnav button{all:unset;cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;font:600 11px var(--sans);color:var(--muted);touch-action:manipulation}
+  .mnav button.on{color:var(--white);box-shadow:inset 0 2px 0 var(--purple)}
+  body.webmode .app{padding-bottom:56px}
+}
+@media(max-width:600px){
+  .ic .lbl{display:none}.ic{height:32px;min-width:32px}
+  .ftab,.ftabs button{padding:0 11px;font-size:12px}
+  .etabs select{max-width:92px}
+}
+</style>
+<style>/* Видео-режим IDE (1280×720 css → 1920×1080) + слайды «VS Code Dark + бунафш» (brand/STYLE.md). Бе субтитр ва бе хати пешрафт: онро худи YouTube мекунад. */
+:root{--bg:#1E1E1E;--panel:#252526;--panel2:#2D2D30;--line:#3C3C3C;--text:#D4D4D4;--muted:#8B949E;--white:#fff;
+  --kw:#569CD6;--str:#CE9178;--num:#B5CEA8;--fn:#DCDCAA;--cm:#6A9955;--teal:#4EC9B0;--cyan:#4FC1FF;--err:#F48771;
+  --purple:#BD93F9;--pink:#FF79C6;--accent:linear-gradient(90deg,#BD93F9,#FF79C6);--box1:#E2B070;--box2:#C8975A}
+*{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+html,body{overflow:hidden;width:1280px;height:720px;background:#1E1E1E}
+#stagewrap{position:fixed;left:0;top:0;width:1280px;height:720px;overflow:hidden;background:#1e1e1e}
+.app{width:1280px;height:720px;min-height:0!important;transform-origin:0 0}
+.main{height:671px!important}
+.tab{font-size:14px!important}
+.codewrap pre,.codewrap textarea{font:500 20px/1.6 var(--mono)!important;padding:14px 18px!important}
+.gut{font:500 20px/1.6 var(--mono)!important;padding:14px 10px 14px 0!important;width:58px!important}
+.out{font:500 20px/1.55 var(--mono)!important;padding:12px 18px!important}
+.out .hint{font:500 17px/1.45 Inter,sans-serif!important}
+.con{height:30%!important;min-height:0!important}
+.card p,.card li{font-size:15px!important}
+.checks div{font-size:15px!important}
+.win{font-size:15px!important}
+#side button[data-i][style*="1F3F44"]{background:#BD93F9!important;color:#1E1E1E!important;border-color:#BD93F9!important}
+textarea{caret-color:transparent!important}
+canvas#fx{z-index:60}
+
+/* оверлей поверх IDE */
+#ovl{position:fixed;inset:0;pointer-events:none;z-index:70}
+.mk{position:absolute;border:3px solid #BD93F9;border-radius:7px;box-shadow:0 0 0 4px rgba(189,147,249,.18),0 0 24px rgba(189,147,249,.35)}
+.mk.g{border-color:#4ec9b0;box-shadow:0 0 0 4px rgba(78,201,176,.18),0 0 24px rgba(78,201,176,.35)}
+.mk.r{border-color:#f48771;box-shadow:0 0 0 4px rgba(244,135,113,.18),0 0 24px rgba(244,135,113,.35)}
+.mk.c{border-color:#4fc1ff;box-shadow:0 0 0 4px rgba(79,193,255,.18),0 0 24px rgba(79,193,255,.35)}
+.rg{position:absolute;border:3px solid #BD93F9;border-radius:10px;box-shadow:0 0 0 5px rgba(189,147,249,.2),0 0 30px rgba(189,147,249,.4)}
+.rg.g{border-color:#4ec9b0;box-shadow:0 0 0 5px rgba(78,201,176,.2),0 0 30px rgba(78,201,176,.4)}
+.rg.r{border-color:#f48771;box-shadow:0 0 0 5px rgba(244,135,113,.2),0 0 30px rgba(244,135,113,.4)}
+.rg.c{border-color:#4fc1ff;box-shadow:0 0 0 5px rgba(79,193,255,.2),0 0 30px rgba(79,193,255,.4)}
+.mk b,.rg b{position:absolute;display:block;white-space:nowrap;font:800 19px Inter,sans-serif;color:#1e1e1e}
+.mk b{left:50%;bottom:calc(100% + 12px);margin-left:-300px;width:600px;text-align:center;transform-origin:50% 100%}
+.mk.below b{bottom:auto;top:calc(100% + 12px);transform-origin:50% 0}
+.rg b{right:0;bottom:calc(100% + 10px)}
+.rg.below b{bottom:auto;top:calc(100% + 10px)}
+.mk b>i,.rg b>i{font-style:normal;display:inline-block;padding:7px 14px;border-radius:999px;background:linear-gradient(90deg,#BD93F9,#FF79C6);box-shadow:0 6px 18px rgba(0,0,0,.55)}
+.mk.g b>i,.rg.g b>i{background:#4ec9b0}.mk.r b>i,.rg.r b>i{background:#f48771}.mk.c b>i,.rg.c b>i{background:#4fc1ff}
+.caret{position:absolute;width:3px;background:#fff;border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,.6)}
+.chip{position:absolute;left:640px;top:360px;align-items:center;gap:14px;padding:22px 34px;border-radius:18px;background:rgba(37,37,38,.97);border:2px solid #3c3c3c;color:#fff;font:800 34px Inter,sans-serif;box-shadow:0 30px 80px rgba(0,0,0,.65);white-space:nowrap}
+.chip small{display:block;font:600 18px Inter,sans-serif;color:#8b949e;margin-top:6px}
+.chip.card{flex-direction:column;align-items:flex-start;gap:0;border-color:#BD93F9;box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 40px rgba(189,147,249,.25)}
+.chip.side{font-size:24px;padding:14px 22px;border-radius:14px}
+.chip.yel{background:linear-gradient(90deg,#BD93F9,#FF79C6);color:#1e1e1e;border-color:transparent}
+.chip.red{background:#f48771;color:#1e1e1e;border-color:#f48771}
+.chip.grn{background:#4ec9b0;color:#1e1e1e;border-color:#4ec9b0}
+.chip .big{font-size:90px;font-family:var(--mono);color:#BD93F9;line-height:1}
+#ptr{position:absolute;width:30px;height:30px;margin:-3px 0 0 -4px;z-index:5;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+#rip{position:absolute;width:70px;height:70px;border-radius:50%;border:4px solid #fff;z-index:4}
+
+/* ---------- слайды ---------- */
+.scene{position:fixed;left:0;top:0;width:1280px;height:720px;background:#1E1E1E;z-index:50;visibility:hidden;overflow:hidden;color:var(--text);font-family:Inter,sans-serif;transform-origin:50% 50%}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 22%,rgba(189,147,249,.16),transparent 42%),radial-gradient(circle at 12% 88%,rgba(255,121,198,.07),transparent 45%)}
+.scene>*{position:absolute}
+.kicker{left:60px;top:40px;font:800 14px var(--mono);letter-spacing:2px;color:var(--purple);text-transform:uppercase}
+.kicker b{background:var(--panel2);color:var(--white);border:1px solid var(--line);border-radius:6px;padding:4px 9px;margin-right:10px}
+.h1{font-weight:900;font-size:96px;letter-spacing:-2px;line-height:1;color:var(--white)}
+.h2{font-weight:900;font-size:46px;letter-spacing:-.5px;line-height:1.05;color:var(--white)}
+.sub{font-weight:600;font-size:26px;color:var(--muted)}
+.acc{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:12px 22px;font:700 22px Inter,sans-serif;white-space:nowrap}
+.pill.accent{background:var(--accent);color:#1E1E1E;border:0}
+.pill.ok{background:rgba(78,201,176,.15);color:var(--teal);border-color:rgba(78,201,176,.4)}
+.pill.err{background:rgba(244,135,113,.15);color:var(--err);border-color:rgba(244,135,113,.4)}
+.codechip{font:700 26px var(--mono);font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px 20px;white-space:nowrap}
+.codechip .k{color:var(--kw)}.codechip .s{color:var(--str)}.codechip .n{color:var(--num)}.codechip .f{color:var(--fn)}.codechip .c{color:var(--cm)}.codechip .t{color:var(--teal)}.codechip .e{color:var(--err)}
+.card3{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.card3 .emo{font-size:44px}
+.card3 .t{font:800 26px Inter,sans-serif;color:var(--white)}
+.card3 .u{font:600 19px Inter,sans-serif;color:var(--muted);line-height:1.4}
+.card3.hl{border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 30px rgba(189,147,249,.25)}
+.typing::after{content:"|";color:var(--purple);margin-left:2px}
+.t-ok{color:var(--teal)}.t-err{color:var(--err)}
+/* қуттии картонии силсила */
+.box{width:260px;height:270px}
+.box .back{position:absolute;left:0;top:70px;width:260px;height:190px;border-radius:14px;background:#C8975A}
+.box .front{position:absolute;left:0;top:130px;width:260px;height:130px;border-radius:6px 6px 18px 18px;background:linear-gradient(#E2B070,#C8975A);z-index:3;display:flex;align-items:center;justify-content:center}
+.box .tag{background:#fff;border-radius:10px;padding:8px 22px;font:800 34px var(--mono);box-shadow:0 4px 10px rgba(0,0,0,.25);color:#1E1E1E}
+.box .num{position:absolute;left:65px;top:56px;width:130px;height:90px;border-radius:20px;background:var(--panel2);border:2px solid var(--purple);color:#fff;font:900 52px var(--mono);display:flex;align-items:center;justify-content:center;z-index:2}
+/* дарахти қарор */
+.node{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 24px;font:800 30px Inter,sans-serif;color:var(--white);text-align:center}
+.node small{display:block;font:600 18px Inter,sans-serif;color:var(--muted);margin-top:4px}
+.node.yes{border-color:rgba(78,201,176,.6);box-shadow:0 0 30px rgba(78,201,176,.15)}
+.node.no{border-color:rgba(244,135,113,.6);box-shadow:0 0 30px rgba(244,135,113,.15)}
+.node .big{font-size:64px;display:block;line-height:1.1}
+.row{display:flex;align-items:center;gap:22px;height:68px;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 22px}
+.row .op{font:800 34px var(--mono);color:var(--white);min-width:96px;text-align:center;background:var(--panel2);border-radius:10px;padding:6px 10px;font-variant-ligatures:none}
+.row .mean{font:700 24px Inter,sans-serif;color:var(--text);flex:1}
+.row .res{font:800 24px var(--mono);min-width:230px;text-align:right}
+.row.hit{padding:0;border-color:var(--purple);box-shadow:0 0 0 4px rgba(189,147,249,.16),0 0 26px rgba(189,147,249,.25)}
+body.noide canvas#fx{display:none}
+.rg.rt b{left:auto;right:0}.rg b{left:0;right:auto}
+
+.rg.in b{right:14px;left:auto;bottom:auto;top:10px}
+
+.codewrap pre,.codewrap textarea,.gut,.out,.out .l{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0!important}
+
+/* рафи рӯйхат (array) */
+.shelf{display:flex;gap:18px}
+.slot{width:190px;text-align:center}
+.slot .idx{font:800 34px var(--mono);color:var(--purple);margin-bottom:10px;height:44px}
+.slot .cell{height:130px;border-radius:16px;background:linear-gradient(#E2B070,#C8975A);display:flex;align-items:center;justify-content:center;font:800 30px Inter,sans-serif;color:#1E1E1E;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.slot.hit .cell{box-shadow:0 0 0 4px #BD93F9,0 0 30px rgba(189,147,249,.5)}
+.tinybox{width:78px;height:60px;border-radius:10px;background:linear-gradient(#E2B070,#C8975A);display:flex;align-items:center;justify-content:center;font:800 17px var(--mono);color:#1E1E1E;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+
+
+
+/* код переходит на новую строку, а не уходит под предпросмотр */
+.codewrap pre,.codewrap textarea{white-space:pre-wrap!important;overflow-wrap:anywhere!important;overflow:hidden!important}
+.gut{overflow:hidden!important}
+.gut div{box-sizing:border-box}
+</style></head>
+<body>
+<canvas id="fx"></canvas>
+<dialog id="dlg"><h2 style="font-size:20px;font-weight:800;color:#fff">🎓 Шаҳодатнома</h2><p id="dp"></p><img id="dimg" alt="Шаҳодатнома"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn run" id="dl" download="shahodatnoma.png" style="text-decoration:none">⬇ Зеркашӣ</a><button class="btn ghost" id="dclose">Пӯшидан</button></div></dialog>
+<div id="ovl"><svg id="ptr" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.6L21 11z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg><div id="rip"></div></div><section class="scene" id="s-hook">
+<div class="kicker" data-a="down;0.2"><b>ДАРСИ 12</b>БАРНОМАСОЗӢ АЗ СИФР · JAVASCRIPT</div>
+<div class="h1" style="left:60px;top:70px;font-size:96px;line-height:1.05" data-a="stamp;0.6">САЙТ ЧӢ ТАВР<br>КОР МЕКУНАД?</div>
+<div style="left:60px;top:290px;width:640px;height:300px;border-radius:16px;background:#2D2D30;border:1px solid #3C3C3C;box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden" data-a="up;1.2">
+  <div style="background:#3a3a3d;padding:10px 14px;display:flex;gap:10px;align-items:center"><span style="color:#8B949E;font:600 16px Inter">🔒</span><span class="mono" style="background:#1E1E1E;border-radius:999px;padding:8px 18px;color:#fff;font-size:22px;min-width:360px" data-tw="1.8;2.2" data-text="yunusov.tj"></span><span style="margin-left:auto" data-a="pop;4.6"><span class="pill accent" style="font-size:18px;padding:6px 14px">Enter ↵</span></span></div>
+  <div style="padding:34px 30px" data-a="up;6.4"><div style="font:800 44px Inter;color:#fff">Салом!</div><div style="font:600 22px Inter;color:#8B949E;margin-top:10px">Ман барномасоз мешавам.</div></div>
+</div>
+<div style="left:730px;top:300px" data-a="pop;8.0"><span class="pill ok" style="font-size:28px;padding:14px 26px">⏱ ≈ як лаҳза</span></div>
+<div style="left:730px;top:380px" data-a="pop;9.5"><span class="pill err" style="font-size:26px;padding:14px 26px">❓ даҳҳо қадам дар ин лаҳза</span></div>
+<div style="left:730px;top:450px" data-a="left;15.0"><span class="pill left" style="font-size:22px;padding:14px 26px">📍 суроға · домен</span></div>
+<div style="left:730px;top:504px" data-a="left;18.4"><span class="pill left" style="font-size:22px;padding:14px 26px">🖥️ сервер · 📨 ҷавоб</span></div>
+<div style="left:730px;top:558px" data-a="left;21.0"><span class="pill left" style="font-size:22px;padding:14px 26px">📄 се файл аз дарси 11</span></div>
+<div class="codechip" style="left:730px;top:618px;font-size:24px;" data-a="pop;25.0">function server(req) { … }</div>
+<div style="left:60px;top:640px" data-a="pop;36.4"><span class="pill accent" style="">🎯 Дар охир: санҷиши нав</span></div>
+</section><section class="scene" id="s-rest">
+<div class="kicker" data-a="down;40.300000000000004"><b>01</b>ОБРАЗИ РЕСТОРАН</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;40.7" data-o="71.7" data-ok="fade">Дар ресторан нишастаед…</div>
+<div class="node " style="left:60px;top:190px;width:330px" data-a="pop;40.8" data-o="71.7" data-ok="fade"><span class="big">🙋</span>меҳмон<small>шумо</small></div>
+<div class="node " style="left:475px;top:190px;width:330px" data-a="pop;46.4" data-o="71.7" data-ok="fade"><span class="big">🛎️</span>официант<small>мебарад ва меорад</small></div>
+<div class="node " style="left:890px;top:190px;width:330px" data-a="pop;43.6" data-o="71.7" data-ok="fade"><span class="big">🧑‍🍳</span>ошхона<small>ош мепазад</small></div>
+<div class="mono" style="left:402px;top:230px;font-size:42px;color:var(--purple)" data-a="pop;48.4" data-o="71.7" data-ok="fade">→</div>
+<div class="mono" style="left:818px;top:230px;font-size:42px;color:var(--purple)" data-a="pop;48.9" data-o="71.7" data-ok="fade">→</div>
+<div style="left:60px;top:400px" data-a="left;53.8" data-o="71.7" data-ok="fade"><span class="pill accent" style="">🌐 меҳмон = браузер (клиент)</span></div>
+<div style="left:60px;top:470px" data-a="left;60.8" data-o="71.7" data-ok="fade"><span class="pill accent" style="">🖥️ ошхона = сервер</span></div>
+<div style="left:60px;top:540px" data-a="left;67.1" data-o="71.7" data-ok="fade"><span class="pill accent" style="">🛎️ официант = интернет</span></div>
+<div style="left:560px;top:420px" data-a="pop;46.7" data-o="52.0" data-ok="fade"><span class="pill" style="font-size:26px;padding:14px 26px">💬 «Ман ошро мехоҳам»</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;71.9" data-o="86.8" data-ok="fade">Ду калимаи асосӣ</div>
+<div class="card3 hl" style="left:60px;top:200px;width:560px;height:260px" data-a="up;73.8" data-o="86.8" data-ok="fade"><div class="emo">❓</div><div class="t">ДАРХОСТ</div><div class="u">вақте ки браузер чизе мепурсад</div></div>
+<div class="card3 hl" style="left:660px;top:200px;width:560px;height:260px" data-a="up;77.2" data-o="86.8" data-ok="fade"><div class="emo">📦</div><div class="t">ҶАВОБ</div><div class="u">вақте ки сервер чизе медиҳад</div></div>
+<div style="left:60px;top:520px" data-a="stamp;83.1" data-o="86.8" data-ok="fade"><span class="pill accent" style="font-size:34px;padding:18px 36px">сайт = дархост + ҷавоб</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;87.0">Ёдатон ҳаст дарси 11?</div>
+<div class="codechip" style="left:60px;top:230px;font-size:30px;" data-a="pop;89.1"><span class="t">index.html</span></div>
+<div class="codechip" style="left:60px;top:310px;font-size:30px;" data-a="pop;90.6"><span class="t">style.css</span></div>
+<div class="codechip" style="left:60px;top:390px;font-size:30px;" data-a="pop;92.0"><span class="t">script.js</span></div>
+<div style="left:60px;top:500px" data-a="left;93.3"><span class="pill ok" style="font-size:26px;padding:14px 26px">📨 ҳамин се файл дар ҷавоб меоянд</span></div>
+</section><section class="scene" id="s-url">
+<div class="kicker" data-a="down;98.1"><b>02</b>СУРОҒА</div>
+<div class="h2" style="left:60px;top:90px;font-size:44px" data-a="up;98.5">Суроға аз чанд қисм иборат аст</div>
+<div class="codechip" style="left:60px;top:190px;font-size:46px;padding:22px 30px;white-space:nowrap" data-a="up;100.5">
+ <span style="color:var(--kw)" data-a="fade;108.2">https://</span><span style="color:var(--str)" data-a="fade;111.0">yunusov.tj</span><span style="color:var(--fn)" data-a="fade;114.6">/ide/</span><span style="color:var(--teal)" data-a="fade;150.9">#dars-12</span></div>
+<div style="left:90px;top:298px;width:221px;text-align:center" data-a="up;117.9"><span class="pill" style="font-size:22px;border-color:var(--kw)">протокол</span></div>
+<div style="left:311px;top:298px;width:276px;text-align:center" data-a="up;132.2"><span class="pill" style="font-size:22px;border-color:var(--str)">домен</span></div>
+<div style="left:587px;top:298px;width:138px;text-align:center" data-a="up;139.2"><span class="pill" style="font-size:22px;border-color:var(--fn)">роҳ</span></div>
+<div style="left:725px;top:298px;width:221px;text-align:center" data-a="up;150.9"><span class="pill" style="font-size:22px;border-color:var(--teal)">ҳаш</span></div>
+<div style="left:60px;top:372px" data-a="left;122.0" data-o="127.4" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">💬 «забон»-и гуфтугӯ: бо кадом қоидаҳо</span></div>
+<div style="left:60px;top:372px" data-a="left;127.6" data-o="132.0" data-ok="fade"><span class="pill ok" style="font-size:22px;padding:14px 26px">🔒 s — бехатар (баъд мегӯем)</span></div>
+<div style="left:60px;top:372px" data-a="left;136.4" data-o="139.0" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">🏙️ номи сайт, мисли номи шаҳр</span></div>
+<div style="left:60px;top:372px" data-a="left;142.2" data-o="147.0" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">📍 ҷои дақиқ: мисли кӯча ва хона</span></div>
+<div style="left:60px;top:372px" data-a="left;147.2" data-o="150.8" data-ok="fade"><span class="pill ok" style="font-size:22px;padding:14px 26px">🏠 роҳ нест → саҳифаи асосӣ</span></div>
+<div style="left:60px;top:372px" data-a="left;156.0" data-o="159.5" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">↘ ба сервер намеравад: браузер худаш</span></div>
+<div class="card3 " style="left:60px;top:450px;width:360px;height:200px" data-a="up;160.2"><div class="emo">🏙️</div><div class="t">шаҳр</div><div class="u">= домен</div></div>
+<div class="card3 " style="left:450px;top:450px;width:360px;height:200px" data-a="up;162.4"><div class="emo">🛣️</div><div class="t">кӯча</div><div class="u">= роҳ</div></div>
+<div class="card3 " style="left:840px;top:450px;width:360px;height:200px" data-a="up;163.7"><div class="emo">🏠</div><div class="t">хона</div><div class="u">= саҳифа ё файл</div></div>
+<div style="left:850px;top:372px" data-a="stamp;164.6"><span class="pill accent" style="font-size:24px">аз бузург ба хурд</span></div>
+</section><section class="scene" id="s-dns">
+<div class="kicker" data-a="down;167.0"><b>03</b>ДОМЕН ВА DNS</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;167.4" data-o="188.8" data-ok="fade">Номҳо ≠ рақамҳо</div>
+<div style="left:60px;top:200px" data-a="left;168.3" data-o="188.8" data-ok="fade"><span class="pill err" style="font-size:26px;padding:14px 26px">🧠 компютерҳо номҳоро намефаҳманд</span></div>
+<div style="left:60px;top:272px" data-a="left;170.6" data-o="188.8" data-ok="fade"><span class="pill ok" style="font-size:26px;padding:14px 26px">🔢 онҳо танҳо рақамҳоро мефаҳманд</span></div>
+<div class="codechip" style="left:60px;top:360px;font-size:54px;" data-a="pop;173.0" data-o="188.8" data-ok="fade">203.0.113.10</div>
+<div style="left:60px;top:470px" data-a="left;173.4" data-o="188.8" data-ok="fade"><span class="pill left" style="font-size:24px;padding:14px 26px">IP — суроғаи рақамии сервер (мисол)</span></div>
+<div style="left:60px;top:536px" data-a="left;182.8" data-o="188.8" data-ok="fade"><span class="pill err" style="font-size:24px;padding:14px 26px">😮‍💨 IP-ро ёд кардан душвор</span></div>
+<div style="left:60px;top:602px" data-a="left;185.6" data-o="188.8" data-ok="fade"><span class="pill ok" style="font-size:24px;padding:14px 26px">🏷️ домен — барои одам</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;189.0">Пеш аз дархост — як савол</div>
+<div class="node " style="left:60px;top:210px;width:300px" data-a="pop;189.4"><span class="big">🌐</span>браузер<small></small></div>
+<div class="node " style="left:490px;top:210px;width:300px" data-a="pop;194.5"><span class="big">📖</span>DNS<small>китоби телефон</small></div>
+<div class="node " style="left:920px;top:210px;width:300px" data-a="pop;204.2"><span class="big">🖥️</span>сервер<small>203.0.113.10</small></div>
+<div style="left:70px;top:420px" data-a="pop;192.3"><span class="pill" style="font-size:24px">❓ yunusov.tj = ?</span></div>
+<div style="left:420px;top:420px" data-a="pop;202.0"><span class="pill ok" style="font-size:24px">💬 203.0.113.10</span></div>
+<div class="mono" style="left:372px;top:256px;font-size:44px;color:var(--purple)" data-a="pop;192.6">→</div>
+<div class="mono" style="left:802px;top:256px;font-size:44px;color:var(--purple)" data-a="pop;204.3">→</div>
+<div style="left:60px;top:510px" data-a="left;200.0"><span class="pill accent" style="font-size:26px;padding:14px 26px">📖 ном медиҳед — рақам мегиред</span></div>
+<div style="left:60px;top:580px" data-a="left;207.4"><span class="pill left" style="font-size:22px;padding:14px 26px">⏱ қадами 1 — як миллисония нагузашта</span></div>
+<div style="left:700px;top:580px" data-a="stamp;212.5"><span class="pill ok" style="font-size:24px">домен → одам · рақам → компютер</span></div>
+</section><section class="scene" id="s-req">
+<div class="kicker" data-a="down;219.4"><b>04</b>ДАРХОСТ</div>
+<div class="h2" style="left:60px;top:90px;font-size:44px" data-a="up;219.8">Дархост — паёми браузер ба сервер</div>
+<div class="node " style="left:60px;top:230px;width:280px" data-a="pop;220.3"><span class="big">🌐</span>браузер<small></small></div>
+<div class="mono" style="left:360px;top:280px;font-size:50px;color:var(--purple)" data-a="pop;221.8">✉️ →</div>
+<div class="node " style="left:540px;top:230px;width:280px" data-a="pop;222.4"><span class="big">🖥️</span>сервер<small></small></div>
+<div class="card3 hl" style="left:60px;top:450px;width:540px;height:170px" data-a="up;225.4"><div class="emo">🛠️</div><div class="t">усул (method)</div><div class="u">чӣ мехоҳем</div></div>
+<div class="card3 hl" style="left:640px;top:450px;width:540px;height:170px" data-a="up;227.0"><div class="emo">📍</div><div class="t">роҳ (url)</div><div class="u">аз куҷо</div></div>
+</section><section class="scene" id="s-gp">
+<div class="kicker" data-a="down;246.7"><b>05</b>GET ВА POST</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;247.1">Ду усули асосӣ</div>
+<div class="card3 hl" style="left:60px;top:200px;width:560px;height:330px" data-a="up;248.5"><div class="emo">📥</div><div class="t">GET — «ба ман деҳ»</div><div class="u">саҳифа мекушоем, сурат мебинем</div></div>
+<div class="card3 hl" style="left:660px;top:200px;width:560px;height:330px" data-a="up;254.2"><div class="emo">📤</div><div class="t">POST — «ман мефиристам»</div><div class="u">шакл, тугмаи «Лайк»</div></div>
+<div class="codechip" style="left:90px;top:400px;font-size:30px;" data-a="pop;250.4">GET /</div>
+<div class="codechip" style="left:690px;top:400px;font-size:30px;" data-a="pop;264.9">POST /like</div>
+<div style="left:690px;top:470px" data-a="left;257.0"><span class="pill left" style="font-size:22px;padding:14px 26px">📝 шакл → «Фиристодан»</span></div>
+<div style="left:90px;top:470px" data-a="left;250.8"><span class="pill left" style="font-size:22px;padding:14px 26px">🖼️ сурат · 📄 саҳифа</span></div>
+<div style="left:60px;top:580px" data-a="stamp;270.0"><span class="pill accent" style="font-size:30px;padding:16px 32px">GET — мегирем · POST — мефиристем</span></div>
+</section><section class="scene" id="s-srv">
+<div class="kicker" data-a="down;273.8"><b>06</b>СЕРВЕР ДАРХОСТРО МЕГИРАД</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;274.2">Сервер дархостро гирифт</div>
+<div class="node " style="left:60px;top:220px;width:330px" data-a="pop;274.0"><span class="big">🖥️</span>сервер<small>ҷавоб тайёр мекунад…</small></div>
+<div class="codechip" style="left:450px;top:250px;font-size:34px;" data-a="pop;275.2">GET /about</div>
+<div class="mono" style="left:410px;top:252px;font-size:44px;color:var(--purple)" data-a="pop;275.0">←</div>
+<div style="left:60px;top:420px" data-a="left;278.0"><span class="pill left" style="font-size:26px;padding:14px 26px">🏢 сервери воқеӣ — барномаи калон</span></div>
+<div style="left:60px;top:490px" data-a="left;281.3"><span class="pill ok" style="font-size:26px;padding:14px 26px">🧪 мо — намунаи хурд бо JavaScript</span></div>
+<div style="left:60px;top:580px" data-a="stamp;286.2"><span class="pill accent" style="font-size:28px;padding:16px 32px">сервери воқеӣ нест — аммо принсип ҳамон</span></div>
+</section><section class="scene" id="s-stat">
+<div class="kicker" data-a="down;354.3"><b>07</b>СТАТУС-КОД</div>
+<div class="h2" style="left:60px;top:90px;font-size:44px" data-a="up;354.7">Дар ҷавоб ҳамеша як рақам ҳаст</div>
+<div class="card3 hl" style="left:60px;top:190px;width:275px;height:300px" data-a="up;361.5"><div class="emo">✅</div><div class="t">200</div><div class="u">ҳамааш хуб</div></div>
+<div class="card3 " style="left:355px;top:190px;width:275px;height:300px" data-a="up;363.2"><div class="emo">🔍</div><div class="t">404</div><div class="u">саҳифа ёфт нашуд: суроға нодуруст ё файл нест</div></div>
+<div class="card3 " style="left:650px;top:190px;width:275px;height:300px" data-a="up;368.4"><div class="emo">🔥</div><div class="t">500</div><div class="u">хатои худи сервер — хатои ошхона</div></div>
+<div class="card3 " style="left:945px;top:190px;width:275px;height:300px" data-a="up;376.8"><div class="emo">↪️</div><div class="t">301</div><div class="u">саҳифа ба ҷои дигар гузашт — браузер худаш меравад</div></div>
+<div style="left:60px;top:540px" data-a="stamp;388.6"><span class="pill accent" style="font-size:28px;padding:16px 32px">404 — танҳо ҷавоби сервер: «Чунин чизе надорам»</span></div>
+</section><section class="scene" id="s-three">
+<div class="kicker" data-a="down;394.0"><b>08</b>БРАУЗЕР ҶАМЪ МЕКУНАД</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;394.4" data-o="429.8" data-ok="fade">Се файл — як саҳифа</div>
+<div class="node " style="left:60px;top:200px;width:300px" data-a="pop;394.5" data-o="429.8" data-ok="fade"><span class="big">🌐</span>браузер<small></small></div>
+<div class="node " style="left:920px;top:200px;width:300px" data-a="pop;395.0" data-o="429.8" data-ok="fade"><span class="big">🖥️</span>сервер<small></small></div>
+<div style="left:400px;top:215px" data-a="left;399.9" data-o="429.8" data-ok="fade"><span class="pill ok" style="font-size:28px;padding:14px 26px">← index.html</span></div>
+<div class="codechip" style="left:400px;top:290px;font-size:24px;" data-a="pop;408.2" data-o="429.8" data-ok="fade">&lt;link href="<span class="s">style.css</span>"&gt;</div>
+<div class="codechip" style="left:400px;top:350px;font-size:24px;" data-a="pop;409.8" data-o="429.8" data-ok="fade">&lt;script src="<span class="s">script.js</span>"&gt;</div>
+<div style="left:400px;top:430px" data-a="left;413.4" data-o="429.8" data-ok="fade"><span class="pill accent" style="font-size:26px;padding:14px 26px">→ style.css? → script.js?</span></div>
+<div style="left:400px;top:500px" data-a="left;416.3" data-o="429.8" data-ok="fade"><span class="pill ok" style="font-size:26px;padding:14px 26px">← style.css ← script.js</span></div>
+<div style="left:60px;top:590px" data-a="left;421.2" data-o="429.8" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">🧱 HTML — деворҳо</span></div>
+<div style="left:430px;top:590px" data-a="left;422.8" data-o="429.8" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">🎨 CSS — ранг</span></div>
+<div style="left:740px;top:590px" data-a="left;424.8" data-o="429.8" data-ok="fade"><span class="pill left" style="font-size:22px;padding:14px 26px">⚡ JS — барқ</span></div>
+<div style="left:960px;top:590px" data-a="stamp;427.7" data-o="429.8" data-ok="fade"><span class="pill ok" style="font-size:22px">саҳифаи зинда 🏠</span></div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;429.9">F12 → Network</div>
+<div style="left:60px;top:170px;width:1160px;height:330px;background:#1E1E1E;border:1px solid #3C3C3C;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden" data-a="up;431.2">
+ <div style="display:flex;gap:26px;padding:12px 20px;background:#2D2D30;color:#8B949E;font:700 18px Inter"><span style="color:#fff">Elements</span><span>Console</span><span style="color:#BD93F9;border-bottom:3px solid #BD93F9">Network</span></div>
+ <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;padding:12px 20px;color:#8B949E;font:700 17px Inter;border-bottom:1px solid #3C3C3C"><span>Name</span><span>Status</span><span>Size</span><span>Time</span></div>
+ <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;padding:16px 20px;font:600 22px var(--mono);border-bottom:1px solid #2d2d30" data-a="fade;436.4"><span style="color:var(--teal)">index.html</span><span style="color:#4EC9B0">200</span><span>…</span><span>…</span></div>
+ <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;padding:16px 20px;font:600 22px var(--mono);border-bottom:1px solid #2d2d30" data-a="fade;437.6"><span style="color:var(--teal)">style.css</span><span style="color:#4EC9B0">200</span><span>…</span><span>…</span></div>
+ <div style="display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;padding:16px 20px;font:600 22px var(--mono)" data-a="fade;438.6"><span style="color:var(--teal)">script.js</span><span style="color:#4EC9B0">200</span><span>…</span><span>…</span></div>
+</div>
+<div style="left:60px;top:530px" data-a="pop;444.1"><span class="pill err" style="font-size:24px">🧪 схема — намунавӣ; ҳақиқиашро дар браузери худатон мебинед</span></div>
+<div style="left:60px;top:600px" data-a="pop;450.0"><span class="pill accent" style="font-size:26px">⌨️ F12 — «рентген»-и ҳар сайт</span></div>
+</section><section class="scene" id="s-fb">
+<div class="kicker" data-a="down;458.70000000000005"><b>09</b>ФРОНТЕНД ВА БЕКЕНД</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;459.1">Дар ресторан: зал ва ошхона</div>
+<div class="card3 hl" style="left:60px;top:190px;width:560px;height:340px" data-a="up;462.6"><div class="emo">🙋</div><div class="t">ЗАЛ → фронтенд</div><div class="u">он чизе, ки мебинед ва пахш мекунед</div></div>
+<div class="card3 " style="left:660px;top:190px;width:560px;height:340px" data-a="up;480.6"><div class="emo">🧑‍🍳</div><div class="t">ОШХОНА → бекенд</div><div class="u">он чизе, ки намебинед</div></div>
+<div class="codechip" style="left:90px;top:400px;font-size:26px;" data-a="pop;473.6"><span class="t">HTML</span> · <span class="t">CSS</span> · <span class="f">JS</span></div>
+<div style="left:90px;top:470px" data-a="left;477.5"><span class="pill ok" style="font-size:22px;padding:14px 26px">дар браузер</span></div>
+<div style="left:690px;top:350px" data-a="left;484.1"><span class="pill left" style="font-size:22px;padding:14px 26px">📨 қабули дархост</span></div>
+<div style="left:690px;top:404px" data-a="left;485.8"><span class="pill left" style="font-size:22px;padding:14px 26px">🧮 ҳисоб (масалан лайк)</span></div>
+<div style="left:690px;top:458px" data-a="left;488.0"><span class="pill left" style="font-size:22px;padding:14px 26px">🗄️ база: нигоҳ доштани маълумот</span></div>
+<div style="left:60px;top:570px" data-a="stamp;497.9"><span class="pill accent" style="font-size:28px;padding:16px 32px">JavaScript — ҳам дар браузер, ҳам дар сервер</span></div>
+<div style="left:960px;top:640px" data-a="pop;514.3"><span class="pill ok" style="font-size:26px">full-stack 🧑‍💻</span></div>
+</section><section class="scene" id="s-like">
+<div class="kicker" data-a="down;518.1"><b>10</b>САЙТИ ЗИНДА</div>
+<div class="h2" style="left:60px;top:90px;font-size:44px" data-a="up;518.5">Тугмаи «Лайк» чӣ тавр кор мекунад?</div>
+<div style="left:60px;top:220px" data-a="left;520.2" data-o="527.5" data-ok="fade"><span class="pill left" style="font-size:26px;padding:14px 26px">📄 саҳифаи оддӣ — ҳамеша як хел</span></div>
+<div class="node hl" style="left:60px;top:230px;width:300px" data-a="pop;527.7"><span class="big">👍</span>Лайк<small>25</small></div>
+<div class="mono" style="left:380px;top:290px;font-size:46px;color:var(--purple)" data-a="pop;529.0">→</div>
+<div class="codechip" style="left:450px;top:285px;font-size:28px;" data-a="pop;531.0">POST /like</div>
+<div class="mono" style="left:760px;top:290px;font-size:46px;color:var(--purple)" data-a="pop;532.4">→</div>
+<div class="node " style="left:850px;top:230px;width:300px" data-a="pop;534.5"><span class="big">🖥️</span>сервер<small>лайкро менависад</small></div>
+<div class="codechip" style="left:450px;top:430px;font-size:30px;" data-a="pop;538.0">{"likes": 26, "liked": true}</div>
+<div class="mono" style="left:380px;top:440px;font-size:46px;color:var(--purple)" data-a="pop;537.8">←</div>
+<div style="left:60px;top:540px" data-a="left;541.5"><span class="pill accent" style="font-size:26px;padding:14px 26px">📝 JSON — матн бо қоидаи махсус</span></div>
+<div style="left:60px;top:610px" data-a="left;546.0"><span class="pill ok" style="font-size:24px;padding:14px 26px">🧩 JSON = объект, танҳо дар шакли матн (дарси 6)</span></div>
+</section><section class="scene" id="s-slow">
+<div class="kicker" data-a="down;598.1"><b>11</b>ЧАРО ГОҲО САЙТ СУСТ МЕКУШОЯД?</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;598.5">Ба назар як лаҳза, аммо…</div>
+<div class="card3 " style="left:60px;top:200px;width:360px;height:300px" data-a="up;611.8"><div class="emo">📏</div><div class="t">сервер дур аст</div><div class="u">ҷавоб мисли нома: ҳар қадар дуртар, ҳамон қадар дертар</div></div>
+<div class="card3 " style="left:450px;top:200px;width:360px;height:300px" data-a="up;619.8"><div class="emo">🖼️</div><div class="t">файлҳо калон</div><div class="u">як сурати вазнин аз даҳҳо саҳифаи матн вазнинтар</div></div>
+<div class="card3 " style="left:840px;top:200px;width:360px;height:300px" data-a="up;629.6"><div class="emo">🍽️</div><div class="t">меҳмонҳо бисёр</div><div class="u">ресторан пур: сервер ба садҳо ҳазор нафар ҷавоб медиҳад</div></div>
+<div style="left:60px;top:560px" data-a="left;625.8"><span class="pill ok" style="font-size:24px;padding:14px 26px">🗜️ суратҳоро хурд мекунанд</span></div>
+<div style="left:60px;top:620px" data-a="left;639.0"><span class="pill accent" style="font-size:24px;padding:14px 26px">🌍 нусха дар шаҳрҳои гуногун — ба меҳмон наздиктар</span></div>
+</section><section class="scene" id="s-https">
+<div class="kicker" data-a="down;649.3000000000001"><b>12</b>ҚУЛФ ДАР СУРОҒА</div>
+<div class="h2" style="left:60px;top:90px;font-size:46px" data-a="up;649.7">http ва https</div>
+<div class="card3 " style="left:60px;top:190px;width:560px;height:300px" data-a="up;652.3"><div class="emo">📮</div><div class="t">http — открытка</div><div class="u">ҳар кас аз паҳлӯ хонда метавонад</div></div>
+<div class="card3 hl" style="left:660px;top:190px;width:560px;height:300px" data-a="up;661.6"><div class="emo">✉️</div><div class="t">https — конверти пӯшида</div><div class="u">танҳо сервер мекушояд</div></div>
+<div class="codechip" style="left:90px;top:400px;font-size:28px;" data-a="pop;653.0">http://…</div>
+<div class="codechip" style="left:690px;top:400px;font-size:28px;" data-a="pop;662.4">🔒 https://…</div>
+<div style="left:60px;top:540px" data-a="left;669.2"><span class="pill ok" style="font-size:26px;padding:14px 26px">🔑 рамз · рақами корт — танҳо дар сайтҳои бо 🔒</span></div>
+<div style="left:60px;top:608px" data-a="left;676.9"><span class="pill err" style="font-size:26px;padding:14px 26px">⚠️ қулф нест — маълумоти муҳим ворид накунед</span></div>
+</section><section class="scene" id="s-err">
+<div class="kicker" data-a="down;681.4"><b>13</b>СЕ ХАТОИ МАЪМУЛ</div>
+<div class="card3 hl" style="left:60px;top:115px;width:1160px;height:175px" data-a="up;684.4"><div class="emo">1️⃣</div><div class="t">«Сайти ман дар компютери ман аст — пас ҳама мебинанд»</div><div class="u">✅ Не: файлҳо бояд дар сервер бошанд</div></div>
+<div class="card3 hl" style="left:60px;top:310px;width:1160px;height:175px" data-a="up;696.3"><div class="emo">2️⃣</div><div class="t">«404 — сайт вайрон шуд»</div><div class="u">✅ Аксар вақт: суроға нодуруст аст ё файл дар ҷои дигар</div></div>
+<div class="card3 hl" style="left:60px;top:505px;width:1160px;height:175px" data-a="up;707.4"><div class="emo">3️⃣</div><div class="t">Ном ва роҳ дақиқ навишта мешаванд</div><div class="u">✅ <span class="mono">/about</span> ≠ <span class="mono">/About</span> — сервер онҳоро ду чизи гуногун мешуморад</div></div>
+</section><section class="scene" id="s-rec">
+<div class="kicker" data-a="down;724.8000000000001"><b>14</b>РОҲИ ЯК ДАРХОСТ</div>
+<div class="h2" style="left:60px;top:80px;font-size:44px" data-a="up;725.2">Ҳафт қадам — як лаҳза</div>
+<div class="card3 hl" style="left:60px;top:160px;width:275px;height:190px" data-a="up;734.5"><div class="emo">📍</div><div class="t">1 · суроға</div><div class="u">протокол · домен · роҳ</div></div>
+<div class="card3 " style="left:355px;top:160px;width:275px;height:190px" data-a="up;741.3"><div class="emo">📖</div><div class="t">2 · DNS</div><div class="u">ном → рақам</div></div>
+<div class="card3 " style="left:650px;top:160px;width:275px;height:190px" data-a="up;746.1"><div class="emo">📨</div><div class="t">3 · дархост</div><div class="u">GET + роҳ</div></div>
+<div class="card3 " style="left:945px;top:160px;width:275px;height:190px" data-a="up;752.1"><div class="emo">🖥️</div><div class="t">4 · сервер</div><div class="u">ҷавоб тайёр мекунад</div></div>
+<div class="card3 " style="left:60px;top:370px;width:275px;height:190px" data-a="up;757.1"><div class="emo">📦</div><div class="t">5 · ҷавоб</div><div class="u">статус 200 + index.html</div></div>
+<div class="card3 " style="left:355px;top:370px;width:275px;height:190px" data-a="up;765.3"><div class="emo">📎</div><div class="t">6 · файлҳо</div><div class="u">style.css + script.js</div></div>
+<div class="card3 hl" style="left:650px;top:370px;width:275px;height:190px" data-a="up;774.7"><div class="emo">🏠</div><div class="t">7 · саҳифа</div><div class="u">браузер ҷамъ мекунад</div></div>
+<div style="left:945px;top:400px;width:275px" data-a="stamp;782.4"><span class="pill accent" style="font-size:24px;padding:14px 22px">7 қадам — як лаҳза ⚡</span></div>
+<div style="left:60px;top:600px" data-a="left;778.6"><span class="pill ok" style="font-size:24px;padding:14px 26px">👆 тугмаро пахш кунед — дархости нав сар мешавад</span></div>
+</section><section class="scene" id="s-sum">
+<div class="kicker" data-a="down;866.4000000000001"><b>15</b>ХУЛОСА</div>
+<div class="h2" style="left:60px;top:80px;font-size:50px" data-a="up;866.8000000000001">Сайт = <span class="acc">дархост + ҷавоб</span></div>
+<div style="left:60px;top:190px" data-a="left;867.5"><span class="pill left" style="font-size:26px;padding:14px 26px">📍 суроға: протокол · домен · роҳ</span></div>
+<div style="left:60px;top:256px" data-a="left;871.7"><span class="pill left" style="font-size:26px;padding:14px 26px">📖 DNS: домен → рақам</span></div>
+<div style="left:60px;top:322px" data-a="left;875.0"><span class="pill left" style="font-size:26px;padding:14px 26px">📨 дархост: GET — мегирад · POST — мефиристад</span></div>
+<div style="left:60px;top:388px" data-a="left;880.7"><span class="pill left" style="font-size:26px;padding:14px 26px">📦 ҷавоб + статус-код: 200 · 404 · 500</span></div>
+<div style="left:60px;top:454px" data-a="left;887.1"><span class="pill left" style="font-size:26px;padding:14px 26px">🧩 ҷавоб — се файл ё маълумот (JSON)</span></div>
+<div style="left:60px;top:540px" data-a="stamp;891.4"><span class="pill accent" style="font-size:32px;padding:18px 36px">Ин ҳамаи он чизест, ки дар паси ҳар сайт меистад</span></div>
+<div style="left:60px;top:624px" data-a="left;897.5"><span class="pill ok" style="font-size:22px;padding:14px 26px">🧱 дарси 11: саҳифа сохтем · дарси 12: чӣ тавр мерасад</span></div>
+<div style="left:800px;top:454px" data-a="up;908.8"><span class="pill accent" style="font-size:24px;padding:14px 26px">📘 Шпаргалка — дар тавсиф</span></div>
+</section><section class="scene" id="s-next">
+<div class="kicker" data-a="down;912.9"><b>ДАРСИ 13</b>НАВБАТӢ</div>
+<div class="h1" style="left:60px;top:110px;font-size:92px;line-height:1.05" data-a="stamp;913.0999999999999">AI БАРОИ<br>БАРНОМАСОЗ</div>
+<div style="left:68px;top:380px" data-a="left;914.0"><span class="pill ok" style="font-size:28px;padding:14px 26px">ёвар, на ҷонишин 🤝</span></div>
+<div style="left:68px;top:456px" data-a="left;916.3"><span class="pill left" style="font-size:26px;padding:14px 26px">⚙️ код менависем ва санҷида мебинем</span></div>
+<div style="left:820px;top:170px" data-a="pop;921.1"><span class="pill accent" style="font-size:34px;padding:14px 26px">🔔 Обуна шавед</span></div>
+<div style="left:820px;top:270px" data-a="pop;922.0"><span class="pill left" style="font-size:26px;padding:14px 26px">@shahriyor_yunusov</span></div>
+</section><div id="stagewrap"><div class="app">
+  <header class="top">
+    <span class="logo">&lt;/&gt; <b>JS</b></span>
+    <div class="trk" id="trk"></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="progress"><span class="pt" id="pt" title="Вазифаҳои ҳалшуда"></span><div class="pbar"><i id="pf"></i></div><button class="cert" id="cert">🎓</button></div>
+  </header>
+  <div class="main">
+    <aside class="left">
+      <div class="card" id="side"></div>
+      <div class="card" id="task" style="display:none"></div>
+    </aside>
+    <section class="work">
+      <div class="ed">
+        <div class="etabs">
+          <span class="ftab on" id="fname"></span><div class="ftabs" id="ftabs"></div>
+          <div class="eacts">
+            <select id="ex" aria-label="Мисолҳо"></select>
+            <button class="ic run" id="run" data-ic="play" title="Иҷро (Ctrl+Enter)" aria-label="Иҷро"><span class="lbl">Иҷро</span></button>
+            <button class="ic chk" id="check" data-ic="check" title="Санҷиш" aria-label="Санҷиш" style="display:none"><span class="lbl">Санҷиш</span></button>
+            <button class="ic" id="reset" data-ic="reset" title="Аз нав оғоз кардан" aria-label="Аз нав"></button>
+            <button class="ic" id="copy" data-ic="copy" title="Нусха кардани код" aria-label="Нусха"></button>
+            <button class="ic" id="share" data-ic="link" title="Пайванд барои мубодила" aria-label="Пайванд"></button>
+          </div>
+        </div>
+        <div class="editor"><div class="gut" id="gut"></div><div class="codewrap"><div class="curline" id="curline"></div><pre id="hl" aria-hidden="true"></pre><textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Редактори код"></textarea></div></div>
+        <div class="status" id="status"><span id="st-pos">Сатр 1, сутун 1</span><span>Фосила: 2</span><span>UTF-8</span><span id="st-lang">JavaScript</span><span id="st-msg"></span><span class="sp"></span><button id="st-auto" title="Бастани худкори қавс, нохунак ва теғҳо">Авто-ҷуфт</button></div>
+      </div>
+      <div class="sym" id="sym" aria-label="Аломатҳои зуд"></div>
+      <div class="pv" id="pv">
+        <div class="phead"><span class="lb">ПЕШНАМОИШ</span>
+          <div class="eacts"><button class="ic" id="pvdev" data-ic="phone" title="Андозаи телефон" aria-label="Андозаи телефон"></button><button class="ic" id="pvopen" data-ic="ext" title="Дар tab-и нав" aria-label="Дар tab-и нав"></button><button class="ic" id="pvdl" data-ic="dl" title="Зеркашии index.html" aria-label="Зеркашӣ"></button><span class="vsep"></span><button class="ic" id="pvcon" data-ic="term" title="Консол (натиҷа ва хатоҳо)" aria-label="Консол"><span class="bdg" id="pvbdg"></span></button></div></div>
+        <div class="pvbox" id="pvbox"><iframe id="pvf" title="Пешнамоиш" sandbox="allow-scripts"></iframe></div>
+      </div>
+      <div class="con">
+        <div class="phead"><span class="lb" id="conlbl">НАТИҶА</span>
+          <div class="eacts"><button class="ic" id="clr" data-ic="trash" title="Тоза кардан" aria-label="Тоза кардан"></button><button class="ic" id="conx" data-ic="x" title="Пӯшидани консол" aria-label="Пӯшидан"></button></div></div>
+        <div class="out" id="out"><span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+<nav class="mnav" id="mnav" aria-label="Қисмҳо"><button data-p="lesson" id="mn-lesson" data-ic="book"><span>Дарс</span></button><button data-p="code" data-ic="code"><span>Код</span></button><button data-p="result" data-ic="eye"><span>Натиҷа</span></button></nav>
+
+</div>
+<script src="file:///home/user/yunusov.tj/public/ide/lessons/js.js"></script>
+<script src="file:///home/user/yunusov.tj/public/ide/lessons/web.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = "mini-ide-v1";
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(STORE + k); localStorage.setItem(STORE + k, v); } catch (e) { return null; } }
+
+  /* ---------- нишонаҳо (SVG, мисли Lucide) ---------- */
+  var IC = {
+    play: '<polygon points="6 3 20 12 6 21 6 3" fill="currentColor"/>', check: '<path d="M20 6 9 17l-5-5"/>',
+    reset: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    phone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>', monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    ext: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+    dl: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+    term: '<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>', x: '<path d="M18 6 6 18M6 6l12 12"/>',
+    trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>', eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+  };
+  function icon(n, sz) { return '<svg class="svg" viewBox="0 0 24 24" width="' + (sz || 16) + '" height="' + (sz || 16) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IC[n] + "</svg>"; }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ic]"), function (el) { el.insertAdjacentHTML("afterbegin", icon(el.getAttribute("data-ic"), el.classList.contains("ic") ? 16 : 20)); });
+  function flash(b) { var o = b.innerHTML; b.innerHTML = icon("check"); setTimeout(function () { b.innerHTML = o; }, 1500); }
+  var FNAME = { html: "index.html", css: "style.css", js: "script.js" }, LANGN = { html: "HTML", css: "CSS", js: "JavaScript" };
+  function fi(l) { return '<i class="fi ' + l + '">' + (l === "html" ? "&lt;&gt;" : l === "css" ? "#" : "JS") + "</i>"; }
+
+  /* ---------- трекҳо, мисолҳо ва дарсҳо (дарсҳо дар lessons/*.js) ---------- */
+  var TRACKS = { js: { short: "JS", cert: true }, web: { short: "HTML · CSS", cert: false } };
+  var FILES = ["html", "css", "js"], FLABEL = { html: "HTML", css: "CSS", js: "JS" };
+  var DEF_JS = 'console.log("Салом, ҷаҳон!");\n';
+  var DEF_WEB = { html: "<h1>Салом, веб!</h1>\n<p>Ин саҳифаи аввалини ман аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" };
+  var EXAMPLES = {
+    js: window.IDE_EXAMPLES_JS || [["Мисолҳо ▾", ""]],
+    web: [
+      ["Мисолҳо ▾", null],
+      ["Сарлавҳа ва матн", { html: "<h1>Салом, веб!</h1>\n<p>Ин <b>абзац</b> аст.</p>\n", css: "h1 {\n  color: #BD93F9;\n}\n", js: "" }],
+      ["Рӯйхат ва пайванд", { html: '<h2>Дӯстдоштаҳо</h2>\n<ul>\n  <li>Палав</li>\n  <li>Самбуса</li>\n  <li>Ошташ</li>\n</ul>\n<a href="#x">Пайванд</a>\n', css: "ul {\n  color: #2563eb;\n}\n", js: "" }],
+      ["Корт бо CSS", { html: '<div class="card">\n  <h2>Нигина</h2>\n  <p>Барномасоз</p>\n</div>\n', css: "body {\n  font-family: sans-serif;\n  background: #f3f4f6;\n}\n\n.card {\n  width: 220px;\n  margin: 24px auto;\n  padding: 16px;\n  background: white;\n  border-radius: 12px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);\n}\n", js: "" }],
+      ["Тугма ва JS", { html: '<button id="btn">Пахш кунед</button>\n<p id="msg">0 маротиба</p>\n', css: "button {\n  padding: 10px 18px;\n  font-size: 16px;\n}\n", js: 'let count = 0;\nconst btn = document.getElementById("btn");\nconst msg = document.getElementById("msg");\n\nbtn.addEventListener("click", function () {\n  count = count + 1;\n  msg.textContent = count + " маротиба";\n});\n' }]
+    ]
+  };
+  function norm(L) {
+    L.track = L.track || "js";
+    (L.tasks || []).forEach(function (t) {
+      if (t.starter != null && !t.files) t.files = { js: t.starter };
+      t.solFiles = typeof t.solution === "string" ? { js: t.solution } : (t.solution || {});
+    });
+  }
+  var LESSONS = (function () {
+    var all = window.IDE_LESSONS || []; all.forEach(norm);
+    var of = function (tk) { return all.filter(function (L) { return L.track === tk; }); };
+    return [{ id: "free", track: "js", tab: "Озод", free: true }].concat(of("js"), [{ id: "webfree", track: "web", tab: "Озод", free: true }], of("web"));
+  })();
+
+  /* ---------- иҷрои код дар Worker ---------- */
+  var WSRC = "var __f=function(v){if(typeof v==='string')return v;if(v===undefined)return 'undefined';if(v===null)return 'null';if(typeof v==='object'){try{return JSON.stringify(v)}catch(e){return String(v)}}return String(v)};" +
+    "var __n=0;function __p(t,a){if(__n++<1000)postMessage({t:t,v:Array.prototype.map.call(a,__f).join(' ')})}" +
+    "console.log=function(){__p('log',arguments)};console.info=console.log;console.warn=function(){__p('warn',arguments)};console.error=function(){__p('err',arguments)};self.alert=console.log;" +
+    "self.onmessage=function(e){try{(new Function(e.data))()}catch(x){var m=(x&&x.stack||'').match(/<anonymous>:(\\d+):(\\d+)/);postMessage({t:'error',name:x&&x.name,msg:String(x&&x.message||x),line:m?Math.max(1,+m[1]-2):null})}postMessage({t:'done'})};";
+  var blobURL = null;
+  function runCode(code, live) {
+    return new Promise(function (resolve) {
+      var res = { out: [], err: null, timeout: false }, w, done = false;
+      try { blobURL = blobURL || URL.createObjectURL(new Blob([WSRC], { type: "text/javascript" })); w = new Worker(blobURL); }
+      catch (e) { res.err = { name: "Хато", msg: "Браузер иҷрои кодро намедиҳад" }; return resolve(res); }
+      function fin() { if (done) return; done = true; clearTimeout(tm); w.terminate(); resolve(res); }
+      var tm = setTimeout(function () { res.timeout = true; if (live) live({ t: "timeout" }); fin(); }, 2500);
+      w.onmessage = function (e) { var m = e.data; if (m.t === "done") return fin(); if (m.t === "error") res.err = m; else res.out.push(m.v); if (live) live(m); };
+      w.onerror = function (e) { res.err = { name: "Error", msg: e.message || "Хато", line: e.lineno ? Math.max(1, e.lineno - 2) : null }; if (live) live({ t: "error", name: "Error", msg: res.err.msg, line: res.err.line }); fin(); };
+      w.postMessage(code);
+    });
+  }
+  function setVar(code, name, val) { var re = new RegExp("\\b(let|const|var)\\s+" + name + "\\s*=\\s*[^;\\n]+"); return re.test(code) ? code.replace(re, "$1 " + name + " = " + val) : "let " + name + " = " + val + ";\n" + code; }
+  var R = { run: function (c) { return runCode(c); }, setVar: setVar };
+
+  function hintFor(name, msg) {
+    var m;
+    if (name === "ReferenceError" && (m = /(\w+) is not defined/.exec(msg))) return "Тағйирёбандаи «" + m[1] + "» муайян нашудааст. Оё <code>let " + m[1] + " = …</code> навишта будед? Имлоро низ санҷед (ҳарфи калон ва хурд фарқ мекунад).";
+    if (/already been declared/.test(msg)) return "Ин ном аллакай ҳаст. Дубора <code>let</code> нанависед: ба ҷои <code>let x = 5</code> фақат <code>x = 5</code> нависед.";
+    if (name === "SyntaxError") return "Хатои навиштан. Қавсҳо <code>( )</code> <code>{ }</code>, нуқтавергул <code>;</code> ва нохунакҳо <code>\"</code>-ро санҷед.";
+    if (name === "TypeError" && /constant/.test(msg)) return "Қимати <code>const</code>-ро иваз кардан мумкин нест. Ба ҷои он <code>let</code> нависед.";
+    return "";
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  /* ---------- редактор ---------- */
+  var ta = $("ta"), hl = $("hl"), gut = $("gut");
+  var KW = /^(let|const|var|function|true|false|null|undefined|new|typeof)$/, CT = /^(if|else|for|while|do|return|break|continue|switch|case)$/;
+  function sp(c, s) { return '<span class="' + c + '">' + s + "</span>"; }
+  function hlJs(src) {
+    var out = "", re = /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?|`(?:[^`\\]|\\.)*`?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += KW.test(m[4]) ? sp("kw", m[4]) : CT.test(m[4]) ? sp("ct", m[4]) : m[4] === "console" ? sp("tp", m[4]) : src.charAt(re.lastIndex) === "(" ? sp("fn", m[4]) : esc(m[4]);
+      else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function hlHtml(src) {
+    var out = "", re = /(<!--[\s\S]*?(?:-->|$))|(<\/?[A-Za-z!][^\s>\/]*)((?:"[^"]*"|'[^']*'|[^>"'])*)(>?)|([\s\S])/g, m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) {
+        var t = /^(<\/?)(.*)$/.exec(m[2]);
+        out += sp("pn", esc(t[1])) + sp("kw", esc(t[2]));
+        out += m[3].replace(/("[^"]*"?|'[^']*'?)|([\w:-]+)|([\s\S])/g, function (_, s, n, o) { return s ? sp("st", esc(s)) : n ? sp("at", esc(n)) : sp("pn", esc(o)); });
+        if (m[4]) out += sp("pn", "&gt;");
+      } else out += esc(m[5]);
+    }
+    return out + "\n";
+  }
+  function hlCss(src) {
+    var out = "", tp = -1, tc = "", m;
+    var re = /(\/\*[\s\S]*?(?:\*\/|$))|("(?:[^"\\\n]|\\.)*"?|'(?:[^'\\\n]|\\.)*'?)|(#[0-9A-Fa-f]{3,8}\b)|(-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|vh|vw|vmin|vmax|ms|s|deg|fr|ch|%)?)|(@?[A-Za-z_-][\w-]*)|([\s\S])/g;
+    function term(i) { if (i > tp) { var k = i; while (k < src.length && "{;}".indexOf(src.charAt(k)) < 0) k++; tp = k; tc = src.charAt(k); } return tc; }
+    while ((m = re.exec(src))) {
+      if (m[1]) out += sp("cm", esc(m[1]));
+      else if (m[2]) out += sp("st", esc(m[2]));
+      else if (m[3]) out += sp("nu", m[3]);
+      else if (m[4]) out += sp("nu", m[4]);
+      else if (m[5]) out += m[5].charAt(0) === "@" ? sp("ct", m[5]) : term(re.lastIndex) === "{" ? sp("sel", m[5]) : /^\s*:/.test(src.substr(re.lastIndex, 12)) ? sp("at", m[5]) : sp("st", m[5]);
+      else out += esc(m[6]);
+    }
+    return out + "\n";
+  }
+  function highlight(src, lang) { return (lang === "html" ? hlHtml : lang === "css" ? hlCss : hlJs)(src); }
+  var LH = 22, lastLine = 0, lastN = 0;
+  function placeCur() { $("curline").style.transform = "translateY(" + (12 + (lastLine - 1) * LH - ta.scrollTop) + "px)"; }
+  /* рақами сатр ва сатри ҷорӣ, ҷойгиршавии курсор дар сатри ҳолат */
+  function upd() {
+    var v = ta.value, s = ta.selectionStart, pre = v.slice(0, s), line = pre.split("\n").length, col = s - pre.lastIndexOf("\n"), n = v.split("\n").length, sel = ta.selectionEnd - s;
+    if (n !== lastN || line !== lastLine) {
+      var g = ""; for (var i = 1; i <= n; i++) g += (i === line ? "<b>" + i + "</b>" : i) + "\n";
+      gut.innerHTML = g; lastN = n; lastLine = line;
+    }
+    placeCur();
+    $("st-pos").textContent = "Сатр " + line + ", сутун " + col + (sel ? " (" + sel + " интихоб)" : "");
+    $("st-lang").textContent = LANGN[curFile];
+  }
+  function paint() { hl.innerHTML = highlight(ta.value, curFile); upd(); sync(); }
+  function sync() { hl.scrollTop = ta.scrollTop; hl.scrollLeft = ta.scrollLeft; gut.scrollTop = ta.scrollTop; placeCur(); }
+  function changed() { paint(); saveFile(); schedulePreview(); }
+  ta.addEventListener("scroll", sync);
+  ta.addEventListener("input", changed);
+  ["keyup", "mouseup", "focus", "click"].forEach(function (ev) { ta.addEventListener(ev, upd); });
+  document.addEventListener("selectionchange", function () { if (document.activeElement === ta) upd(); });
+
+  /* ---------- амалҳои IDE: ҷуфтшавии худкор, indent, шарҳ ---------- */
+  var AUTO = ls("auto") !== "0", PAIRS = { "(": ")", "[": "]", "{": "}", '"': '"', "'": "'", "`": "`" }, CLOSERS = ")]}", VOID = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i;
+  function drawAuto() { $("st-auto").className = AUTO ? "on" : ""; $("st-auto").textContent = "Авто-ҷуфт: " + (AUTO ? "фаъол" : "хомӯш"); }
+  $("st-auto").onclick = function () { AUTO = !AUTO; ls("auto", AUTO ? "1" : "0"); drawAuto(); ta.focus(); };
+  var msgTm = 0;
+  function statusMsg(t) { $("st-msg").textContent = t; clearTimeout(msgTm); msgTm = setTimeout(function () { $("st-msg").textContent = ""; }, 1600); }
+  /* матнро бо execCommand ворид мекунем, то Ctrl+Z кор кунад; back — курсорро чанд аломат ба қафо мебарем */
+  function ins(text, back) {
+    ta.focus(); var ok = false;
+    try { ok = document.execCommand("insertText", false, text); } catch (e) {}
+    if (!ok) { var s = ta.selectionStart, en = ta.selectionEnd; ta.value = ta.value.slice(0, s) + text + ta.value.slice(en); ta.selectionStart = ta.selectionEnd = s + text.length; changed(); }
+    if (back) { var p = ta.selectionEnd - back; ta.setSelectionRange(p, p); }
+    upd();
+  }
+  function editLines(fn) {
+    var v = ta.value, s = ta.selectionStart, en = ta.selectionEnd, a = v.lastIndexOf("\n", s - 1) + 1, e2 = en > s && v.charAt(en - 1) === "\n" ? en - 1 : en, z = v.indexOf("\n", e2);
+    if (z < 0) z = v.length;
+    var t = v.slice(a, z), nt = fn(t); if (nt === t) return;
+    ta.setSelectionRange(a, z); ins(nt); ta.setSelectionRange(a, a + nt.length); upd();
+  }
+  function toggleComment() {
+    var o = curFile === "html" ? ["<!-- ", " -->"] : curFile === "css" ? ["/* ", " */"] : ["// ", ""], q = function (x) { return x.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&"); };
+    var re = new RegExp("^(\\s*)" + q(o[0].trim()) + " ?(.*?)" + (o[1] ? " ?" + q(o[1].trim()) : "") + "$");
+    editLines(function (t) {
+      var rows = t.split("\n"), all = rows.some(function (l) { return l.trim(); }) && rows.every(function (l) { return !l.trim() || re.test(l); });
+      return rows.map(function (l) { return !l.trim() ? l : all ? l.replace(re, function (_, a, b) { return a + b; }) : l.replace(/^(\s*)(.*)$/, function (_, a, b) { return a + o[0] + b + o[1]; }); }).join("\n");
+    });
+  }
+  ta.addEventListener("keydown", function (e) {
+    var k = e.key, mod = e.ctrlKey || e.metaKey;
+    if (mod && k === "Enter") { e.preventDefault(); doRun(); return; }
+    if (mod && (k === "s" || k === "S")) { e.preventDefault(); statusMsg("Ҳифз шуд ✓"); return; }
+    if (mod && k === "/") { e.preventDefault(); toggleComment(); return; }
+    if (mod || e.altKey) return;
+    var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value, prev = v.charAt(s - 1), next = v.charAt(en);
+    if (k === "Tab") {
+      e.preventDefault();
+      if (e.shiftKey) editLines(function (t) { return t.replace(/^( {1,2}|\t)/gm, ""); });
+      else if (v.slice(s, en).indexOf("\n") >= 0) editLines(function (t) { return t.replace(/^/gm, "  "); });
+      else ins("  ");
+      return;
+    }
+    if (k === "Enter") {
+      e.preventDefault();
+      var line = v.slice(v.lastIndexOf("\n", s - 1) + 1, s), ind = /^\s*/.exec(line)[0];
+      var om = curFile === "html" ? /<([a-z][\w-]*)(?:\s[^<>]*)?>\s*$/i.exec(line) : null;
+      var opens = /[{(\[]\s*$/.test(line) || (om && !VOID.test(om[1]) && !/\/>\s*$/.test(line));
+      var between = (prev === "{" && next === "}") || (prev === "(" && next === ")") || (prev === "[" && next === "]") || (om && prev === ">" && next === "<");
+      if (opens && between) ins("\n" + ind + "  \n" + ind, ind.length + 1); else ins("\n" + ind + (opens ? "  " : ""));
+      return;
+    }
+    if (!AUTO) return;
+    if (k === "Backspace" && s === en && prev && PAIRS[prev] === next) {
+      e.preventDefault(); ta.setSelectionRange(s - 1, s + 1);
+      var ok = false; try { ok = document.execCommand("delete"); } catch (x) {}
+      if (!ok) { ta.value = v.slice(0, s - 1) + v.slice(s + 1); ta.selectionStart = ta.selectionEnd = s - 1; changed(); }
+      return;
+    }
+    if (k.length !== 1) return;
+    if (PAIRS[k]) {
+      var close = PAIRS[k];
+      if (en > s) { e.preventDefault(); ins(k + v.slice(s, en) + close); ta.setSelectionRange(s + 1, en + 1); upd(); return; }
+      if (k === close) {
+        if (next === k) { e.preventDefault(); ta.setSelectionRange(s + 1, s + 1); upd(); return; }
+        if (/\w/.test(prev)) return;
+      } else if (/\w/.test(next)) return;
+      e.preventDefault(); ins(k + close, 1); return;
+    }
+    if (CLOSERS.indexOf(k) >= 0 && s === en && next === k) { e.preventDefault(); ta.setSelectionRange(s + 1, s + 1); upd(); return; }
+    if (k === ">" && curFile === "html" && s === en) {
+      var tm = /<([A-Za-z][\w-]*)(?:\s[^<>]*)?$/.exec(v.slice(0, s));
+      if (tm && !VOID.test(tm[1]) && prev !== "/" && (tm[0].match(/"/g) || []).length % 2 === 0 && v.substr(s, tm[1].length + 3) !== "</" + tm[1] + ">") { e.preventDefault(); ins("></" + tm[1] + ">", tm[1].length + 3); }
+    }
+  });
+
+  /* ---------- ҳолат ---------- */
+  var cur = ls("tab") || "free", ti = 0, done = {}, files = {}, curFile = "js", pane = "lesson";
+  try { done = JSON.parse(ls("done") || "{}"); } catch (e) { done = {}; }
+  function lesson() { return LESSONS.filter(function (l) { return l.id === cur; })[0] || LESSONS[0]; }
+  function track() { return lesson().track; }
+  function isWeb() { return track() === "web"; }
+  function task() { var L = lesson(); return L.free ? null : L.tasks[ti]; }
+  function fileList() {
+    if (!isWeb()) return ["js"];
+    var t = task(); if (!t) return FILES;
+    return FILES.filter(function (f) { return t.files && f in t.files; });
+  }
+  function baseKey() { var L = lesson(); return L.free ? "code-" + L.id : "code-" + L.id + "-" + ti; }
+  /* JS-трек: калидҳои пештара (code-free, code-l1-0) нигоҳ дошта мешаванд */
+  function fkey(f) { return isWeb() ? baseKey() + "-" + f : baseKey(); }
+  function starter(f) { var t = task(); if (t) return t.files && t.files[f] != null ? t.files[f] : ""; return isWeb() ? DEF_WEB[f] : DEF_JS; }
+  function saveFile() { files[curFile] = ta.value; ls(fkey(curFile), ta.value); }
+  function solText(t) { return fileList().map(function (f) { return (isWeb() ? "/* " + FLABEL[f] + " */\n" : "") + (t.solFiles[f] || ""); }).join("\n"); }
+
+  function drawTrack() {
+    var box = $("trk"), tk = track(); box.innerHTML = "";
+    Object.keys(TRACKS).forEach(function (k) {
+      var b = document.createElement("button"); b.textContent = TRACKS[k].short; b.className = k === tk ? "on" : "";
+      b.onclick = function () {
+        if (k === tk) return;
+        var first = LESSONS.filter(function (l) { return l.track === k; })[0], id = ls("tab-" + k);
+        cur = LESSONS.some(function (l) { return l.id === id && l.track === k; }) ? id : first.id; ti = 0; curFile = k === "web" ? "html" : "js"; ls("tab", cur); pane = lesson().free ? "code" : "lesson"; load();
+      };
+      box.appendChild(b);
+    });
+  }
+  function drawTabs() {
+    $("tabs").innerHTML = ""; var tk = track();
+    LESSONS.filter(function (L) { return L.track === tk; }).forEach(function (L) {
+      var b = document.createElement("button"); b.className = "tab" + (L.id === cur ? " on" : "") + (!L.free && L.tasks.every(function (_, i) { return done[L.id + "-" + i]; }) ? " ok" : ""); b.textContent = L.tab;
+      b.onclick = function () { cur = L.id; ti = 0; ls("tab", cur); pane = L.free ? "code" : "lesson"; load(); }; $("tabs").appendChild(b);
+    });
+  }
+  function drawSide() {
+    var L = lesson(), t = task(), s = $("side");
+    if (L.free) {
+      s.innerHTML = isWeb()
+        ? '<span class="tag">ОЗОД</span><h2>Саҳифаи худро созед</h2><p>Дар таби <b>HTML</b> сохтор, дар <b>CSS</b> намуд ва дар <b>JS</b> рафтори саҳифаро нависед. Натиҷа дар тарафи рост бо ҳар тағйир нав мешавад. Мисолҳо дар рӯйхати болои редактор ҳастанд.</p>'
+        : '<span class="tag">ОЗОД</span><h2>Ҳар чизро санҷед</h2><p>Дар ин ҷо ҳар кодро бе маҳдудият менависед. Мисолҳо дар рӯйхати поёни редактор ҳастанд. Барои вазифаҳо ба ҷадвалҳои «1», «2», «3» гузаред.</p>';
+      return;
+    }
+    var h = '<span class="tag">' + L.tag + '</span><h2>Назария</h2><p>' + L.theory + "</p>";
+    h += '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">' + L.tasks.map(function (_, i) { return '<button data-i="' + i + '" style="padding:6px 12px" class="btn ghost' + (i === ti ? " on" : "") + '">' + (done[L.id + "-" + i] ? "✓ " : "") + (i + 1) + "</button>"; }).join("") + "</div>";
+    s.innerHTML = h;
+    Array.prototype.forEach.call(s.querySelectorAll("button[data-i]"), function (b) { b.onclick = function () { ti = +b.dataset.i; pane = "code"; load(); }; });
+    var tk = $("task"); tk.style.display = "block";
+    tk.innerHTML = "<h2>" + t.title + "</h2><p>" + t.text + '</p><div class="checks" id="checks"></div><div id="winbox"></div><div class="sol"><button class="btn ghost" id="hintb" style="padding:6px 12px">💡 Кӯмак</button> <button class="btn ghost" id="solb" style="padding:6px 12px">🔓 Ҳал</button><div id="solbox"></div></div>';
+    $("hintb").onclick = function () { $("solbox").innerHTML = '<p style="margin-top:6px">💡 ' + esc(t.hint) + "</p>"; };
+    $("solb").onclick = function () { $("solbox").innerHTML = "<pre>" + esc(solText(t)) + "</pre>"; };
+  }
+  function drawFileTabs() {
+    var ft = $("ftabs"); ft.innerHTML = ""; if (!isWeb()) return;
+    fileList().forEach(function (f) {
+      var b = document.createElement("button"); b.innerHTML = fi(f) + '<span class="lg">' + FNAME[f] + '</span><span class="sh">' + FLABEL[f] + "</span>"; b.className = f === curFile ? "on" : "";
+      b.onclick = function () { saveFile(); curFile = f; ta.value = files[f]; ta.scrollTop = 0; paint(); drawFileTabs(); drawSyms(); };
+      ft.appendChild(b);
+    });
+  }
+  function setPane(p) {
+    pane = p; document.querySelector(".main").setAttribute("data-pane", p);
+    Array.prototype.forEach.call($("mnav").children, function (b) { b.className = b.getAttribute("data-p") === p ? "on" : ""; });
+  }
+  function load() {
+    var L = lesson(), t = task(), web = isWeb(), main = document.querySelector(".main");
+    ls("tab-" + L.track, cur);
+    if (web && L.free && pane === "lesson") pane = "code";
+    main.classList.toggle("free", !!L.free); main.classList.toggle("web", web);
+    document.body.classList.toggle("webmode", web); document.body.classList.toggle("freemode", !!L.free);
+    var fl = fileList(); files = {};
+    fl.forEach(function (f) { var s = ls(fkey(f)); files[f] = s != null ? s : starter(f); });
+    if (fl.indexOf(curFile) < 0) curFile = fl[0];
+    ta.value = files[curFile];
+    $("task").style.display = L.free ? "none" : "block";
+    $("check").style.display = !L.free && (!web || (t && t.checks)) ? "inline-flex" : "none";
+    $("ex").style.display = L.free ? "" : "none";
+    $("ex").innerHTML = EXAMPLES[L.track].map(function (e, i) { return '<option value="' + i + '">' + esc(e[0]) + "</option>"; }).join("");
+    $("fname").innerHTML = fi("js") + (L.free ? "main.js" : "vazifa-" + (ti + 1) + ".js");
+    document.querySelector(".main").classList.toggle("con-open", conOpen); $("pvcon").classList.toggle("on", conOpen);
+    $("out").innerHTML = web ? "" : '<span class="i">▶ Иҷро-ро пахш кунед (ё Ctrl+Enter).</span>';
+    $("conlbl").textContent = web ? "КОНСОЛ" : "НАТИҶА"; drawAuto();
+    drawTrack(); drawTabs(); drawSide(); drawFileTabs(); drawSyms(); paint(); drawProgress(); setHash(); setPane(pane);
+    if (web) renderPreview();
+  }
+
+  /* ---------- пешнамоиш (HTML + CSS + JS дар iframe-и ҷудогона) ---------- */
+  var pvTimer = 0, pvToken = 0, pvOnReady = null, pvCheckCb = null;
+  /* Скрипт дар дохили iframe: консол, хатоҳо ва санҷиши DOM-ро ба саҳифаи асосӣ мефиристад */
+  function probe(L0, K) {
+    var P = function (o) { o.ide = 1; o.k = K; try { parent.postMessage(o, "*"); } catch (e) {} };
+    var f = function (v) { if (typeof v === "string") return v; if (v === undefined) return "undefined"; if (v === null) return "null"; if (typeof v === "object") { try { return JSON.stringify(v); } catch (e) { return String(v); } } return String(v); };
+    var n = 0;
+    function p(t, a) { if (n++ < 500) P({ t: t, v: Array.prototype.map.call(a, f).join(" ") }); }
+    console.log = function () { p("log", arguments); }; console.info = console.log;
+    console.warn = function () { p("warn", arguments); }; console.error = function () { p("err", arguments); };
+    window.alert = console.log; window.__lg = 0;
+    window.onerror = function (msg, src, line, col, err) {
+      P({ t: "error", name: (err && err.name) || "Error", msg: (err && err.message) || String(msg), line: line >= L0 ? line - L0 + 1 : null }); return true;
+    };
+    window.addEventListener("unhandledrejection", function (e) { P({ t: "error", name: "Error", msg: String(e.reason && e.reason.message || e.reason), line: null }); });
+    document.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest && e.target.closest("a[href]"); if (!a) return;
+      var h = a.getAttribute("href"); if (h.charAt(0) === "#") return;
+      e.preventDefault(); p("warn", ["(Пайванд дар пешнамоиш кушода намешавад: " + h + ")"]);
+    }, true);
+    document.addEventListener("submit", function (e) { e.preventDefault(); p("warn", ["(Фиристодани форма дар пешнамоиш кор намекунад)"]); }, true);
+    function ck(c) {
+      if (c.click) { var cb = document.querySelector(c.click); if (cb) cb.click(); }
+      var els = document.querySelectorAll(c.sel);
+      if (c.none) return els.length === 0;
+      if (c.count != null) { if (els.length !== c.count) return false; if (c.count === 0) return true; } else if (els.length < (c.min || 1)) return false;
+      var el = els[0], k, v, w;
+      if (c.text != null) { var tx = (el.textContent || "").trim(); if (c.text instanceof RegExp ? !c.text.test(tx) : tx !== c.text) return false; }
+      if (c.attr) for (k in c.attr) { v = el.getAttribute(k); w = c.attr[k]; if (v == null || (w instanceof RegExp ? !w.test(v) : v !== w)) return false; }
+      if (c.css) {
+        var cs = getComputedStyle(el);
+        for (k in c.css) { var tmp = document.createElement("div"); tmp.style.setProperty(k, c.css[k]); document.body.appendChild(tmp); w = getComputedStyle(tmp).getPropertyValue(k); document.body.removeChild(tmp); if (cs.getPropertyValue(k) !== w) return false; }
+      }
+      return true;
+    }
+    window.addEventListener("message", function (e) {
+      var m = e.data; if (!m || m.ide !== 1 || m.t !== "check" || m.k !== K) return;
+      P({ t: "checked", res: m.checks.map(function (c) { try { return ck(c); } catch (x) { return false; } }) });
+    });
+    window.addEventListener("DOMContentLoaded", function () { setTimeout(function () { P({ t: "ready" }); }, 30); });
+  }
+  /* Ҳимоя аз давраи беохир: ҳисобкунаки умумӣ дар ибтидои ҳар for/while */
+  function guardLoops(s) { return s.replace(/\b(for|while)\s*\(((?:[^()]|\([^()]*\))*)\)\s*\{/g, function (m) { return m + " if(++window.__lg>1e6){throw new Error('Давр хотима наёфт (♾️)')}"; }); }
+  function buildDoc(f, token) {
+    var js = guardLoops(f.js || "").replace(/<\/script/gi, "<\\/script"), css = (f.css || "").replace(/<\/style/gi, "<\\/style");
+    var csp = "default-src 'none'; style-src 'unsafe-inline' https:; script-src 'unsafe-inline'; img-src data: https:; media-src data: https:; font-src data: https:";
+    var a = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="' + csp + '">' +
+      "<script>(" + probe.toString() + ")(@@L0@@," + token + ")<\/script><style>" + css + "</style></head><body>" + (f.html || "") + "\n<script>\n";
+    return a.replace("@@L0@@", a.split("\n").length) + js + "\n<\/script></body></html>";
+  }
+  /* Саҳифаи тозаи тайёр (барои зеркашӣ ва кушодан дар tab-и нав) */
+  function cleanDoc(f) {
+    var h = f.html || "", css = f.css || "", js = f.js || "";
+    if (/<html[\s>]/i.test(h)) {
+      if (css) h = /<\/head>/i.test(h) ? h.replace(/<\/head>/i, function () { return "<style>\n" + css + "</style>\n</head>"; }) : "<style>\n" + css + "</style>\n" + h;
+      if (js) h = /<\/body>/i.test(h) ? h.replace(/<\/body>/i, function () { return "<script>\n" + js + "<\/script>\n</body>"; }) : h + "<script>\n" + js + "<\/script>";
+      return h;
+    }
+    return '<!doctype html>\n<html lang="tg">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Саҳифаи ман</title>\n' + (css ? "<style>\n" + css + "</style>\n" : "") + "</head>\n<body>\n" + h + (js ? "<script>\n" + js + "<\/script>\n" : "") + "</body>\n</html>\n";
+  }
+  function renderPreview(cb) {
+    clearTimeout(pvTimer); if (!isWeb()) return;
+    clearCon(); pvOnReady = cb || null; pvToken++;
+    $("pvf").srcdoc = buildDoc(files, pvToken);
+  }
+  function schedulePreview() { if (!isWeb()) return; clearTimeout(pvTimer); pvTimer = setTimeout(function () { renderPreview(); }, 350); }
+  function runWebChecks(checks) {
+    return new Promise(function (resolve) {
+      var tm = setTimeout(function () { pvOnReady = pvCheckCb = null; resolve(null); }, 5000);
+      pvCheckCb = function (res) { clearTimeout(tm); resolve(res); };
+      renderPreview(function () { try { $("pvf").contentWindow.postMessage({ ide: 1, t: "check", k: pvToken, checks: checks }, "*"); } catch (x) {} });
+    });
+  }
+  addEventListener("message", function (e) {
+    var m = e.data;
+    if (!m || m.ide !== 1 || e.source !== $("pvf").contentWindow || m.k !== pvToken) return;
+    if (m.t === "ready") { var f = pvOnReady; pvOnReady = null; if (f) f(); }
+    else if (m.t === "checked") { var g = pvCheckCb; pvCheckCb = null; if (g) g(m.res); }
+    else show(m);
+  });
+  function saveBlob(blob, name) { var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $("pvdev").onclick = function () { var on = $("pvbox").classList.toggle("mob"); this.innerHTML = icon(on ? "monitor" : "phone"); this.title = on ? "Дар паҳнои пурра" : "Андозаи телефон"; };
+  $("pvopen").onclick = function () {
+    /* саҳифа дар iframe-и sandbox мегузорем, то код ба маълумоти IDE дастрас набошад */
+    var w = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Натиҷа</title><style>html,body{margin:0;height:100%;background:#fff}iframe{border:0;width:100%;height:100%;display:block}</style><iframe sandbox="allow-scripts allow-modals" srcdoc="' + cleanDoc(files).replace(/&/g, "&amp;").replace(/"/g, "&quot;") + '"></iframe>';
+    window.open(URL.createObjectURL(new Blob([w], { type: "text/html" })), "_blank");
+  };
+  $("pvdl").onclick = function () { saveBlob(new Blob([cleanDoc(files)], { type: "text/html" }), "index.html"); };
+
+  /* ---------- иҷро ---------- */
+  function line(cls, html) { var d = document.createElement("span"); d.className = "l " + cls; d.innerHTML = html; $("out").appendChild(d); $("out").scrollTop = 1e9; }
+  var conOpen = ls("con") === "1", conErr = 0, conLog = 0;
+  function badge() { var b = $("pvbdg"); b.className = "bdg" + (conErr ? " err" : conLog ? " log" : ""); b.textContent = conErr || conLog || ""; }
+  function clearCon() { $("out").innerHTML = ""; conErr = conLog = 0; badge(); }
+  function toggleCon(open) { conOpen = open == null ? !conOpen : open; document.querySelector(".main").classList.toggle("con-open", conOpen); $("pvcon").classList.toggle("on", conOpen); ls("con", conOpen ? "1" : "0"); }
+  $("pvcon").onclick = function () { toggleCon(); };
+  $("conx").onclick = function () { toggleCon(false); };
+  function show(m) {
+    if (isWeb()) { if (m.t === "error" || m.t === "err") conErr++; else if (m.t === "log" || m.t === "warn") conLog++; badge(); }
+    if (m.t === "log") line("", esc(m.v)); else if (m.t === "warn" || m.t === "err") line("e", esc(m.v));
+    else if (m.t === "error") { line("e", "⚠ " + esc(m.name || "Хато") + ": " + esc(m.msg) + (m.line ? "  (сатри " + m.line + ")" : "")); var h = hintFor(m.name, m.msg) || (/Давр хотима наёфт/.test(m.msg) ? "Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?" : ""); if (h) { var d = document.createElement("span"); d.className = "hint"; d.innerHTML = "💡 " + h; $("out").appendChild(d); } }
+    else if (m.t === "timeout") { line("e", "⏱ Барнома зиёда аз 2,5 сония кор кард ва қатъ шуд."); var d2 = document.createElement("span"); d2.className = "hint"; d2.innerHTML = "💡 Эҳтимол давр хотима наёфт ♾️. Оё қадамро (<code>i++</code>) фаромӯш кардед ё шарт ҳамеша дуруст аст?"; $("out").appendChild(d2); }
+  }
+  function doRun() {
+    if (isWeb()) { renderPreview(); setPane("result"); return; }
+    $("out").innerHTML = ""; $("run").disabled = true; var any = false;
+    runCode(ta.value, function (m) { any = true; show(m); }).then(function () { if (!any) line("i", "(Ҳеҷ чиз нишон дода нашуд. Барои дидани натиҷа console.log(…) нависед.)"); $("run").disabled = false; });
+  }
+  $("run").onclick = doRun;
+  $("clr").onclick = clearCon;
+  $("reset").onclick = function () {
+    if (!confirm("Кодро аз нав оғоз кунем? Тағйиротҳои шумо нест мешаванд.")) return;
+    Object.keys(files).forEach(function (f) { files[f] = starter(f); ls(fkey(f), files[f]); });
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
+  $("copy").onclick = function () { var b = this; (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { flash(b); }, function () { ta.select(); try { document.execCommand("copy"); flash(b); } catch (e) {} }); };
+  $("ex").onchange = function () {
+    var e = EXAMPLES[track()][+this.value], c = e && e[1]; this.value = 0; if (!c) return;
+    if (isWeb()) Object.keys(files).forEach(function (f) { files[f] = c[f] || ""; ls(fkey(f), files[f]); }); else { files.js = c; ls(fkey("js"), c); }
+    ta.value = files[curFile]; paint(); schedulePreview();
+  };
+  $("mnav").onclick = function (e) { var b = e.target.closest && e.target.closest("button[data-p]"); if (b) setPane(b.getAttribute("data-p")); };
+
+  $("check").onclick = function () {
+    var t = task(), L = lesson(); if (!t) return; $("check").disabled = true;
+    var p = isWeb()
+      ? runWebChecks(t.checks).then(function (res) { return res ? t.checks.map(function (c, i) { return [c.label, !!res[i]]; }) : [["Саҳифа бор нашуд — дубора кӯшиш кунед", false]]; })
+      : t.check(ta.value, R);
+    p.then(function (rs) {
+      var all = rs.every(function (r) { return r[1]; });
+      $("checks").innerHTML = rs.map(function (r) { return '<div class="' + (r[1] ? "ok" : "no") + '">' + (r[1] ? "✓ " : "✗ ") + esc(r[0]) + "</div>"; }).join("");
+      if (all) { done[L.id + "-" + ti] = 1; ls("done", JSON.stringify(done)); $("winbox").innerHTML = '<div class="win">🎉 Офарин! Вазифа ҳал шуд.' + (ti < L.tasks.length - 1 ? " Вазифаи навбатӣ: тугмаи «" + (ti + 2) + "» дар тарафи рост." : " Ба дарси навбатӣ гузаред!") + "</div>"; confetti(); drawTabs(); drawProgress(); }
+      else $("winbox").innerHTML = "";
+      $("check").disabled = false;
+      if (isWeb()) { setPane("lesson"); $("task").scrollIntoView({ block: "nearest" }); }
+    });
+  };
+
+  /* ---------- конфетти ---------- */
+  var cv = $("fx"), cx = cv.getContext("2d"), parts = [], on = false;
+  function fit() { cv.width = innerWidth; cv.height = innerHeight; } addEventListener("resize", fit); fit();
+  function confetti() { return; var c = ["#BD93F9", "#FF79C6", "#4EC9B0", "#DCDCAA"]; for (var i = 0; i < 100; i++) parts.push({ x: innerWidth / 2, y: innerHeight * .3, vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 8 + 4, c: c[i % 4], r: 0, vr: (Math.random() - .5) * .4 }); if (!on) { on = true; requestAnimationFrame(tick); } }
+  function tick() { cx.clearRect(0, 0, cv.width, cv.height); parts = parts.filter(function (p) { return p.y < cv.height + 20; }); parts.forEach(function (p) { p.vy += .35; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * .6); cx.restore(); }); if (parts.length) requestAnimationFrame(tick); else { on = false; cx.clearRect(0, 0, cv.width, cv.height); } }
+
+
+  /* ---------- пешравӣ ва шаҳодатнома ---------- */
+  function totals(tk) { var n = 0, d = 0; LESSONS.forEach(function (L) { if (!L.free && L.track === tk) L.tasks.forEach(function (_, i) { n++; if (done[L.id + "-" + i]) d++; }); }); return [d, n]; }
+  function drawProgress() {
+    var tk = track(), t = totals(tk), pct = t[1] ? Math.round(100 * t[0] / t[1]) : 0;
+    $("pt").textContent = "✓ " + t[0] + " / " + t[1]; $("pf").style.width = pct + "%";
+    $("cert").style.display = TRACKS[tk].cert ? "" : "none";
+    $("cert").disabled = t[0] < t[1]; $("cert").title = t[0] < t[1] ? "Баъд аз ҳалли ҳамаи вазифаҳо" : "";
+    $("cert").textContent = t[0] < t[1] ? "🎓 Шаҳодатнома" : "🎓 Шаҳодатнома гиред!";
+  }
+  function makeCert(name) {
+    var cv2 = document.createElement("canvas"); cv2.width = 1600; cv2.height = 1130; var x = cv2.getContext("2d");
+    var g = function (x0, x1) { var k = x.createLinearGradient(x0, 0, x1, 0); k.addColorStop(0, "#BD93F9"); k.addColorStop(1, "#FF79C6"); return k; };
+    x.fillStyle = "#1E1E1E"; x.fillRect(0, 0, 1600, 1130);
+    var gl = x.createRadialGradient(1250, 280, 0, 1250, 280, 640); gl.addColorStop(0, "rgba(189,147,249,.18)"); gl.addColorStop(1, "rgba(189,147,249,0)"); x.fillStyle = gl; x.fillRect(0, 0, 1600, 1130);
+    x.strokeStyle = g(40, 1560); x.lineWidth = 8; x.strokeRect(40, 40, 1520, 1050); x.strokeStyle = "#3C3C3C"; x.lineWidth = 3; x.strokeRect(62, 62, 1476, 1006);
+    x.textAlign = "center"; var F = "Inter, 'DejaVu Sans', Arial, sans-serif";
+    x.fillStyle = "#BD93F9"; x.font = "800 30px 'DejaVu Sans Mono', monospace"; x.fillText("ШАҲРИЁР ЮНУСОВ · БАРНОМАСОЗӢ АЗ СИФР", 800, 170);
+    x.fillStyle = "#FFFFFF"; x.font = "900 110px " + F; x.fillText("ШАҲОДАТНОМА", 800, 330);
+    x.font = "600 38px " + F; x.fillStyle = "#8B949E"; x.fillText("Ин шаҳодатнома ба", 800, 450);
+    x.font = "900 88px " + F; var nm = name || "Донишҷӯ"; while (x.measureText(nm).width > 1300 && nm.length > 3) nm = nm.slice(0, -1); x.fillStyle = g(800 - x.measureText(nm).width / 2, 800 + x.measureText(nm).width / 2); x.fillText(nm, 800, 580);
+    x.fillStyle = "#3C3C3C"; x.fillRect(420, 615, 760, 4);
+    x.fillStyle = "#D4D4D4"; x.font = "600 40px " + F; x.fillText("ҳамаи вазифаҳои курси «Барномасозӣ аз сифр»-ро иҷро кард:", 800, 700);
+    x.font = "800 36px " + F; x.fillStyle = "#4EC9B0"; x.fillText("Тағйирёбанда · Шарт · Давр · Рӯйхат · Функсия · Объект · Дебаг", 800, 770);
+    x.fillStyle = "#8B949E"; x.font = "600 30px " + F; var d = new Date(); x.fillText(d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear(), 800, 880);
+    x.fillStyle = "#FFFFFF"; x.font = "800 34px " + F; x.fillText("@shahriyor_yunusov", 800, 970);
+    x.beginPath(); x.arc(1400, 930, 70, 0, 7); x.fillStyle = g(1330, 1470); x.fill(); x.fillStyle = "#1E1E1E"; x.font = "900 58px " + F; x.fillText("</>", 1400, 950);
+    return cv2.toDataURL("image/png");
+  }
+  $("cert").onclick = function () {
+    var nm = ls("name") || ""; var v = prompt("Номи худро нависед (барои шаҳодатнома):", nm); if (v === null) return; v = v.trim(); ls("name", v);
+    var url = makeCert(v); $("dimg").src = url; $("dl").href = url;
+    $("dp").innerHTML = "Офарин! 🎉 Шаҳодатномаро зеркашӣ кунед ва ба <b>сторис</b> гузоред: <b>@shahriyor_yunusov</b>-ро қайд кунед!"; $("dlg").showModal(); confetti();
+  };
+  $("dclose").onclick = function () { $("dlg").close(); };
+
+  /* ---------- пайвандҳо ба дарс ва нусхаи код ---------- */
+  function setHash() {
+    var L = lesson(), h = L.free ? (L.track === "web" ? "#web" : "#free") : "#dars-" + L.id.slice(1) + (ti ? "-" + (ti + 1) : "");
+    try { history.replaceState(null, "", h); } catch (e) {}
+  }
+  function b64u(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64u(b) { b = b.replace(/-/g, "+").replace(/_/g, "/"); while (b.length % 4) b += "="; return decodeURIComponent(escape(atob(b))); }
+  function parseHash() {
+    var h = location.hash || "", m;
+    if ((m = /^#code=(.+)$/.exec(h))) { try { cur = "free"; ls("code-free", unb64u(m[1])); return; } catch (e) {} }
+    if ((m = /^#web=(.+)$/.exec(h))) {
+      try { var o = JSON.parse(unb64u(m[1])); cur = "webfree"; pane = "code"; FILES.forEach(function (f) { if (typeof o[f] === "string") ls("code-webfree-" + f, o[f]); }); return; } catch (e) {}
+    }
+    if ((m = /^#dars-(\d+)(?:-(\d+))?$/.exec(h))) { var id = "l" + m[1]; if (LESSONS.some(function (L) { return L.id === id; })) { cur = id; ti = Math.max(0, (+m[2] || 1) - 1); var L = lesson(); if (ti >= L.tasks.length) ti = 0; ls("tab", cur); return; } }
+    if (h === "#free") cur = "free";
+    if (h === "#web") { cur = "webfree"; pane = "code"; }
+  }
+  $("share").onclick = function () {
+    var b = this, u = location.href.split("#")[0] + (isWeb() ? "#web=" + b64u(JSON.stringify({ html: files.html || "", css: files.css || "", js: files.js || "" })) : "#code=" + b64u(ta.value));
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { flash(b); }, function () { prompt("Пайвандро нусха кунед:", u); });
+  };
+
+  /* ---------- аломатҳои зуд (барои телефон) ---------- */
+  var SYMS = {
+    js: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], ["(", "()"], [")", ")"], ["[", "[]"], ["]", "]"], [";", ";"], ['"', '""'], ["=", "="], ["+", "+"], ["-", "-"], ["<", "<"], [">", ">"], ["!", "!"], ["/", "/"], [".", "."], [",", ","]],
+    html: [["⇥", "  ", "tab"], ["<", "<"], [">", ">"], ["</", "</"], ["/>", "/>"], ["=", "="], ['"', '""'], ["#", "#"], [".", "."], ["-", "-"], ["!", "!"], ["&", "&"], [";", ";"]],
+    css: [["⇥", "  ", "tab"], ["{", "{}"], ["}", "}"], [":", ":"], [";", ";"], ["#", "#"], [".", "."], ["%", "%"], ["(", "()"], [")", ")"], [",", ","], ['"', '""'], ["-", "-"], ["/", "/"], ["*", "*"]]
+  };
+  function drawSyms() {
+    var box = $("sym"); box.innerHTML = "";
+    SYMS[curFile].forEach(function (sy) {
+      var b = document.createElement("button"); b.textContent = sy[0]; if (sy[2]) b.className = "tabk"; b.setAttribute("aria-label", "Аломат " + sy[0]);
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault(); var t = sy[1]; ins(t, t.length === 2 && t !== "  " && /[\{\(\[\"]/.test(t[0]) ? 1 : 0);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  window.__ide = { lessons: LESSONS, setCode: function (c, f) { f = f || curFile; files[f] = c; if (f === curFile) { ta.value = c; paint(); } schedulePreview(); }, goto: function (id, i) { cur = id; ti = i || 0; pane = "code"; load(); } };
+  pane = "lesson"; parseHash(); if (lesson().free) pane = "code"; if (isWeb()) curFile = "html"; load();
+  addEventListener("hashchange", function () { var o = cur + ti; parseHash(); if (cur + ti !== o) load(); });
+})();
+</script>
+<script>window.TL={"end": 926.42, "scenes": [{"id": "s-hook", "t0": 0, "t1": 40.2}, {"id": "s-rest", "t0": 40.2, "t1": 98.0}, {"id": "s-url", "t0": 98.0, "t1": 166.9}, {"id": "s-dns", "t0": 166.9, "t1": 219.3}, {"id": "s-req", "t0": 219.3, "t1": 229.1}, {"id": "ide", "t0": 229.1, "t1": 246.6}, {"id": "s-gp", "t0": 246.6, "t1": 273.7}, {"id": "s-srv", "t0": 273.7, "t1": 289.6}, {"id": "ide", "t0": 289.6, "t1": 354.2}, {"id": "s-stat", "t0": 354.2, "t1": 393.9}, {"id": "s-three", "t0": 393.9, "t1": 458.6}, {"id": "s-fb", "t0": 458.6, "t1": 518.0}, {"id": "s-like", "t0": 518.0, "t1": 549.6}, {"id": "ide", "t0": 549.6, "t1": 598.0}, {"id": "s-slow", "t0": 598.0, "t1": 649.2}, {"id": "s-https", "t0": 649.2, "t1": 681.3}, {"id": "s-err", "t0": 681.3, "t1": 724.7}, {"id": "s-rec", "t0": 724.7, "t1": 786.0}, {"id": "ide", "t0": 786.0, "t1": 866.2}, {"id": "s-sum", "t0": 866.2, "t1": 912.8}, {"id": "s-next", "t0": 912.8, "t1": 927.42}], "ide": [{"t": 229.1, "op": "set", "code": ""}, {"t": 229.1, "op": "clear"}, {"t": 234.5, "op": "type", "dur": 5.0, "from": "", "to": "let request = { method: \"GET\", url: \"/\" };"}, {"t": 289.6, "op": "set", "code": ""}, {"t": 289.6, "op": "clear"}, {"t": 291.3, "op": "type", "dur": 2.4, "from": "", "to": "function server(req) {\n}"}, {"t": 296.0, "op": "type", "dur": 9.0, "from": "function server(req) {\n}", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n}"}, {"t": 309.9, "op": "type", "dur": 8.0, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n}", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n}"}, {"t": 320.4, "op": "type", "dur": 6.5, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n}", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}"}, {"t": 337.0, "op": "type", "dur": 4.6, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\nconsole.log(server({ method: \"GET\", url: \"/\" }));"}, {"t": 342.09999999999997, "op": "run", "sel": "#run"}, {"t": 348.2, "op": "type", "dur": 1.6, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\nconsole.log(server({ method: \"GET\", url: \"/\" }));", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\nconsole.log(server({ method: \"GET\", url: \"/shop\" }));"}, {"t": 350.0, "op": "clear"}, {"t": 350.8, "op": "run", "sel": "#run"}, {"t": 549.6, "op": "set", "code": ""}, {"t": 549.6, "op": "clear"}, {"t": 551.2, "op": "type", "dur": 5.2, "from": "", "to": "let answer = '{\"likes\": 25, \"liked\": false}';"}, {"t": 560.3, "op": "type", "dur": 4.4, "from": "let answer = '{\"likes\": 25, \"liked\": false}';", "to": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);"}, {"t": 568.2, "op": "type", "dur": 3.2, "from": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);", "to": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);\nconsole.log(data.likes);"}, {"t": 571.4, "op": "run", "sel": "#run"}, {"t": 573.5, "op": "type", "dur": 6.2, "from": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);\nconsole.log(data.likes);", "to": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);\nconsole.log(data.likes);\ndata.likes = data.likes + 1;\ndata.liked = true;"}, {"t": 580.8, "op": "type", "dur": 3.6, "from": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);\nconsole.log(data.likes);\ndata.likes = data.likes + 1;\ndata.liked = true;", "to": "let answer = '{\"likes\": 25, \"liked\": false}';\nlet data = JSON.parse(answer);\nconsole.log(data.likes);\ndata.likes = data.likes + 1;\ndata.liked = true;\nconsole.log(JSON.stringify(data));"}, {"t": 585.2, "op": "run", "sel": "#run"}, {"t": 788.7, "op": "goto", "lesson": "l12", "i": 0}, {"t": 788.8, "op": "set", "code": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  // роҳи /contact-ро илова кунед\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\n"}, {"t": 794.4, "op": "type", "dur": 5.0, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  // роҳи /contact-ро илова кунед\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\n", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  if (req.url === \"/contact\") {\n    return { status: 200, body: \"Телефон\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\n"}, {"t": 801.5, "op": "click", "sel": "#side button[data-i=\"1\"]"}, {"t": 801.55, "op": "set", "code": "let text = '{\"name\": \"Нигина\", \"age\": 25}';\n\n// JSON.parse ва console.log\n"}, {"t": 803.4, "op": "type", "dur": 4.4, "from": "let text = '{\"name\": \"Нигина\", \"age\": 25}';\n\n// JSON.parse ва console.log\n", "to": "let text = '{\"name\": \"Нигина\", \"age\": 25}';\nlet data = JSON.parse(text);\nconsole.log(data.name);\n"}, {"t": 810.6, "op": "click", "sel": "#side button[data-i=\"2\"]"}, {"t": 810.65, "op": "set", "code": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  // ба роҳи номаълум ҷавоб илова кунед\n}\nconsole.log(server({ method: \"GET\", url: \"/xyz\" }).status);\n"}, {"t": 812.4, "op": "type", "dur": 3.8, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  // ба роҳи номаълум ҷавоб илова кунед\n}\nconsole.log(server({ method: \"GET\", url: \"/xyz\" }).status);\n", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\nconsole.log(server({ method: \"GET\", url: \"/xyz\" }).status);\n"}, {"t": 832.6, "op": "check", "sel": "#check"}, {"t": 835.52, "op": "goto", "lesson": "free", "i": 0}, {"t": 835.62, "op": "set", "code": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}"}, {"t": 835.62, "op": "clear"}, {"t": 839.5, "op": "type", "dur": 6.0, "from": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}", "to": "function server(req) {\n  if (req.url === \"/\") {\n    return { status: 200, body: \"<h1>Салом!</h1>\" };\n  }\n  if (req.url === \"/about\") {\n    return { status: 200, body: \"<p>Ман барномасоз мешавам.</p>\" };\n  }\n  return { status: 404, body: \"Саҳифа ёфт нашуд\" };\n}\nconsole.log(server({ method: \"GET\", url: \"/contact\" }).status);"}, {"t": 856.5999999999999, "op": "run", "sel": "#run"}], "marks": [{"t0": 238.3, "t1": 242.2, "line": 0, "c0": 16, "c1": 22, "text": "усул — чӣ мехоҳем", "color": "c", "pos": "above"}, {"t0": 244.3, "t1": 246.4, "line": 0, "c0": 31, "c1": 34, "text": "роҳ — аз куҷо", "color": "g", "pos": "below"}, {"t0": 297.0, "t1": 301.8, "line": 1, "c0": 6, "c1": 13, "text": "роҳи дархост", "color": "c", "pos": "above"}, {"t0": 302.3, "t1": 306.0, "line": 2, "c0": 4, "c1": 10, "text": "return — ҷавоб", "color": "g", "pos": "below"}, {"t0": 304.2, "t1": 308.4, "line": 2, "c0": 13, "c1": 19, "text": "статус-код", "color": "y", "pos": "above"}, {"t0": 310.4, "t1": 316.0, "line": 4, "c0": 18, "c1": 26, "text": "роҳи дуюм", "color": "c", "pos": "below"}, {"t0": 323.8, "t1": 327.8, "line": 7, "c0": 19, "c1": 22, "text": "ёфт нашуд", "color": "r", "pos": "below"}, {"t0": 553.6, "t1": 557.6, "line": 0, "c0": 15, "c1": 22, "text": "матн аз сервер", "color": "c", "pos": "below"}, {"t0": 564.0, "t1": 568.0, "line": 1, "c0": 11, "c1": 21, "text": "матн → объект", "color": "g", "pos": "above"}, {"t0": 574.0, "t1": 580.0, "line": 3, "c0": 13, "c1": 27, "text": "плюс як", "color": "y", "pos": "below"}, {"t0": 582.7, "t1": 585.0, "line": 5, "c0": 12, "c1": 26, "text": "объект → матн", "color": "c", "pos": "above"}, {"t0": 846.6, "t1": 848.0, "line": 9, "c0": 41, "c1": 51, "text": "❓ чӣ чоп мешавад?", "color": "y", "pos": "below"}], "rings": [{"t0": 342.8, "t1": 346.8, "sel": "#out", "text": "✅ status 200", "color": "g", "pad": 2}, {"t0": 351.4, "t1": 354.0, "sel": "#out", "text": "⚠️ 404", "color": "r", "pad": 2}, {"t0": 571.8, "t1": 573.2, "sel": "#out", "text": "✅ 25", "color": "g", "pad": 2}, {"t0": 585.8, "t1": 598.0, "sel": "#out", "text": "✅ likes 26", "color": "g", "pad": 2}, {"t0": 791.4, "t1": 793.0, "sel": "#side", "text": "📘 назария", "color": "c", "pad": 4}, {"t0": 793.0, "t1": 801.2, "sel": "#task", "text": "Вазифаи 1", "color": "y", "pad": 4}, {"t0": 801.8, "t1": 810.3, "sel": "#task", "text": "Вазифаи 2", "color": "y", "pad": 4}, {"t0": 810.9, "t1": 818.0, "sel": "#task", "text": "Вазифаи 3", "color": "y", "pad": 4}, {"t0": 831.0, "t1": 832.4, "sel": "#check", "text": "✓ Санҷиш", "color": "c", "pad": 6}, {"t0": 833.8, "t1": 835.3, "sel": "#checks", "text": "", "color": "g", "pad": 4}, {"t0": 857.4, "t1": 865.8, "sel": "#out", "text": "✅ 404", "color": "g", "pad": 2}], "ptr": [{"t": 342.09999999999997, "sel": "#run"}, {"t": 350.8, "sel": "#run"}, {"t": 571.4, "sel": "#run"}, {"t": 585.2, "sel": "#run"}, {"t": 801.5, "sel": "#side button[data-i=\"1\"]"}, {"t": 810.6, "sel": "#side button[data-i=\"2\"]"}, {"t": 832.6, "sel": "#check"}, {"t": 856.5999999999999, "sel": "#run"}], "chips": [{"t0": 229.2, "t1": 231.29999999999998, "html": "<span>💻</span><div>Дархост — объект<small>05 · дарси 6</small></div>", "cls": "card", "style": ""}, {"t0": 289.70000000000005, "t1": 291.6, "html": "<span>🖥️</span><div>Сервери намунавӣ<small>06 · function, if, return</small></div>", "cls": "card", "style": ""}, {"t0": 327.9, "t1": 335.5, "html": "<span class=\"big\">↩️</span><div>return — ҷавоб бармегардонад<small>(дарси 5)</small></div>", "cls": "card", "style": ""}, {"t0": 549.7, "t1": 551.6, "html": "<span>🧩</span><div>JSON дар IDE<small>07 · parse ва stringify</small></div>", "cls": "card", "style": ""}, {"t0": 588.8, "t1": 596.0, "html": "<span class=\"big\">📦</span><div>25 → 26<small>қуттии дарси 1 — ҳоло «лайк»</small></div>", "cls": "card", "style": "top:330px"}, {"t0": 786.1, "t1": 788.4, "html": "<span>🎯</span><div>Вазифаҳо барои шумо<small>08 · дарси 12 дар IDE</small></div>", "cls": "card", "style": ""}, {"t0": 818.3, "t1": 834.6, "html": "<span class=\"big\">🧠</span><div>аввал фикр кунед, баъд иҷро<small>қоғаз ё дар ақл: сервер ба ҳар роҳ кадом статус медиҳад?</small></div>", "cls": "card", "style": "top:300px"}, {"t0": 847.9, "t1": 850.46, "html": "<span class=\"big\">❓</span><div>server({ GET, \"/contact\" }).status?<small>видеоро пауза кунед ✍️</small></div>", "cls": "card", "style": ""}, {"t0": 850.78, "t1": 851.38, "html": "<span class=\"big\">5</span><div>server({ GET, \"/contact\" }).status?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 851.78, "t1": 852.38, "html": "<span class=\"big\">4</span><div>server({ GET, \"/contact\" }).status?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 852.78, "t1": 853.38, "html": "<span class=\"big\">3</span><div>server({ GET, \"/contact\" }).status?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 853.78, "t1": 854.38, "html": "<span class=\"big\">2</span><div>server({ GET, \"/contact\" }).status?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 854.78, "t1": 855.38, "html": "<span class=\"big\">1</span><div>server({ GET, \"/contact\" }).status?<small>фикр кунед · баъд ҷавобро мебинем ✅</small></div>", "cls": "card", "style": ""}, {"t0": 858.6, "t1": 865.6, "html": "<div>роҳи <span class=\"mono\">/contact</span> нест → охирин <span class=\"mono\">return</span><small>«Саҳифа ёфт нашуд»</small></div>", "cls": "card", "style": "top:620px"}], "zooms": [], "caps": [], "chapters": [{"t": 0, "title": "Хук"}, {"t": 40.2, "title": "Образи ресторан"}, {"t": 98.0, "title": "Суроға: аз чӣ иборат аст?"}, {"t": 166.9, "title": "Домен ва DNS"}, {"t": 219.3, "title": "Дархост: GET ва POST"}, {"t": 273.7, "title": "Сервер ва ҷавоб: статус-код"}, {"t": 393.9, "title": "Браузер ҷамъ мекунад: се файл"}, {"t": 458.6, "title": "Фронтенд ва бекенд"}, {"t": 518.0, "title": "Сайти зинда: JSON ва «Лайк»"}, {"t": 598.0, "title": "Чаро гоҳо сайт суст мекушояд"}, {"t": 649.2, "title": "Қулф дар суроға"}, {"t": 681.3, "title": "Хатогиҳои маъмул"}, {"t": 724.7, "title": "Роҳи як дархост"}, {"t": 786.0, "title": "Вазифаҳо ва санҷиш"}, {"t": 866.2, "title": "Хулоса"}], "cd": [850.76]};</script><script>// Детерминированный движок кадра: window.frame(t) приводит страницу (IDE + слайды + оверлеи) к моменту t.
+(function () {
+  "use strict";
+  var TL = window.TL, $ = function (s) { return document.querySelector(s); };
+  var clamp = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+  var easeOut = function (p) { return 1 - Math.pow(1 - p, 3); };
+  var easeIO = function (p) { return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+  var back = function (p) { var c = 1.7, c3 = c + 1; return 1 + c3 * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+
+  /* ---------- слайды ---------- */
+  var animEls = [].slice.call(document.querySelectorAll("[data-a]")).map(function (el) {
+    var a = el.dataset.a.split(";"); return { el: el, k: a[0], t: +a[1], o: el.dataset.o != null ? +el.dataset.o : null, ok: el.dataset.ok || "fade" };
+  });
+  function animate(t) {
+    animEls.forEach(function (A) {
+      var p = clamp((t - A.t) / (A.k === "stamp" ? .35 : A.k === "drop" ? .6 : .5)), op = clamp(p * 2.5), tr = "";
+      if (A.k === "up") tr = "translateY(" + (1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "down") tr = "translateY(" + -(1 - easeOut(p)) * 40 + "px)";
+      else if (A.k === "left") tr = "translateX(" + -(1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "right") tr = "translateX(" + (1 - easeOut(p)) * 80 + "px)";
+      else if (A.k === "pop") tr = "scale(" + (p ? back(p) : 0) + ")";
+      else if (A.k === "bob") tr = "scale(" + (p ? back(p) : 0) + ") translateY(" + Math.sin((t - A.t) * 2.6) * 5 + "px)";
+      else if (A.k === "shake") tr = "scale(" + (p ? back(p) : 0) + ") translateX(" + (p >= 1 ? Math.sin((t - A.t) * 38) * 4 : 0) + "px) rotate(" + (p >= 1 ? Math.sin((t - A.t) * 30) * 1.2 : 0) + "deg)";
+      else if (A.k === "stamp") { tr = "scale(" + (2.2 - 1.2 * easeOut(p)) + ") rotate(" + (-4 * (1 - p)) + "deg)"; op = clamp(p * 3); }
+      else if (A.k === "drop") { var d = p < .7 ? -260 * (1 - easeOut(p / .7)) : 14 * Math.sin((p - .7) / .3 * Math.PI) * (1 - p) * 3; tr = "translateY(" + d + "px)"; op = clamp(p * 6); }
+      if (A.o != null && t >= A.o) {
+        var q = clamp((t - A.o) / .45);
+        if (A.ok === "flyout") tr += " translateY(" + -easeIO(q) * 300 + "px) rotate(" + q * 25 + "deg)";
+        if (A.ok === "shrink") tr += " scale(" + (1 - q) + ")";
+        op *= 1 - q;
+      }
+      A.el.style.opacity = op; A.el.style.transform = tr;
+    });
+    document.querySelectorAll("[data-cnt]").forEach(function (el) {
+      var c = el.dataset.cnt.split(";"), a = +c[0], b = +c[1], p = easeIO(clamp((t - +c[2]) / +c[3]));
+      el.textContent = Math.round(a + (b - a) * p).toLocaleString("ru-RU");
+    });
+    document.querySelectorAll("[data-tw]").forEach(function (el) {
+      var c = el.dataset.tw.split(";"), s = el.dataset.text, n = Math.floor(s.length * clamp((t - +c[0]) / +c[1]));
+      el.textContent = s.slice(0, n); el.classList.toggle("typing", n > 0 && n < s.length);
+    });
+  }
+  function scenes(t) {
+    TL.scenes.forEach(function (S) {
+      var el = document.getElementById(S.id); if (!el) return;
+      var op = Math.min(clamp((t - S.t0) / .35), 1 - clamp((t - S.t1) / .35));
+      el.style.opacity = op; el.style.visibility = op > 0 ? "visible" : "hidden";
+      el.style.transform = "scale(" + (1 + .025 * clamp((t - S.t0) / (S.t1 - S.t0))) + ")";
+    });
+  }
+  function inIde(t) { return TL.scenes.some(function (S) { return S.id === "ide" && t >= S.t0 && t < S.t1; }); }
+
+  /* ---------- редактор ---------- */
+  var ta = document.getElementById("ta"), hl = document.getElementById("hl");
+  function codeAt(t) {
+    var c = null, op = null;
+    TL.ide.forEach(function (o) { if ((o.op === "set" || o.op === "type") && o.t <= t) op = o; });
+    if (!op) return { code: null };
+    if (op.op === "set") return { code: op.code, caret: null };
+    var A = op.from, B = op.to, pre = 0; while (pre < A.length && pre < B.length && A[pre] === B[pre]) pre++;
+    var suf = 0; while (suf < A.length - pre && suf < B.length - pre && A[A.length - 1 - suf] === B[B.length - 1 - suf]) suf++;
+    var mA = A.slice(pre, A.length - suf), mB = B.slice(pre, B.length - suf);
+    var p = clamp((t - op.t) / op.dur), del = mA.length ? Math.min(.35, mA.length * .06 / op.dur) : 0, mid;
+    if (p < del) mid = mA.slice(0, Math.ceil(mA.length * (1 - p / del)));
+    else mid = mB.slice(0, Math.floor(mB.length * clamp((p - del) / (1 - del))));
+    c = A.slice(0, pre) + mid + A.slice(A.length - suf);
+    return { code: c, end: pre + mB.length, caret: t < op.t + op.dur + 1.2 ? pre + mid.length : null };
+  }
+  function applyCode(t) {
+    var s = codeAt(t);
+    if (s.code != null && ta.value !== s.code) window.__ide.setCode(s.code);
+    return s;
+  }
+  // прямоугольник символов [c0, c1) строки line в подсвеченном коде
+  function charRect(line, c0, c1) {
+    var lines = ta.value.split("\n"), off = 0;
+    for (var i = 0; i < line; i++) { if (lines[i] === undefined) return null; off += lines[i].length + 1; }
+    var a = off + c0, b = off + c1, w = document.createTreeWalker(hl, NodeFilter.SHOW_TEXT), n, pos = 0, r = document.createRange(), sa = 0, sb = 0;
+    while ((n = w.nextNode())) {
+      var L = n.nodeValue.length;
+      if (!sa && a <= pos + L) { r.setStart(n, a - pos); sa = 1; }
+      if (!sb && b <= pos + L) { r.setEnd(n, b - pos); sb = 1; break; }
+      pos += L;
+    }
+    if (!sa || !sb) return null;
+    var rs = r.getClientRects(); if (!rs.length) return null;
+    var R = { left: 1e9, top: 1e9, right: -1e9, bottom: -1e9 };
+    [].forEach.call(rs, function (q) { R.left = Math.min(R.left, q.left); R.top = Math.min(R.top, q.top); R.right = Math.max(R.right, q.right); R.bottom = Math.max(R.bottom, q.bottom); });
+    return R;
+  }
+  var gut = document.getElementById("gut"), codewrap = ta.parentNode, G = { key: null, acc: [] };
+  ta.setAttribute("wrap", "soft");
+  function caretRect(idx) {
+    var all = ta.value.split("\n"), v = ta.value.slice(0, idx).split("\n"), line = v.length - 1, col = v[line].length, r = null;
+    if (col > 0) { r = charRect(line, col - 1, col); if (r) return { x: r.right, y: r.top, h: r.bottom - r.top }; }
+    else if (all[line] && all[line].length) { r = charRect(line, 0, 1); if (r) return { x: r.left, y: r.top, h: r.bottom - r.top }; }
+    var cs = getComputedStyle(hl), lh = parseFloat(cs.lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth;
+    var rb = G.acc[line] != null ? G.acc[line] : line * lh;
+    return { x: hr.left + parseFloat(cs.paddingLeft) * z, y: hr.top + (parseFloat(cs.paddingTop) + rb - hl.scrollTop) * z, h: lh * z };
+  }
+  // номи сатрҳо бо назардошти гузаштан ба сатри нав + скролл то каретка
+  function layoutEditor(cs) {
+    hl.scrollTop = 0; ta.scrollTop = 0; gut.scrollTop = 0;
+    var lines = ta.value.split("\n"), lh = parseFloat(getComputedStyle(hl).lineHeight), hr = hl.getBoundingClientRect(), z = hr.width / hl.offsetWidth || 1;
+    var key = ta.value + "|" + Math.round(hr.width / z);
+    if (G.key !== key || !gut.firstElementChild) {
+      var acc = [], a = 0, html = "";
+      for (var i = 0; i < lines.length; i++) {
+        var h = lh, r = lines[i].length ? charRect(i, 0, lines[i].length) : null;
+        if (r) h = Math.max(lh, Math.round((r.bottom - r.top) / z / lh) * lh);
+        acc.push(a); a += h; html += '<div style="height:' + h + 'px">' + (i + 1) + "</div>";
+      }
+      gut.innerHTML = html; G.key = key; G.acc = acc;
+    }
+    var idx = cs.caret != null ? cs.caret : (cs.end != null ? cs.end : 0);
+    var cr = caretRect(idx), pt = (cr.y - hr.top) / z, ch = cr.h / z, H = codewrap.clientHeight;
+    var target = Math.max(0, pt + ch + 30 - H); if (target > 0) target = 14 + Math.ceil((target - 14) / lh) * lh;
+    hl.scrollTop = target; ta.scrollTop = target; gut.scrollTop = target;
+  }
+
+  /* ---------- оверлеи ---------- */
+  var ov = document.getElementById("ovl");
+  function pool(cls, n) { var a = []; for (var i = 0; i < n; i++) { var d = document.createElement("div"); d.className = cls; ov.appendChild(d); a.push(d); } return a; }
+  var markEls = pool("mk", 6), ringEls = pool("rg", 4), chipEls = pool("chip", 3);
+  var caret = pool("caret", 1)[0], ptr = document.getElementById("ptr"), rip = document.getElementById("rip");
+  function elRect(sel) { var e = document.querySelector(sel); return e ? e.getBoundingClientRect() : null; }
+  function overlays(t, cs, ide) {
+    var mi = 0;
+    if (ide) TL.marks.forEach(function (m) {
+      if (t < m.t0 || t > m.t1 + .3 || mi >= markEls.length) return;
+      var r = charRect(m.line, m.c0, m.c1); if (!r) return;
+      var cw = codewrap.getBoundingClientRect(); if (r.bottom > cw.bottom + 2 || r.top < cw.top - 2) return;
+      var el = markEls[mi++], p = clamp((t - m.t0) / .4), q = clamp((t - m.t1) / .3);
+      el.className = "mk " + (m.color || "y") + (m.pos === "below" ? " below" : "");
+      el.innerHTML = m.text ? '<b style="transform:scale(' + (p ? back(p) : 0) + ')"><i>' + m.text + "</i></b>" : "";
+      el.style.cssText = "display:block;left:" + (r.left - 6) + "px;top:" + (r.top - 4) + "px;width:" + (r.right - r.left + 12) + "px;height:" + (r.bottom - r.top + 8) + "px;opacity:" + clamp(p * 2) * (1 - q);
+    });
+    for (; mi < markEls.length; mi++) markEls[mi].style.display = "none";
+    var ri = 0;
+    if (ide) TL.rings.forEach(function (g) {
+      if (t < g.t0 || t > g.t1 + .3 || ri >= ringEls.length) return;
+      var r = elRect(g.sel); if (!r || !r.width) return;
+      var el = ringEls[ri++], p = clamp((t - g.t0) / .35), q = clamp((t - g.t1) / .3), pad = g.pad != null ? g.pad : 6;
+      el.className = "rg " + (g.color || "y");
+      el.innerHTML = g.text ? "<b><i>" + g.text + "</i></b>" : "";
+      if (g.text && r.top < 150) el.classList.add("below");
+      if (r.left > 640) el.classList.add("rt"); if (r.width > 800 || g.sel === "#task" || g.sel === "#checks") el.classList.add("in");
+      el.style.cssText = "display:block;left:" + (r.left - pad) + "px;top:" + (r.top - pad) + "px;width:" + (r.width + 2 * pad) + "px;height:" + (r.height + 2 * pad) + "px;opacity:" + p * (1 - q) + ";transform:scale(" + (1.15 - .15 * easeOut(p)) + ")";
+    });
+    for (; ri < ringEls.length; ri++) ringEls[ri].style.display = "none";
+    var ci = 0;
+    TL.chips.forEach(function (c) {
+      if (t < c.t0 || t > c.t1 + .3 || ci >= chipEls.length) return;
+      var el = chipEls[ci++], p = clamp((t - c.t0) / .45), q = clamp((t - c.t1) / .3);
+      el.className = "chip " + (c.cls || ""); el.innerHTML = c.html;
+      el.style.cssText = "display:flex;opacity:" + clamp(p * 2) * (1 - q) + ";transform:translate(-50%,-50%) scale(" + (p ? back(p) : 0) * (1 - .1 * q) + ")" + (c.style ? ";" + c.style : "");
+    });
+    for (; ci < chipEls.length; ci++) chipEls[ci].style.display = "none";
+    // каретка
+    if (ide && cs.caret != null) { var cr = caretRect(cs.caret); caret.style.cssText = "display:block;left:" + cr.x + "px;top:" + cr.y + "px;height:" + cr.h + "px;opacity:" + (Math.floor(t * 2.2) % 2 && cs.typingDone ? 0 : 1); }
+    else caret.style.display = "none";
+    // указатель
+    var P = TL.ptr, k = -1; for (var i = 0; i < P.length; i++) if (P[i].t - .7 <= t) k = i;
+    if (!ide || k < 0 || !P[k].sel) { ptr.style.display = "none"; rip.style.display = "none"; return; }
+    function ctr(sel) { var r = elRect(sel); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : { x: 640, y: 360 }; }
+    var to = ctr(P[k].sel), pos = to;
+    if (t < P[k].t && k > 0 && P[k - 1].sel) { var fr = ctr(P[k - 1].sel), e = easeIO(clamp((t - (P[k].t - .7)) / .7)); pos = { x: fr.x + (to.x - fr.x) * e, y: fr.y + (to.y - fr.y) * e }; }
+    else if (t < P[k].t) { var e2 = easeOut(clamp((t - (P[k].t - .7)) / .7)); pos = { x: to.x + 120 * (1 - e2), y: to.y + 160 * (1 - e2) }; }
+    ptr.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px";
+    var cl = null; TL.ide.forEach(function (o) { if (o.sel && o.t <= t && t < o.t + .5) cl = o; });
+    if (cl) { var rp = clamp((t - cl.t) / .5); rip.style.cssText = "display:block;left:" + pos.x + "px;top:" + pos.y + "px;opacity:" + (1 - rp) + ";transform:translate(-50%,-50%) scale(" + (.3 + rp * 1.4) + ")"; }
+    else rip.style.display = "none";
+  }
+
+  /* ---------- камера (зум в IDE) ---------- */
+  var app = document.querySelector(".app");
+  function camera(t) {
+    var s = 1, x = 640, y = 360;
+    TL.zooms.forEach(function (z) {
+      if (t < z.t0 - .7 || t > z.t1 + .7) return;
+      var p = t < z.t0 ? easeIO(clamp((t - z.t0 + .7) / .7)) : t > z.t1 ? 1 - easeIO(clamp((t - z.t1) / .7)) : 1;
+      s = 1 + (z.s - 1) * p; x = 640 + (z.x - 640) * p; y = 360 + (z.y - 360) * p;
+    });
+    // фокус (x,y) переходит в центр кадра, края не выходят за экран
+    var tx = Math.min(0, Math.max(1280 - 1280 * s, 640 - x * s)), ty = Math.min(0, Math.max(720 - 720 * s, 360 - y * s));
+    app.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
+  }
+
+  /* ---------- реальные действия в IDE ---------- */
+  var done = 0, real = TL.ide.filter(function (o) { return o.op === "run" || o.op === "check" || o.op === "click" || o.op === "goto" || o.op === "clear"; });
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  window.frame = async function (t) {
+    while (done < real.length && real[done].t <= t) {
+      var o = real[done++]; applyCode(o.t);
+      if (o.op === "goto") window.__ide.goto(o.lesson, o.i || 0);
+      else if (o.op === "run") document.getElementById("run").click();
+      else if (o.op === "check") document.getElementById("check").click();
+      else if (o.op === "clear") document.getElementById("out").innerHTML = "";
+      else if (o.op === "click") document.querySelector(o.sel).click();
+      await sleep(o.op === "goto" ? 120 : (o.wait || 260));
+    }
+    var ide = inIde(t), cs = applyCode(t);
+    var last = null; TL.ide.forEach(function (o) { if (o.op === "type" && o.t <= t) last = o; });
+    cs.typingDone = !last || t > last.t + last.dur;
+    if (ide) layoutEditor(cs);
+    scenes(t); animate(t); camera(t); overlays(t, cs, ide);
+    document.body.classList.toggle("noide", !ide);
+  };
+})();
+</script></body>
+</html>
