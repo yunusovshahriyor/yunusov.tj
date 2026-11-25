@@ -23,3 +23,4 @@
 | 2026-11-13 | 2039–2040 | Reels 8: Хатогӣ ва дебаг (2039 — видео + конспект `post-15-debug.html`, блокҳои код бе emoji; 2040 — муқова `cover.jpg` ҳамчун файл) | `../reels/08-debug/reel-debug.mp4`, `../reels/08-debug/cover.jpg`, `send_debug.js` |
 | 2026-11-13 | 2041 | Quiz: дарси 7 (`if (age = 18)` — чоп мешавад «Калон», ҷавоб: Калон) | `post-16-quiz-xato.json`, `send_quiz.js` |
 | 2026-11-15 | 2052 | Reels 8: тавсифи Instagram (`reels/08-debug/caption.txt`) ҳамчун паёми нусхашаванда; видео ва конспект — 2039–2040 | `../reels/08-debug/caption.txt` |
+| 2026-11-25 | 2055–2057 | Reels 9: Лоиҳа қ.1 (To-Do) (2055 — видео + конспект `post-13-todo-1.html`, формати бехатар; 2056 — муқова файл; 2057 — тавсифи Instagram дар `<pre>`) | `../reels/09-todo-1/reel-todo-1.mp4`, `send_todo_1.js` |

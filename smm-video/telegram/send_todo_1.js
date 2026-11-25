@@ -19,6 +19,6 @@ const blob = (f, type) => new Blob([fs.readFileSync(f)], { type });
   const m1 = await api('sendVideo', fd); console.log('видео + конспект: message_id', m1.message_id);
   fd = new FormData(); fd.set('chat_id', CHAT); fd.set('document', blob(files.cover, 'image/jpeg'), 'cover.jpg');
   const m2 = await api('sendDocument', fd); console.log('муқова: message_id', m2.message_id);
-  fd = new FormData(); fd.set('chat_id', CHAT); fd.set('text', igCaption);
+  fd = new FormData(); fd.set('chat_id', CHAT); const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); fd.set('text', '📲 <b>Тавсиф барои Instagram</b> (барои нусха пахш кунед):\n\n<pre>' + esc(igCaption) + '</pre>'); fd.set('parse_mode', 'HTML');
   const m3 = await api('sendMessage', fd); console.log('тавсифи Instagram: message_id', m3.message_id);
 })().catch(e => { console.error(e.message); process.exit(1); });
