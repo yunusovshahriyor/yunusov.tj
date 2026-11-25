@@ -1,0 +1,8 @@
+{
+  "type": "quiz",
+  "question": "🧠 Санҷиш: чӣ чоп мешавад?\n\nlet tasks = [{ text: \"нон\", done: false }, { text: \"дарс\", done: false }];\ntasks.push({ text: \"занг\", done: false });\ntasks[0].done = true;\nconsole.log(tasks.length, tasks[0].done);",
+  "options": ["3 true", "2 true", "3 false", "2 false"],
+  "correct_option_id": 0,
+  "explanation": "push() вазифаи сеюмро илова кард — дар рӯйхат 3 объект. tasks[0].done = true нишон дод, ки вазифаи аввал иҷро шуд.",
+  "is_anonymous": true
+}
