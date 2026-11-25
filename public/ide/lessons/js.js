@@ -129,5 +129,24 @@ window.IDE_LESSONS = [
         { title: "Хатои 4: шумораи нодуруст", text: "Барнома бояд «<b>тухм</b>»-ро нишон диҳад, вале <code>undefined</code> менависад. Шумора аз 0 оғоз мешавад! Ислоҳ кунед.",
           starter: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[3]);\n', hint: "«тухм» сеюм аст, шумораи он 2 аст.", solution: 'let shopping = ["нон", "шир", "тухм"];\nconsole.log(shopping[2]);\n',
           check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Натиҷа: «тухм»", !r.err && r.out.join("|") === "тухм"]]; }); } }
+      ] },
+    { id: "l12", tab: "12 · Дархост ва ҷавоб", tag: "ДАРСИ 12",
+      theory: "Сайт = <b>дархост + ҷавоб</b>. Браузер дархост мефиристад: <code>{ method: \"GET\", url: \"/\" }</code>, сервер ҷавоб бармегардонад: <code>{ status: 200, body: \"...\" }</code>. Статус-код: <b>200</b> — хуб, <b>404</b> — ёфт нашуд, <b>500</b> — хатои сервер. Ҷавоби сервер гоҳо матни <b>JSON</b> аст: <code>JSON.parse(матн)</code> онро ба объект табдил медиҳад. Ин ҷо «сервер» — як функсияи оддӣ барои фаҳмидан.",
+      tasks: [
+        { title: "Вазифаи 1: роҳи нав", text: "Ба <code>server</code> роҳи <code>\"/contact\"</code>-ро илова кунед: <code>status</code> — <b>200</b>, <code>body</code> — «<b>Телефон</b>».",
+          starter: 'function server(req) {\n  if (req.url === "/") {\n    return { status: 200, body: "<h1>Салом!</h1>" };\n  }\n  if (req.url === "/about") {\n    return { status: 200, body: "<p>Ман барномасоз мешавам.</p>" };\n  }\n  // роҳи /contact-ро илова кунед\n  return { status: 404, body: "Саҳифа ёфт нашуд" };\n}\n',
+          hint: 'if (req.url === "/contact") { return { status: 200, body: "Телефон" }; }',
+          solution: 'function server(req) {\n  if (req.url === "/") {\n    return { status: 200, body: "<h1>Салом!</h1>" };\n  }\n  if (req.url === "/about") {\n    return { status: 200, body: "<p>Ман барномасоз мешавам.</p>" };\n  }\n  if (req.url === "/contact") {\n    return { status: 200, body: "Телефон" };\n  }\n  return { status: 404, body: "Саҳифа ёфт нашуд" };\n}\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(server({ method: "GET", url: "/contact" }).status);\nconsole.log(server({ method: "GET", url: "/contact" }).body);\nconsole.log(server({ method: "GET", url: "/about" }).status);').then(function (r) { var o = r.out.slice(-3); return [["/contact → status 200", !r.err && o[0] === "200"], ["body — «Телефон»", !r.err && o[1] === "Телефон"], ["Роҳҳои пештара кор мекунанд", !r.err && o[2] === "200"]]; }); } },
+        { title: "Вазифаи 2: JSON", text: "Матни <code>text</code>-ро бо <code>JSON.parse</code> ба объект табдил диҳед (<code>data</code>) ва <code>data.name</code>-ро нишон диҳед.",
+          starter: 'let text = \'{"name": "Нигина", "age": 25}\';\n\n// JSON.parse ва console.log\n',
+          hint: "let data = JSON.parse(text); console.log(data.name);",
+          solution: 'let text = \'{"name": "Нигина", "age": 25}\';\nlet data = JSON.parse(text);\nconsole.log(data.name);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["JSON.parse истифода шуд", /JSON\.parse\s*\(/.test(c)], ["Дар натиҷа «Нигина» аст", !r.err && r.out[r.out.length - 1] === "Нигина"]]; }); } },
+        { title: "Вазифаи 3: 404", text: "Роҳи номаълум хато медиҳад. Дар охири <code>server</code> ҷавоби <code>404</code> илова кунед: <code>status</code> — <b>404</b>.",
+          starter: 'function server(req) {\n  if (req.url === "/") {\n    return { status: 200, body: "<h1>Салом!</h1>" };\n  }\n  // ба роҳи номаълум ҷавоб илова кунед\n}\nconsole.log(server({ method: "GET", url: "/xyz" }).status);\n',
+          hint: 'Дар охир: return { status: 404, body: "Саҳифа ёфт нашуд" };',
+          solution: 'function server(req) {\n  if (req.url === "/") {\n    return { status: 200, body: "<h1>Салом!</h1>" };\n  }\n  return { status: 404, body: "Саҳифа ёфт нашуд" };\n}\nconsole.log(server({ method: "GET", url: "/xyz" }).status);\n',
+          check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Роҳи номаълум → 404", !r.err && r.out[r.out.length - 1] === "404"]]; }); } }
       ] }
   ];
