@@ -148,5 +148,24 @@ window.IDE_LESSONS = [
           hint: 'Дар охир: return { status: 404, body: "Саҳифа ёфт нашуд" };',
           solution: 'function server(req) {\n  if (req.url === "/") {\n    return { status: 200, body: "<h1>Салом!</h1>" };\n  }\n  return { status: 404, body: "Саҳифа ёфт нашуд" };\n}\nconsole.log(server({ method: "GET", url: "/xyz" }).status);\n',
           check: function (c, R) { return R.run(c).then(function (r) { return [["Хато нест", !r.err], ["Роҳи номаълум → 404", !r.err && r.out[r.out.length - 1] === "404"]]; }); } }
+      ] },
+    { id: "l13", tab: "13 · Зеҳни сунъӣ", tag: "ДАРСИ 13",
+      theory: "Зеҳни сунъӣ — <b>ёвар, на ҷонишин</b>. Се қоида: 1) <b>дақиқ пурсед</b> (забон, вазифа, маълумот, натиҷа, ҳолати хос); 2) <b>кодро хонед ва бифаҳмед</b>; 3) <b>ҳатман иҷро кунед ва санҷед</b> — бо рақам, бо матн, бо холӣ. Масалан, <code>\"25\" + 1</code> → <code>\"251\"</code> (матн пайваст мешавад), <code>Number(\"25\") + 1</code> → <code>26</code>. Ин ҷо се «ҷавоби ёвар» ҳаст — хатоаш бо санҷиш пайдо мешавад.",
+      tasks: [
+        { title: "Вазифаи 1: sum бо матн", text: "Ёвар <code>sum</code>-ро навишт. <code>sum(\"25\", 1)</code> ҳоло <b>251</b> медиҳад. Ислоҳ кунед, то <b>26</b> шавад (<code>Number</code>).",
+          starter: 'function sum(a, b) {\n  return a + b;\n}\n\nconsole.log(sum(25, 1));\nconsole.log(sum("25", 1));\n',
+          hint: "return Number(a) + Number(b);",
+          solution: 'function sum(a, b) {\n  return Number(a) + Number(b);\n}\n\nconsole.log(sum(25, 1));\nconsole.log(sum("25", 1));\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(sum(25, 1));\nconsole.log(sum("25", 1));').then(function (r) { var o = r.out.slice(-2); return [["Хато нест", !r.err], ["sum(25, 1) → 26", !r.err && o[0] === "26"], ["sum(\"25\", 1) → 26", !r.err && o[1] === "26"]]; }); } },
+        { title: "Вазифаи 2: miyona бо матн", text: "<code>miyona([\"10\", \"20\"])</code> ҳоло <b>510</b> медиҳад. Ислоҳ кунед, то <b>15</b> шавад; <code>[10, 20, 30]</code> → 20 ва <code>[]</code> → 0 бояд монад.",
+          starter: 'function miyona(royhat) {\n  if (royhat.length === 0) {\n    return 0;\n  }\n  let jam = 0;\n  for (const raqam of royhat) {\n    jam += raqam;\n  }\n  return jam / royhat.length;\n}\n',
+          hint: "jam += Number(raqam);",
+          solution: 'function miyona(royhat) {\n  if (royhat.length === 0) {\n    return 0;\n  }\n  let jam = 0;\n  for (const raqam of royhat) {\n    jam += Number(raqam);\n  }\n  return jam / royhat.length;\n}\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(miyona(["10", "20"]));\nconsole.log(miyona([10, 20, 30]));\nconsole.log(miyona([]));').then(function (r) { var o = r.out.slice(-3); return [["Хато нест", !r.err], ["[\"10\", \"20\"] → 15", !r.err && o[0] === "15"], ["[10, 20, 30] → 20", !r.err && o[1] === "20"], ["[] → 0", !r.err && o[2] === "0"]]; }); } },
+        { title: "Вазифаи 3: хатои ёвар", text: "Ёвар <code>double</code>-ро навишт — бояд ададро <b>дучанд</b> кунад. Бо санҷиш хаторо ёбед ва ислоҳ кунед.",
+          starter: 'function double(n) {\n  return n + 2;\n}\n\nconsole.log(double(5));\nconsole.log(double(0));\nconsole.log(double(-3));\n',
+          hint: "Дучанд кардан — n * 2, на n + 2.",
+          solution: 'function double(n) {\n  return n * 2;\n}\n\nconsole.log(double(5));\nconsole.log(double(0));\nconsole.log(double(-3));\n',
+          check: function (c, R) { return R.run(c + '\nconsole.log(double(5));\nconsole.log(double(0));\nconsole.log(double(-3));').then(function (r) { var o = r.out.slice(-3); return [["Хато нест", !r.err], ["double(5) → 10", !r.err && o[0] === "10"], ["double(0) → 0", !r.err && o[1] === "0"], ["double(-3) → -6", !r.err && o[2] === "-6"]]; }); } }
       ] }
   ];
